@@ -1,0 +1,23 @@
+# Core Framework
+streamlit
+
+# LangChain Core
+langchain-community
+langchain-core
+langchain-ollama
+langgraph
+
+# Database
+sqlite3
+ollama
+
+# File Processing
+pypdf
+python-docx
+openpyxl
+python-pptx
+Pillow
+beautifulsoup4
+markdown
+plotly
+pandas
