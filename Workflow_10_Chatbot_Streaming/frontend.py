@@ -43,9 +43,9 @@ def extract_file_content(uploaded_file):
             return "\n".join(p.text for p in doc.paragraphs)
 
         return f"""Uploaded file: {filename}
-File type: {ext}
-Size: {uploaded_file.size} bytes
-(binary or unsupported format)"""
+                File type: {ext}
+                Size: {uploaded_file.size} bytes
+                (binary or unsupported format)"""
 
     except Exception as e:
         return f"Error reading file {filename}: {str(e)}"
@@ -99,8 +99,8 @@ if prompt := st.chat_input("Type your message..."):
             SystemMessage(
                 content=f"""The user has uploaded a file. Use its content when relevant to answer questions.
 
-FILE CONTENT:
-{st.session_state.file_context}"""
+                            FILE CONTENT:
+                            {st.session_state.file_context}"""
             )
         )
         st.session_state.file_injected = True
@@ -123,14 +123,14 @@ FILE CONTENT:
                 full_response = ""
 
                 # ──── REAL STREAMING ────
-                for chunk, _metadata in chatbot.stream(
+                for chunk, metadata in chatbot.stream(
                     {"messages": messages},
                     config={"configurable": {"thread_id": st.session_state.chat_id}},
-                    stream_mode="messages"          # ← correct mode for chat streaming
+                    stream_mode="messages"
                 ):
-                    if chunk.content:                   # skip control/empty chunks
+                    if chunk.content:
                         full_response += chunk.content
-                        message_placeholder.markdown(full_response + "▋")  # typing cursor
+                        message_placeholder.markdown(full_response + "▋")
 
                 # Final clean output (no cursor)
                 message_placeholder.markdown(full_response)
@@ -145,4 +145,5 @@ FILE CONTENT:
         error_msg = f"Error during generation: {str(e)}"
         st.error(error_msg)
         st.session_state.history.append({"role": "assistant", "content": error_msg})
+
 
