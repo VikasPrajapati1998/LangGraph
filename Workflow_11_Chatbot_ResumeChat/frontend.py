@@ -41,7 +41,7 @@ def switch_to_chat(thread_id):
 st.sidebar.title("Chat Controls")
 
 # New chat button
-if st.sidebar.button("➕ New Chat"):
+if st.sidebar.button("New Chat"):
     create_new_chat()
     st.rerun()
 
