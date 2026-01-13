@@ -41,3 +41,5 @@ memory = SqliteSaver(conn)
 
 chatbot = workflow.compile(checkpointer=memory)
 
+# for checkpoint in memory.list(None):
+#     print(checkpoint)
