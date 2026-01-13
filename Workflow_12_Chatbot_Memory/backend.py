@@ -7,6 +7,10 @@ from langchain_ollama import ChatOllama
 import psycopg
 from psycopg.rows import dict_row
 
+# -------------------- DATABASE CONFIG --------------------
+# Centralized database URI that can be imported by other modules
+DB_URI = "postgresql://postgres:abcd%401234@localhost:5432/langgraph_memory"
+
 # -------------------- STATE --------------------
 
 class ChatState(TypedDict):
@@ -34,7 +38,6 @@ workflow.add_edge(START, "chat")
 workflow.add_edge("chat", END)
 
 # -------------------- CHECKPOINT --------------------
-DB_URI = "postgresql://postgres:abcd%401234@localhost:5432/langgraph_memory"
 
 # Create connection with proper settings for PostgresSaver
 conn = psycopg.connect(DB_URI, autocommit=True, row_factory=dict_row)
@@ -46,22 +49,5 @@ checkpointer.setup()  # Create tables if they don't exist
 # Compile chatbot with checkpointer
 chatbot = workflow.compile(checkpointer=checkpointer)
 
-# -------------------- RUN --------------------
-initial_state = {
-    "messages": [
-        HumanMessage(content="What is the capital of India?")
-    ]
-}
-
-config = {"configurable": {"thread_id": "thread-1"}}
-
-print("AI Response: ", end='')
-
-# Stream the response - you can use this same pattern in other scripts
-for event in chatbot.stream(input=initial_state, config=config, stream_mode="values"):
-    if "messages" in event and len(event["messages"]) > 0:
-        last_message = event["messages"][-1]
-        # Only print AI messages, not human messages
-        if hasattr(last_message, 'content') and last_message.__class__.__name__ == 'AIMessage':
-            print(last_message.content)
-
+# Export model and other components for use in other modules
+__all__ = ['chatbot', 'model', 'DB_URI']
