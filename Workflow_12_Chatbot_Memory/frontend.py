@@ -25,7 +25,7 @@ history_manager = ChatHistoryManager(
 
 # -------------------- PAGE CONFIG --------------------
 st.set_page_config(
-    page_title="Universal Chatbot",
+    page_title="Arya Chatbot",
     layout="centered"
 )
 
@@ -97,7 +97,7 @@ history_manager.strategy = strategy_options[selected_strategy]
 if history_manager.strategy in ["message_count", "sliding_window"]:
     history_manager.max_messages = st.sidebar.slider(
         "Max messages:", 
-        min_value=10, 
+        min_value=5, 
         max_value=50, 
         value=20, 
         step=2
@@ -247,9 +247,9 @@ if prompt := st.chat_input("Type your message..."):
                 for chunk, metadata in chatbot.stream(
                     {"messages": messages_to_send},
                     config={
-                        "configurable": {
-                            "thread_id": st.session_state.thread_id
-                        }
+                        "configurable": {"thread_id": st.session_state.thread_id},
+                        "metadata": {"thread_id": st.session_state.thread_id},
+                        "run_name": f"Chat_{st.session_state.thread_id}"
                     },
                     stream_mode="messages"
                 ):

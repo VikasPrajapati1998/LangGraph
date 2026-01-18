@@ -6,6 +6,11 @@ from langchain_core.messages import BaseMessage, HumanMessage, AIMessageChunk
 from langchain_ollama import ChatOllama
 import psycopg
 from psycopg.rows import dict_row
+import os
+from dotenv import find_dotenv, load_dotenv
+
+# Load Dotenv
+load_dotenv(find_dotenv())
 
 # -------------------- DATABASE CONFIG --------------------
 # Centralized database URI that can be imported by other modules
@@ -19,8 +24,8 @@ class ChatState(TypedDict):
 # -------------------- MODEL --------------------
 
 model = ChatOllama(
-    model="qwen2.5:0.5b",
-    temperature=0.4,
+    model="gemma3:1b",  # llama3.2:1b, qwen2.5:0.5b
+    temperature=0.7,
 )
 
 # -------------------- NODE --------------------

@@ -30,8 +30,7 @@ class ChatHistoryManager:
         Estimate tokens (rough approximation)
         More accurate: use tiktoken library for OpenAI models
         """
-        # Rough estimate: 1 token ≈ 4 characters for English
-        return len(text) // 4
+        return len(text.split(" "))
     
     def get_managed_history(
         self,
