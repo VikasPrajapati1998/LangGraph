@@ -2,7 +2,7 @@ import streamlit as st
 from backend import chatbot, DB_URI, model
 from database import ChatDatabase
 from history import ChatHistoryManager, ConversationSummarizer, create_summary_callback
-from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 import uuid
 
 # -------------------- DATABASE SETUP --------------------
@@ -220,14 +220,17 @@ if prompt := st.chat_input("Type your message..."):
     
     try:
         with st.chat_message("assistant"):
-            with st.spinner("Thinking..."):
-                placeholder = st.empty()
-                full_response = ""
+            # Create status container
+            status_container = st.status("🤔 Processing...", expanded=True)
+            
+            with status_container:
+                st.write("📝 Preparing context...")
                 
                 # ========== KEY CHANGE: Use managed history ==========
                 # For summarization strategy, get existing summary
                 existing_summary = None
                 if history_manager.strategy == "summarization":
+                    st.write("📊 Checking conversation summary...")
                     # Check if we need to update summary
                     summarizer.update_summary_if_needed(
                         st.session_state.thread_id,
@@ -235,6 +238,8 @@ if prompt := st.chat_input("Type your message..."):
                     )
                     # Get the summary for context
                     existing_summary = summarizer.get_summary_for_context(st.session_state.thread_id)
+                    if existing_summary:
+                        st.write("✅ Using existing summary for context")
                 
                 # Get MANAGED history (not full history) to send to model
                 messages_to_send = history_manager.get_managed_history(
@@ -242,6 +247,14 @@ if prompt := st.chat_input("Type your message..."):
                     include_system=True,
                     existing_summary=existing_summary
                 )
+                
+                st.write(f"💭 Sending {len(messages_to_send)} messages to model...")
+                
+                # Variables to track response
+                full_response = ""
+                tool_calls_made = []
+                tool_outputs = []
+                is_collecting_ai_response = False
                 
                 # Stream response from chatbot with MANAGED history
                 for chunk, metadata in chatbot.stream(
@@ -253,11 +266,52 @@ if prompt := st.chat_input("Type your message..."):
                     },
                     stream_mode="messages"
                 ):
-                    if chunk.content:
-                        full_response += chunk.content
-                        placeholder.markdown(full_response + "▋")
+                    # Check if this is a tool call
+                    if hasattr(chunk, 'tool_calls') and chunk.tool_calls:
+                        for tool_call in chunk.tool_calls:
+                            tool_name = tool_call.get('name', 'unknown')
+                            tool_args = tool_call.get('args', {})
+                            
+                            # Update status for tool call
+                            st.write(f"🔧 **Tool Called:** `{tool_name}`")
+                            st.json(tool_args)
+                            
+                            tool_calls_made.append({
+                                'name': tool_name,
+                                'args': tool_args
+                            })
+                    
+                    # Check if this is a ToolMessage (tool result)
+                    if isinstance(chunk, ToolMessage):
+                        st.write(f"✅ **Tool Result Received**")
+                        tool_output = str(chunk.content)
+                        tool_outputs.append(tool_output)
+                        with st.expander("View tool output"):
+                            st.text(tool_output[:500])
+                        # Mark that we're done with tools, next content is AI response
+                        is_collecting_ai_response = True
+                        continue  # Skip adding tool content to response
+                    
+                    # Only collect content from AIMessage chunks (not ToolMessage)
+                    if hasattr(chunk, 'content') and chunk.content:
+                        # Skip if it's a tool-type message
+                        if hasattr(chunk, 'type') and chunk.type == 'tool':
+                            continue
+                        
+                        # Only add actual AI response content
+                        if not isinstance(chunk, ToolMessage):
+                            full_response += chunk.content
                 
-                placeholder.markdown(full_response)
+                # Update status to complete
+                if tool_calls_made:
+                    st.write(f"✨ **Used {len(tool_calls_made)} tool(s)** to generate response")
+                st.write("✅ Response generated!")
+            
+            # Update status to complete
+            status_container.update(label="✅ Complete!", state="complete", expanded=False)
+            
+            # Display final response outside status container
+            st.markdown(full_response)
         
         # Add assistant response to current chat
         assistant_msg = {"role": "assistant", "content": full_response}
