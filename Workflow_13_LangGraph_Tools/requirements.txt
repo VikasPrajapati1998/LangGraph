@@ -1,0 +1,17 @@
+# Core Framework
+streamlit>=1.28.0
+langgraph>=0.0.40
+langchain-core>=0.1.0
+langchain-ollama>=0.1.0
+
+# Database
+psycopg>=3.1.0
+psycopg-binary>=3.1.0
+
+# Optional (for better token estimation)
+# tiktoken>=0.5.0
+
+# Development (optional)
+# pytest>=7.4.0
+# black>=23.0.0
+# flake8>=6.0.0
