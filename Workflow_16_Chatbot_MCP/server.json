@@ -1,0 +1,20 @@
+{
+    "Calculator": {
+        "command": "uv",
+        "args": [
+            "--directory",
+            "D:\\Study\\LangGraph\\Workflow_16_Chatbot_MCP\\MCP-Servers\\Calculator",
+            "run", "--with", "fastmcp", "fastmcp", "run", "main.py"
+        ],
+        "transport": "stdio"
+    },
+    "StockServer": {
+        "command": "uv",
+        "args": [
+            "--directory",
+            "D:\\Study\\LangGraph\\Workflow_16_Chatbot_MCP\\MCP-Servers\\StockPrice",
+            "run", "--with", "fastmcp", "fastmcp", "run", "main.py"
+        ],
+        "transport": "stdio"
+    }
+}
