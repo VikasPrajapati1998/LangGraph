@@ -2,6 +2,8 @@ import uuid
 import asyncio
 import nest_asyncio
 import streamlit as st
+import atexit
+import warnings
 from backend import build_graph, DB_URI, llm
 from database import ChatDatabase
 from history import ChatHistoryManager, ConversationSummarizer, create_summary_callback
@@ -10,6 +12,39 @@ from langchain_core.messages import ToolMessage
 
 # Apply nest_asyncio to allow nested event loops
 nest_asyncio.apply()
+
+# Suppress harmless warnings about pending tasks
+warnings.filterwarnings('ignore', message='coroutine.*was never awaited')
+warnings.filterwarnings('ignore', category=ResourceWarning)
+warnings.filterwarnings('ignore', category=DeprecationWarning)
+
+# Suppress asyncio task destruction warnings
+import logging
+logging.getLogger('asyncio').setLevel(logging.ERROR)
+
+# ==================== CLEANUP HANDLERS ====================
+# Simplified cleanup to avoid recursion issues
+
+def cleanup_on_exit():
+    """Simple cleanup that avoids recursion issues"""
+    try:
+        # Don't try to cancel tasks or close loops - let Python handle it
+        # Just close database connections if possible
+        if 'db' in globals() and hasattr(globals()['db'], 'pool'):
+            try:
+                # Try to close database pool synchronously
+                pool = globals()['db'].pool
+                if hasattr(pool, 'close') and callable(pool.close):
+                    pool.close()
+            except:
+                pass
+    except:
+        pass
+
+# Register cleanup handler
+atexit.register(cleanup_on_exit)
+
+# ==================== END CLEANUP HANDLERS ====================
 
 # -------------------- DATABASE SETUP --------------------
 db = ChatDatabase(DB_URI)
@@ -350,3 +385,5 @@ if prompt := st.chat_input("Type your message..."):
         st.session_state.chat_history.append(error_response)
         # Save error to database
         db.add_message(st.session_state.thread_id, "assistant", f"Error: {str(e)}")
+    
+
