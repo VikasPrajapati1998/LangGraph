@@ -16,5 +16,14 @@
             "run", "--with", "fastmcp", "fastmcp", "run", "main.py"
         ],
         "transport": "stdio"
+    },
+    "ExpenseTracker": {
+        "command": "uv",
+        "args": [
+            "--directory",
+            "D:\\Study\\LangGraph\\Workflow_16_Chatbot_MCP\\MCP-Servers\\ExpenseTracker",
+            "run", "--with", "fastmcp", "fastmcp", "run", "main.py"
+        ],
+        "transport": "stdio"
     }
 }
