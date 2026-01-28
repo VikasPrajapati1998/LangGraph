@@ -1,15 +1,35 @@
+import uuid
+import asyncio
+import nest_asyncio
 import streamlit as st
-from backend import chatbot, DB_URI, model
+from backend import build_graph, DB_URI, llm
 from database import ChatDatabase
 from history import ChatHistoryManager, ConversationSummarizer, create_summary_callback
 from langchain_core.messages import ToolMessage
-import uuid
+
+
+# Apply nest_asyncio to allow nested event loops
+nest_asyncio.apply()
 
 # -------------------- DATABASE SETUP --------------------
 db = ChatDatabase(DB_URI)
 
+# -------------------- EVENT LOOP SETUP --------------------
+# Get or create event loop for async operations
+if "event_loop" not in st.session_state:
+    try:
+        st.session_state.event_loop = asyncio.get_event_loop()
+    except RuntimeError:
+        st.session_state.event_loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(st.session_state.event_loop)
+
+# -------------------- CHATBOT INITIALIZATION --------------------
+# Initialize chatbot asynchronously using the same event loop
+if "chatbot" not in st.session_state:
+    st.session_state.chatbot = st.session_state.event_loop.run_until_complete(build_graph())
+
 # -------------------- SUMMARIZER SETUP --------------------
-summarizer = ConversationSummarizer(model=model, db=db)
+summarizer = ConversationSummarizer(model=llm, db=db)
 
 # -------------------- HISTORY MANAGER SETUP --------------------
 # Choose your strategy here!
@@ -250,57 +270,59 @@ if prompt := st.chat_input("Type your message..."):
                 
                 st.write(f"💭 Sending {len(messages_to_send)} messages to model...")
                 
-                # Variables to track response
-                full_response = ""
-                tool_calls_made = []
-                tool_outputs = []
-                is_collecting_ai_response = False
-                
-                # Stream response from chatbot with MANAGED history
-                for chunk, metadata in chatbot.stream(
-                    {"messages": messages_to_send},
-                    config={
-                        "configurable": {"thread_id": st.session_state.thread_id},
-                        "metadata": {"thread_id": st.session_state.thread_id},
-                        "run_name": f"Chat_{st.session_state.thread_id}"
-                    },
-                    stream_mode="messages"
-                ):
-                    # Check if this is a tool call
-                    if hasattr(chunk, 'tool_calls') and chunk.tool_calls:
-                        for tool_call in chunk.tool_calls:
-                            tool_name = tool_call.get('name', 'unknown')
-                            tool_args = tool_call.get('args', {})
-                            
-                            # Update status for tool call
-                            st.write(f"🔧 **Tool Called:** `{tool_name}`")
-                            st.json(tool_args)
-                            
-                            tool_calls_made.append({
-                                'name': tool_name,
-                                'args': tool_args
-                            })
+                # Define async streaming function
+                async def stream_response():
+                    full_response = ""
+                    tool_calls_made = []
+                    tool_outputs = []
                     
-                    # Check if this is a ToolMessage (tool result)
-                    if isinstance(chunk, ToolMessage):
-                        st.write(f"✅ **Tool Result Received**")
-                        tool_output = str(chunk.content)
-                        tool_outputs.append(tool_output)
-                        with st.expander("View tool output"):
-                            st.text(tool_output[:500])
-                        # Mark that we're done with tools, next content is AI response
-                        is_collecting_ai_response = True
-                        continue  # Skip adding tool content to response
-                    
-                    # Only collect content from AIMessage chunks (not ToolMessage)
-                    if hasattr(chunk, 'content') and chunk.content:
-                        # Skip if it's a tool-type message
-                        if hasattr(chunk, 'type') and chunk.type == 'tool':
-                            continue
+                    async for chunk, metadata in st.session_state.chatbot.astream(
+                        {"messages": messages_to_send},
+                        config={
+                            "configurable": {"thread_id": st.session_state.thread_id},
+                            "metadata": {"thread_id": st.session_state.thread_id},
+                            "run_name": f"Chat_{st.session_state.thread_id}"
+                        },
+                        stream_mode="messages"
+                    ):
+                        # Check if this is a tool call
+                        if hasattr(chunk, 'tool_calls') and chunk.tool_calls:
+                            for tool_call in chunk.tool_calls:
+                                tool_name = tool_call.get('name', 'unknown')
+                                tool_args = tool_call.get('args', {})
+                                
+                                # Update status for tool call
+                                st.write(f"🔧 **Tool Called:** `{tool_name}`")
+                                st.json(tool_args)
+                                
+                                tool_calls_made.append({
+                                    'name': tool_name,
+                                    'args': tool_args
+                                })
                         
-                        # Only add actual AI response content
-                        if not isinstance(chunk, ToolMessage):
-                            full_response += chunk.content
+                        # Check if this is a ToolMessage (tool result)
+                        if isinstance(chunk, ToolMessage):
+                            st.write(f"✅ **Tool Result Received**")
+                            tool_output = str(chunk.content)
+                            tool_outputs.append(tool_output)
+                            with st.expander("View tool output"):
+                                st.text(tool_output[:500])
+                            continue  # Skip adding tool content to response
+                        
+                        # Only collect content from AIMessage chunks (not ToolMessage)
+                        if hasattr(chunk, 'content') and chunk.content:
+                            # Skip if it's a tool-type message
+                            if hasattr(chunk, 'type') and chunk.type == 'tool':
+                                continue
+                            
+                            # Only add actual AI response content
+                            if not isinstance(chunk, ToolMessage):
+                                full_response += chunk.content
+                    
+                    return full_response, tool_calls_made, tool_outputs
+                
+                # Run the async streaming using the same event loop
+                full_response, tool_calls_made, tool_outputs = st.session_state.event_loop.run_until_complete(stream_response())
                 
                 # Update status to complete
                 if tool_calls_made:
@@ -321,9 +343,10 @@ if prompt := st.chat_input("Type your message..."):
         db.add_message(st.session_state.thread_id, "assistant", full_response)
         
     except Exception as e:
-        error_msg = f"Error during generation: {str(e)}"
+        import traceback
+        error_msg = f"Error during generation: {str(e)}\n\n{traceback.format_exc()}"
         st.error(error_msg)
-        error_response = {"role": "assistant", "content": error_msg}
+        error_response = {"role": "assistant", "content": f"Error: {str(e)}"}
         st.session_state.chat_history.append(error_response)
         # Save error to database
-        db.add_message(st.session_state.thread_id, "assistant", error_msg)
+        db.add_message(st.session_state.thread_id, "assistant", f"Error: {str(e)}")
