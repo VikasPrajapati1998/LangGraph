@@ -19,6 +19,6 @@ def get_chunk(text: str, chunk_size: int = 3, overlap: int = 2):
     return chunks
 
 
-text = "Machine learning and Artificial Intelligence is part of Data Science. The above skill is Gen AI in this field."
-vector_store = get_chunk(text, 3, 2)
+text = "Machine learning and Artificial Intelligence is part of Data Science. The above skill is Gen AI in this field. Generative AI is the era changing invenstion."
+vector_store = get_chunk(text, 3, 5)
 print(vector_store)
