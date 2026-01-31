@@ -67,7 +67,11 @@ builder.add_edge("chat", END)
 # ===============================
 # SQLITE CHECKPOINTER (PERSISTENT)
 # ===============================
-checkpointer = SqliteSaver("langgraph_state.db")
+# Create connection and pass it to SqliteSaver
+import sqlite3
+
+conn = sqlite3.connect("langgraph_state.db", check_same_thread=False)
+checkpointer = SqliteSaver(conn)
 
 # Compile app
 app = builder.compile(checkpointer=checkpointer)
