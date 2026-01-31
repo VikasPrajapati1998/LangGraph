@@ -1,55 +1,49 @@
-# 🤖 Arya Chatbot - Complete Chat History Management System
+# 🤖 Arya Chatbot - RAG-Enabled Chat System with Intelligent History Management
 
-A production-ready chatbot with intelligent chat history management, supporting 5 different strategies including AI-powered summarization for long conversations.
+A production-ready AI chatbot with PDF document querying (RAG), intelligent chat history management, and 5 different memory strategies including AI-powered summarization.
 
-## 📁 Project Structure
+## 🎯 Key Features
 
-```
-project/
-├── backend.py              # LangGraph chatbot with checkpoint
-├── database.py             # PostgreSQL database management
-├── history.py              # All 5 history strategies + summarization
-├── frontend.py             # Streamlit UI
-└── README.md              # This file
-```
-
-## 🚀 Features
-
-### ✅ Core Features
-- 💾 **Persistent Storage** - All conversations stored in PostgreSQL
+- 📄 **PDF Document RAG** - Upload and query PDF documents with FAISS vector search
+- 💾 **Persistent Storage** - PostgreSQL database for conversations and vector stores
 - 🔄 **Multi-Chat Support** - Create, switch, and delete conversations
-- 📊 **Real-time Metrics** - Token usage and reduction statistics
-- 🎯 **5 History Strategies** - Choose the best for your use case
+- 🧠 **5 Memory Strategies** - Optimized context management for different use cases
 - 🤖 **AI Summarization** - Automatic summaries for long conversations
-- ⚡ **Streaming Responses** - Real-time message generation
-- 🎨 **Beautiful UI** - Clean Streamlit interface
-
-### 🎯 History Management Strategies
-
-| Strategy | Best For | Description |
-|----------|----------|-------------|
-| **Message Count** | Short chats (< 20 msgs) | Keep last N messages |
-| **Token-Based** | Production apps | Keep messages within token limit |
-| **Sliding Window** | Q&A bots | Complete conversation exchanges |
-| **Hybrid** ⭐ | General purpose (20-50 msgs) | First message + recent context |
-| **Summarization** | Long chats (50+ msgs) | AI summary + recent messages |
+- ⚡ **Streaming Responses** - Real-time message generation with tool call visibility
+- 🛠️ **MCP Tool Integration** - Calculator, Stock Price, Expense Tracker, and DuckDuckGo search
 
 ## 📋 Prerequisites
 
 ```bash
 # Python 3.8+
-pip install streamlit
-pip install langgraph
-pip install langchain-ollama
-pip install langchain-core
-pip install psycopg
-pip install psycopg-binary
+pip install streamlit langgraph langchain-ollama langchain-core
+pip install psycopg psycopg-binary faiss-cpu pdfplumber
+pip install langchain-community python-dotenv langchain-mcp-adapters
 
 # PostgreSQL database
-# Ollama with qwen2.5:0.5b model (or your preferred model)
+# Ollama with models: qwen3:0.6b, nomic-embed-text:v1.5
 ```
 
-## 🛠️ Setup
+## 📁 Project Structure
+
+```
+project/
+├── frontend.py              # Streamlit UI with PDF upload
+├── backend.py              # LangGraph chatbot + MCP tools
+├── book_tool.py            # PDF RAG retrieval tool
+├── database.py             # PostgreSQL operations
+├── history.py              # 5 history strategies + summarization
+├── data/                   # 📄 Uploaded PDF files
+│   ├── document1.pdf
+│   └── document2.pdf
+└── vector_data/            # 🗄️ FAISS vector stores (auto-generated)
+    ├── document1/
+    │   ├── index.faiss
+    │   └── index.pkl
+    └── document2/
+```
+
+## 🚀 Quick Start
 
 ### 1. Database Setup
 
@@ -57,399 +51,332 @@ pip install psycopg-binary
 # Create PostgreSQL database
 createdb langgraph_memory
 
-# Or using psql
-psql -U postgres
-CREATE DATABASE langgraph_memory;
-\q
-```
-
-### 2. Configure Database URI
-
-Update `backend.py` line 11:
-```python
+# Configure connection in backend.py
 DB_URI = "postgresql://postgres:YOUR_PASSWORD@localhost:5432/langgraph_memory"
 ```
 
-### 3. Install Ollama Model
+### 2. Install Ollama Models
 
 ```bash
-# Download and run Ollama
-ollama pull qwen2.5:0.5b
-
-# Or use a different model (update backend.py accordingly)
-ollama pull llama3:8b
+ollama pull qwen3:0.6b              # Main chat model
+ollama pull nomic-embed-text:v1.5   # Embeddings for PDF RAG
 ```
 
-### 4. Run the Application
+### 3. Run Application
 
 ```bash
 streamlit run frontend.py
 ```
 
-## 📊 Database Schema
+## 📄 PDF Document RAG
 
-### Tables Created Automatically
+### Upload & Query Workflow
 
-```sql
--- Chat threads (conversations)
-chat_threads
-├── thread_id (VARCHAR PRIMARY KEY)
-├── title (TEXT)
-├── created_at (TIMESTAMP)
-└── updated_at (TIMESTAMP)
-
--- Individual messages
-chat_messages
-├── id (SERIAL PRIMARY KEY)
-├── thread_id (VARCHAR FOREIGN KEY)
-├── role (VARCHAR)
-├── content (TEXT)
-├── created_at (TIMESTAMP)
-└── message_order (INTEGER)
-
--- AI-generated summaries
-conversation_summaries
-├── id (SERIAL PRIMARY KEY)
-├── thread_id (VARCHAR FOREIGN KEY)
-├── summary (TEXT)
-├── messages_covered (INTEGER)
-├── last_message_order (INTEGER)
-└── created_at (TIMESTAMP)
-
--- LangGraph checkpoint tables (created automatically)
-checkpoints
-checkpoint_writes
-checkpoint_migrations
+```
+1. Upload PDF → Saved to data/ folder
+2. Auto-process → FAISS vector store created in vector_data/
+3. Ask questions → AI automatically searches relevant context
+4. Get answers → Based on actual document content
 ```
 
-## 🎮 Usage Guide
-
-### Basic Usage
-
-1. **Start the app**: `streamlit run frontend.py`
-2. **Select a strategy** in the sidebar
-3. **Adjust parameters** using sliders
-4. **Start chatting!**
-
-### Strategy Selection
-
-#### For Short Conversations (< 20 messages)
-```python
-Strategy: "Message Count"
-Max messages: 15-20
-```
-
-#### For Medium Conversations (20-50 messages)
-```python
-Strategy: "Hybrid" ⭐ RECOMMENDED
-Max tokens: 3000
-```
-
-#### For Long Conversations (50+ messages)
-```python
-Strategy: "Summarization"
-Summarize threshold: 30
-Recent messages: 10
-```
-
-### Understanding the Metrics
-
-**Sidebar displays:**
-- **Total Messages**: All messages in conversation
-- **Sent to Model**: Messages actually sent (after management)
-- **Token Reduction**: Percentage of tokens saved
-
-**Example:**
-```
-Total Messages: 50
-Sent to Model: 12
-Token Reduction: 76%
-```
-This means 76% of tokens were saved by using the strategy!
-
-## 🔧 Configuration Options
-
-### In `frontend.py`
+### Usage Examples
 
 ```python
+# Upload "machine_learning.pdf" via UI
+
+# Then ask naturally:
+"What does machine_learning.pdf say about neural networks?"
+"Summarize the key concepts from the document"
+"Explain gradient descent from the PDF"
+```
+
+### How It Works
+
+```python
+# book_tool.py - Automatic RAG retrieval
+@tool
+def book_tool(query: str, file_path: str):
+    """Retrieve relevant information from PDF"""
+    retriever = get_retriever(file_path)  # FAISS vector search
+    docs = retriever.invoke(query)         # Find top-5 chunks
+    return {"context": context, "metadata": metadata}
+
+# backend.py - LangGraph integration
+tools = [search_tool, *mcp_tools, book_tool]
+model = llm.bind_tools(tools)
+```
+
+## 🧠 Memory Management Strategies
+
+| Strategy | Best For | Context Size | Description |
+|----------|----------|--------------|-------------|
+| **Message Count** | Short (< 20 msgs) | Fixed | Keep last N messages |
+| **Token-Based** | Production | Dynamic | Stay within token limit |
+| **Sliding Window** | Q&A | Balanced | Complete user-assistant exchanges |
+| **Hybrid** ⭐ | General (20-50) | Smart | First message + recent context |
+| **Summarization** | Long (50+) | Compressed | AI summary + recent messages |
+
+### Strategy Configuration
+
+```python
+# frontend.py
 history_manager = ChatHistoryManager(
-    strategy="hybrid",              # Choose strategy
+    strategy="hybrid",              # Default: hybrid
     max_messages=20,                # For message_count/sliding_window
     max_tokens=3000,                # For token_based/hybrid
-    system_prompt="Your prompt",    # System message
-    summarize_threshold=30,         # When to start summarizing
+    summarize_threshold=30,         # When to trigger summarization
     recent_messages_count=10,       # Recent messages to keep
-    summarizer_callback=callback    # AI summarizer function
+    system_prompt="You are Arya, a helpful AI assistant."
 )
 ```
 
-### Available Strategies
+## 🛠️ MCP Tool Servers
+
+Configure custom MCP servers in `backend.py`:
 
 ```python
-# Simple - last N messages
-strategy="message_count"
-
-# Token-aware - within limit
-strategy="token_based"
-
-# Complete exchanges
-strategy="sliding_window"
-
-# Smart hybrid (RECOMMENDED)
-strategy="hybrid"
-
-# AI summarization (for long chats)
-strategy="summarization"
+SERVER = {
+    "Calculator": {
+        "command": "uv",
+        "args": ["--directory", "path/to/Calculator", "run", "main.py"],
+        "transport": "stdio"
+    },
+    "StockServer": {...},
+    "ExpenseTracker": {...}
+}
 ```
 
-## 📖 How Each Strategy Works
+Available tools: Calculator, Stock Price Lookup, Expense Tracker, Web Search, PDF Query
 
-### 1. Message Count
-```
-Full History: [M1, M2, M3, M4, M5, M6, M7, M8, M9, M10]
-Max: 6
-Sent:         [               M5, M6, M7, M8, M9, M10]
-```
+## 📊 Database Schema
 
-### 2. Token-Based
-```
-Full History: [M1(500t), M2(300t), M3(600t), M4(400t), M5(200t)]
-Max: 1000 tokens
-Sent:         [           M3(600t), M4(400t), M5(200t)]
-```
+```sql
+-- Conversations
+chat_threads (thread_id, title, created_at, updated_at)
 
-### 3. Sliding Window
-```
-Full History: [U1, A1, U2, A2, U3, A3, U4, A4, U5, A5]
-Keep: 3 exchanges
-Sent:         [           U3, A3, U4, A4, U5, A5]
+-- Messages
+chat_messages (id, thread_id, role, content, created_at, message_order)
+
+-- AI Summaries
+conversation_summaries (id, thread_id, summary, messages_covered, last_message_order)
+
+-- LangGraph Checkpoints (auto-created)
+checkpoints, checkpoint_writes, checkpoint_migrations
 ```
 
-### 4. Hybrid (RECOMMENDED)
-```
-Full History: [M1, M2, M3, M4, M5, M6, M7, M8, M9, M10]
-Keep: First + Recent (within tokens)
-Sent:         [M1, [...], M6, M7, M8, M9, M10]
-```
+## 💡 Advanced Usage
 
-### 5. Summarization
-```
-Full History: [M1-M40] + [M41-M50]
-              ↓             ↓
-         AI Summary    Recent Msgs
-              ↓             ↓
-Sent: [System] + [Summary] + [M41-M50]
-```
-
-## 🤖 Summarization Details
-
-### When Summaries Are Generated
-
-1. **Automatically** when conversation reaches 30 messages (threshold)
-2. **Auto-update** every 20 new messages
-3. **Manually** via "Generate Summary Now" button
-
-### Summary Prompt
-
-The AI uses this prompt to create summaries:
-
-```
-Please provide a concise summary of the following conversation.
-Focus on:
-1. Main topics and questions discussed
-2. Key information or solutions provided
-3. Important context for continuing the conversation
-
-Keep the summary brief (under 150 words) but informative.
-```
-
-### Viewing Summaries
-
-When using summarization strategy:
-- Sidebar shows "✅ Summary: X msgs"
-- Click "View Summary" expander to see full summary
-- Summary automatically included in model context
-
-## 🎨 UI Features
-
-### Sidebar Controls
-- **Strategy Selector** - Choose from 5 strategies
-- **Parameter Sliders** - Adjust strategy settings
-- **Statistics Display** - Real-time metrics
-- **Summary Viewer** - View AI-generated summaries
-- **New Chat Button** - Start fresh conversation
-- **Chat List** - Switch between conversations
-- **Delete Buttons** - Remove unwanted chats
-
-### Main Chat Area
-- **Message History** - Full conversation display
-- **Streaming Responses** - Real-time AI generation
-- **Error Handling** - Graceful error messages
-- **User Input** - Chat input at bottom
-
-## 🔍 Advanced Usage
-
-### Custom Model Configuration
+### Custom Document Querying
 
 ```python
-# In backend.py
-model = ChatOllama(
-    model="llama3:8b",      # Change model
-    temperature=0.7,        # Adjust creativity
-)
+# In chat: Mention specific file path
+"What does data/custom_doc.pdf say about topic X?"
+
+# book_tool automatically called with correct path
+tool_call = {
+    'name': 'book_tool',
+    'args': {
+        'query': 'topic X',
+        'file_path': 'data/custom_doc.pdf'
+    }
+}
 ```
 
-### Custom System Prompt
-
-```python
-# In frontend.py
-history_manager = ChatHistoryManager(
-    system_prompt="You are a Python expert assistant specialized in data science."
-)
-```
-
-### Programmatic Summary Generation
+### Force Summary Generation
 
 ```python
 from history import ConversationSummarizer
-from backend import model, DB_URI
-from database import ChatDatabase
 
-db = ChatDatabase(DB_URI)
-summarizer = ConversationSummarizer(model=model, db=db)
-
-# Force generate summary
+summarizer = ConversationSummarizer(model=llm, db=db)
 summary = summarizer.update_summary_if_needed(
     thread_id="your-thread-id",
     all_messages=messages,
-    force=True
+    force=True  # Generate immediately
 )
 ```
 
-## 📊 Performance Optimization
+### Change LLM Model
 
-### For Small Models (2K-4K context)
 ```python
-strategy="token_based"
-max_tokens=2000
+# backend.py
+llm = ChatOllama(
+    model="llama3.2:1b",    # Options: qwen3:0.6b, mistral:latest
+    temperature=0.7,
+)
 ```
 
-### For Medium Models (8K context)
-```python
-strategy="hybrid"
-max_tokens=4000
-```
+## 🎨 UI Features
 
-### For Large Models (32K+ context)
+### Sidebar
+- **Document Management** - Upload, view, delete PDFs with size info
+- **Memory Strategy Selector** - Choose from 5 strategies with live parameters
+- **Real-time Metrics** - Total messages, sent to model, token reduction %
+- **Conversation List** - Switch between chats, delete unwanted threads
+- **Summary Viewer** - View AI-generated conversation summaries
+
+### Main Chat
+- **Document Tips** - Expandable guide showing available PDFs and query examples
+- **Tool Call Visibility** - See when book_tool, calculator, or search is used
+- **Retrieved Context Preview** - View PDF chunks used for answers
+- **Streaming Responses** - Real-time message generation with status updates
+
+## 🔧 Performance Optimization
+
 ```python
-strategy="message_count"
-max_messages=30
-# Or
-strategy="summarization"
-summarize_threshold=50
+# Small models (2K-4K context)
+strategy="token_based", max_tokens=2000
+
+# Medium models (8K context)
+strategy="hybrid", max_tokens=4000
+
+# Large models (32K+ context)
+strategy="summarization", summarize_threshold=50
 ```
 
 ## 🐛 Troubleshooting
 
+### PDF Upload Error
+```bash
+# Ensure directories exist
+mkdir -p data vector_data
+
+# Check Ollama embedding model
+ollama list | grep nomic-embed-text
+```
+
 ### Database Connection Error
 ```bash
-# Check PostgreSQL is running
+# Verify PostgreSQL is running
 pg_isready
 
-# Verify database exists
+# Check database exists
 psql -U postgres -l | grep langgraph_memory
 ```
 
-### Summary Not Generating
+### Vector Store Not Creating
+```bash
+# Manually test embedding model
+ollama pull nomic-embed-text:v1.5
+ollama run nomic-embed-text:v1.5 "test"
+```
+
+### StreamlitAPIException
 ```python
-# Check threshold
-print(f"Messages: {len(chat_history)}")
-print(f"Threshold: {history_manager.summarize_threshold}")
-
-# Force generation
-summarizer.update_summary_if_needed(thread_id, messages, force=True)
+# Fixed in updated frontend.py
+# Changed st.sidebar.spinner() → st.spinner()
 ```
 
-### Model Not Found
-```bash
-# List available models
-ollama list
+## 📈 Metrics Example
 
-# Pull required model
-ollama pull qwen2.5:0.5b
+```
+Sidebar Display:
+├── Total Messages: 45
+├── Sent to Model: 12
+└── Token Reduction: 73%
+
+Summary Status:
+✅ Summary: 35 msgs covered
 ```
 
-### Import Errors
-```bash
-# Reinstall dependencies
-pip install --upgrade streamlit langgraph langchain-ollama psycopg
-```
-
-## 📚 File Descriptions
-
-### `backend.py`
-- LangGraph workflow setup
-- ChatOllama model configuration
-- PostgreSQL checkpoint integration
-- Exports: `chatbot`, `model`, `DB_URI`
-
-### `database.py`
-- Database connection management
-- Table creation (threads, messages, summaries)
-- CRUD operations for chats
-- Summary storage methods
-
-### `history.py`
-- `ChatHistoryManager` class - 5 strategies
-- `ConversationSummarizer` class - AI summarization
-- Token estimation
-- Message conversion utilities
-
-### `frontend.py`
-- Streamlit UI setup
-- Session state management
-- Strategy selection interface
-- Chat display and input handling
-
-## 🎯 Best Practices
-
-1. **Start with Hybrid** - Works for 80% of use cases
-2. **Switch to Summarization** - When chats exceed 50 messages
-3. **Monitor Metrics** - Check token reduction percentage
-4. **Adjust Thresholds** - Based on your model's context limit
-5. **Use System Prompts** - For better AI behavior
+This means: 45 total messages → Only 12 sent to model (73% token savings)
 
 ## 🔐 Security Notes
 
-- Summaries stored in same database as messages
-- No external API calls (local model only)
-- Database credentials in code (use env vars in production)
-- Consider encryption for sensitive data
+- Database credentials in code (use environment variables in production)
+- Local models only (no external API calls)
+- Vector stores stored locally (no cloud dependencies)
+- Consider encryption for sensitive document content
 
-## 📈 Future Enhancements
+## 🎯 Best Practices
 
-- [ ] Environment variable configuration
-- [ ] Multi-user support with authentication
-- [ ] Export conversations to PDF/JSON
-- [ ] Custom summary prompts per conversation
-- [ ] Incremental summary updates
-- [ ] Vector database integration for semantic search
+1. **Start with Hybrid strategy** - Best for 80% of use cases
+2. **Monitor token reduction** - Aim for 50-70% savings
+3. **Name PDFs clearly** - Avoid special characters in filenames
+4. **Use summarization** - For conversations exceeding 50 messages
+5. **Delete unused PDFs** - Saves disk space (removes vector stores too)
+
+## 📝 Example Session
+
+```bash
+# 1. Start app
+streamlit run frontend.py
+
+# 2. Upload PDF
+Upload "machine_learning.pdf" → Saved to data/machine_learning.pdf
+Vector store created → vector_data/machine_learning/
+
+# 3. Ask questions
+User: "What does machine_learning.pdf cover?"
+AI: [Uses book_tool] → Returns summary from PDF
+
+User: "Calculate 25 * 67"
+AI: [Uses calculator MCP] → Returns 1675
+
+User: "Search for latest AI news"
+AI: [Uses DuckDuckGo search] → Returns search results
+
+# 4. Switch to Summarization (after 30+ messages)
+Strategy: Summarization
+AI generates summary of conversation
+Only sends: [Summary] + [Recent 10 messages]
+```
+
+## 🚦 Directory Setup
+
+```bash
+# Auto-created on first run
+data/           # PDF storage
+vector_data/    # FAISS indices
+venv/          # Python environment (create manually)
+
+# Manual setup
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
+pip install -r requirements.txt
+```
+
+## 📦 File Responsibilities
+
+| File | Purpose |
+|------|---------|
+| `backend.py` | LangGraph workflow, model config, MCP integration |
+| `frontend.py` | Streamlit UI, PDF upload, chat interface |
+| `book_tool.py` | FAISS retrieval, PDF processing, vector store |
+| `database.py` | PostgreSQL CRUD, thread/message/summary management |
+| `history.py` | 5 memory strategies, token estimation, summarization |
+
+## 🎓 Technical Details
+
+### Vector Store Creation
+```python
+# Triggered on PDF upload
+PDFPlumberLoader → RecursiveCharacterTextSplitter (1000/200) 
+→ OllamaEmbeddings (nomic-embed-text) → FAISS.from_documents 
+→ Saved to vector_data/<filename>/
+```
+
+### Context Management Flow
+```python
+# Each user message
+Full history → Strategy filter → Managed history → LLM
+Example: 50 msgs → Hybrid strategy → 12 msgs → Model (76% reduction)
+```
+
+### Tool Calling
+```python
+# Automatic based on query
+User query → LLM analyzes → Determines tool needed 
+→ Calls tool (book_tool/calculator/search) 
+→ Returns result → LLM generates final answer
+```
 
 ## 📄 License
 
-MIT License - feel free to use and modify!
-
-## 🤝 Contributing
-
-Contributions welcome! Please feel free to submit a Pull Request.
-
-## 📞 Support
-
-For issues or questions:
-1. Check the troubleshooting section
-2. Review the code comments
-3. Check Streamlit/LangGraph documentation
+MIT License - Free to use and modify
 
 ---
 
-**Happy Chatting! 🚀**
+**Built with:** LangGraph • LangChain • Streamlit • PostgreSQL • FAISS • Ollama  
+**Author:** Your Name  
+**Version:** 2.0 (RAG-enabled)
