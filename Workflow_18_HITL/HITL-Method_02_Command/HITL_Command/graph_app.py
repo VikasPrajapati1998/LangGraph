@@ -44,7 +44,7 @@ def chat_node(state: ChatState):
     if approval["approved"].lower() != "yes":
         return {
             "messages": [
-                AIMessage(content="❌ Response blocked by human approval.")
+                AIMessage(content="Response blocked by human approval.")
             ]
         }
 
