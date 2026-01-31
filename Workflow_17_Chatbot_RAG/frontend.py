@@ -4,10 +4,13 @@ import nest_asyncio
 import streamlit as st
 import atexit
 import warnings
+import os
+import shutil
 from backend import build_graph, DB_URI, llm
 from database import ChatDatabase
 from history import ChatHistoryManager, ConversationSummarizer, create_summary_callback
 from langchain_core.messages import ToolMessage
+from book_tool import setup as setup_vector_data
 
 
 # Apply nest_asyncio to allow nested event loops
@@ -45,6 +48,11 @@ def cleanup_on_exit():
 atexit.register(cleanup_on_exit)
 
 # ==================== END CLEANUP HANDLERS ====================
+
+# -------------------- ENSURE DIRECTORIES EXIST --------------------
+# Create necessary directories
+os.makedirs("data", exist_ok=True)  # Changed from uploaded_pdfs to data
+setup_vector_data()  # Create vector_data directory
 
 # -------------------- DATABASE SETUP --------------------
 db = ChatDatabase(DB_URI)
@@ -105,13 +113,148 @@ if "chat_history" not in st.session_state:
         for msg in messages
     ]
 
+# Initialize uploaded PDFs tracking
+if "uploaded_pdfs" not in st.session_state:
+    st.session_state.uploaded_pdfs = []
+
+# Initialize PDF upload status
+if "pdf_upload_status" not in st.session_state:
+    st.session_state.pdf_upload_status = None
+
 # -------------------- HELPER FUNCTIONS --------------------
+def save_uploaded_file(uploaded_file):
+    """
+    Save the uploaded PDF file to the data directory
+    
+    Args:
+        uploaded_file: Streamlit UploadedFile object
+        
+    Returns:
+        str: Path to the saved file
+    """
+    try:
+        # Create a unique filename to avoid conflicts
+        file_path = os.path.join("data", uploaded_file.name)
+        
+        # Save the file
+        with open(file_path, "wb") as f:
+            f.write(uploaded_file.getbuffer())
+        
+        return file_path
+    except Exception as e:
+        st.error(f"Error saving file: {str(e)}")
+        return None
+
+
+def process_uploaded_pdf(uploaded_file):
+    """
+    Process the uploaded PDF and prepare it for querying
+    This will save the PDF and trigger vector store creation
+    
+    Args:
+        uploaded_file: Streamlit UploadedFile object
+        
+    Returns:
+        dict: Status and file path information
+    """
+    try:
+        # Save the file
+        file_path = save_uploaded_file(uploaded_file)
+        
+        if file_path:
+            # Import here to avoid circular imports
+            from book_tool import get_retriever
+            
+            # Trigger vector store creation by calling get_retriever
+            # This will create the FAISS index if it doesn't exist
+            try:
+                st.info(f"Creating vector store for {uploaded_file.name}...")
+                retriever = get_retriever(file_path)
+                st.success("Vector store created successfully!")
+            except Exception as e:
+                st.warning(f"Vector store creation will happen on first query: {str(e)}")
+            
+            # Add to session state
+            if file_path not in st.session_state.uploaded_pdfs:
+                st.session_state.uploaded_pdfs.append(file_path)
+            
+            return {
+                "success": True,
+                "file_path": file_path,
+                "file_name": uploaded_file.name,
+                "message": f"✅ Successfully uploaded: {uploaded_file.name}"
+            }
+        else:
+            return {
+                "success": False,
+                "message": "❌ Failed to save file"
+            }
+    except Exception as e:
+        return {
+            "success": False,
+            "message": f"❌ Error processing file: {str(e)}"
+        }
+
+
+def get_available_pdfs():
+    """Get list of all available PDF files"""
+    available_pdfs = []
+    
+    # Check data directory
+    if os.path.exists("data"):
+        for filename in os.listdir("data"):
+            if filename.endswith(".pdf"):
+                file_path = os.path.join("data", filename)
+                available_pdfs.append({
+                    "name": filename,
+                    "path": file_path,
+                    "size": os.path.getsize(file_path)
+                })
+    
+    # Also check current directory for any PDFs (like software_development.pdf)
+    for filename in os.listdir("."):
+        if filename.endswith(".pdf"):
+            file_path = filename
+            if file_path not in [pdf["path"] for pdf in available_pdfs]:
+                available_pdfs.append({
+                    "name": filename,
+                    "path": file_path,
+                    "size": os.path.getsize(file_path)
+                })
+    
+    return available_pdfs
+
+
+def delete_pdf(file_path):
+    """Delete a PDF file"""
+    try:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            
+            # Also remove the vector store for this PDF
+            file_name = os.path.basename(file_path).replace('.pdf', '').replace(' ', '_')
+            vector_db_dir = os.path.join("vector_data", file_name)
+            if os.path.exists(vector_db_dir):
+                shutil.rmtree(vector_db_dir)
+            
+            # Remove from session state
+            if file_path in st.session_state.uploaded_pdfs:
+                st.session_state.uploaded_pdfs.remove(file_path)
+            
+            return True
+        return False
+    except Exception as e:
+        st.error(f"Error deleting file: {str(e)}")
+        return False
+
+
 def create_new_chat():
     """Create a new chat and switch to it"""
     new_thread_id = str(uuid.uuid4())
     db.create_thread(new_thread_id)
     st.session_state.thread_id = new_thread_id
     st.session_state.chat_history = []
+
 
 def switch_to_chat(thread_id):
     """Switch to an existing chat"""
@@ -122,6 +265,7 @@ def switch_to_chat(thread_id):
         for msg in messages
     ]
 
+
 def delete_chat(thread_id):
     """Delete a chat thread"""
     db.delete_thread(thread_id)
@@ -129,9 +273,64 @@ def delete_chat(thread_id):
     if thread_id == st.session_state.thread_id:
         create_new_chat()
 
+
 # -------------------- SIDEBAR --------------------
 st.sidebar.title("⚙️ Chat Controls")
 
+# -------------------- PDF UPLOAD SECTION --------------------
+st.sidebar.header("📄 Document Management")
+
+# File uploader
+uploaded_file = st.sidebar.file_uploader(
+    "Upload PDF Document",
+    type=['pdf'],
+    help="Upload a PDF file to ask questions about it"
+)
+
+if uploaded_file is not None:
+    if st.sidebar.button("📤 Process & Upload", use_container_width=True):
+        with st.spinner("Processing PDF..."):
+            result = process_uploaded_pdf(uploaded_file)
+            st.session_state.pdf_upload_status = result
+            if result["success"]:
+                st.rerun()
+
+# Show upload status
+if st.session_state.pdf_upload_status:
+    if st.session_state.pdf_upload_status["success"]:
+        st.sidebar.success(st.session_state.pdf_upload_status["message"])
+    else:
+        st.sidebar.error(st.session_state.pdf_upload_status["message"])
+    
+    # Clear status after showing
+    if st.sidebar.button("Clear Status"):
+        st.session_state.pdf_upload_status = None
+        st.rerun()
+
+# Show available PDFs
+available_pdfs = get_available_pdfs()
+if available_pdfs:
+    st.sidebar.subheader(f"📚 Available Documents ({len(available_pdfs)})")
+    
+    for pdf in available_pdfs:
+        col1, col2 = st.sidebar.columns([4, 1])
+        
+        with col1:
+            size_mb = pdf['size'] / (1024 * 1024)
+            st.sidebar.text(f"📄 {pdf['name']}")
+            st.sidebar.caption(f"Size: {size_mb:.2f} MB")
+        
+        with col2:
+            if st.sidebar.button("🗑️", key=f"delete_pdf_{pdf['name']}", help="Delete PDF"):
+                if delete_pdf(pdf['path']):
+                    st.sidebar.success(f"Deleted {pdf['name']}")
+                    st.rerun()
+else:
+    st.sidebar.info("No documents uploaded yet")
+
+st.sidebar.divider()
+
+# -------------------- MEMORY STRATEGY SECTION --------------------
 # Strategy selector
 st.sidebar.subheader("Memory Strategy")
 strategy_options = {
@@ -208,6 +407,7 @@ if st.session_state.chat_history:
 
 st.sidebar.divider()
 
+# -------------------- CHAT MANAGEMENT SECTION --------------------
 # New chat button
 if st.sidebar.button("🆕 New Chat", use_container_width=True):
     create_new_chat()
@@ -255,6 +455,22 @@ st.sidebar.caption(f"Active Thread:\n{st.session_state.thread_id[:16]}...")
 
 # -------------------- MAIN CHAT UI --------------------
 st.title("🤖 Arya Chatbot")
+
+# Show helpful info about PDF querying
+if available_pdfs:
+    with st.expander("💡 How to ask questions about your documents"):
+        st.markdown("""
+        **To query your uploaded PDF documents:**
+        
+        Simply ask questions naturally! The AI will automatically search through your documents when relevant.
+        
+        **Examples:**
+        - "What does the document say about [topic]?"
+        - "Summarize the main points from [filename]"
+        - "Explain [concept] from the PDF"
+        
+        **Note:** The book_tool will automatically be used when your question relates to document content.
+        """)
 
 # Display current chat history (FULL HISTORY for UI)
 for msg in st.session_state.chat_history:
@@ -328,7 +544,15 @@ if prompt := st.chat_input("Type your message..."):
                                 
                                 # Update status for tool call
                                 st.write(f"🔧 **Tool Called:** `{tool_name}`")
-                                st.json(tool_args)
+                                
+                                # Show PDF file being queried if it's book_tool
+                                if tool_name == "book_tool":
+                                    file_path = tool_args.get('file_path', 'N/A')
+                                    query = tool_args.get('query', 'N/A')
+                                    st.write(f"📄 **Document:** {file_path}")
+                                    st.write(f"🔍 **Query:** {query}")
+                                else:
+                                    st.json(tool_args)
                                 
                                 tool_calls_made.append({
                                     'name': tool_name,
@@ -340,8 +564,13 @@ if prompt := st.chat_input("Type your message..."):
                             st.write(f"✅ **Tool Result Received**")
                             tool_output = str(chunk.content)
                             tool_outputs.append(tool_output)
-                            with st.expander("View tool output"):
-                                st.text(tool_output[:500])
+                            
+                            # For book_tool, show a preview of the retrieved context
+                            with st.expander("View retrieved information"):
+                                if len(tool_output) > 500:
+                                    st.text(tool_output[:500] + "...")
+                                else:
+                                    st.text(tool_output)
                             continue  # Skip adding tool content to response
                         
                         # Only collect content from AIMessage chunks (not ToolMessage)
@@ -385,5 +614,4 @@ if prompt := st.chat_input("Type your message..."):
         st.session_state.chat_history.append(error_response)
         # Save error to database
         db.add_message(st.session_state.thread_id, "assistant", f"Error: {str(e)}")
-    
 
