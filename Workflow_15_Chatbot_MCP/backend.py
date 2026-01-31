@@ -36,35 +36,34 @@ llm = ChatOllama(
 )
 
 SERVER = {
-            "Calculator": {
-                "command": "uv",
-                "args": [
-                    "--directory",
-                    "D:\\Study\\LangGraph\\Workflow_16_Chatbot_MCP\\MCP-Servers\\Calculator",
-                    "run", "--with", "fastmcp", "fastmcp", "run", "main.py"
-                ],
-                "transport": "stdio"
-            },
-            "StockServer": {
-                "command": "uv",
-                "args": [
-                    "--directory",
-                    "D:\\Study\\LangGraph\\Workflow_16_Chatbot_MCP\\MCP-Servers\\StockPrice",
-                    "run", "--with", "fastmcp", "fastmcp", "run", "main.py"
-                ],
-                "transport": "stdio"
-            },
-            "ExpenseTracker": {
-                "command": "uv",
-                "args": [
-                    "--directory",
-                    "D:\\Study\\LangGraph\\Workflow_16_Chatbot_MCP\\MCP-Servers\\ExpenseTracker",
-                    "run", "--with", "fastmcp", "fastmcp", "run", "main.py"
-                ],
-                "transport": "stdio"
-            }
-        }
-
+    "Calculator": {
+        "command": "uv",
+        "args": [
+            "--directory",
+            "D:\\Study\\LangGraph\\Workflow_15_Chatbot_MCP\\MCP-Servers\\Calculator",
+            "run", "--with", "fastmcp", "fastmcp", "run", "main.py"
+        ],
+        "transport": "stdio"
+    },
+    "StockServer": {
+        "command": "uv",
+        "args": [
+            "--directory",
+            "D:\\Study\\LangGraph\\Workflow_15_Chatbot_MCP\\MCP-Servers\\StockPrice",
+            "run", "--with", "fastmcp", "fastmcp", "run", "main.py"
+        ],
+        "transport": "stdio"
+    },
+    "ExpenseTracker": {
+        "command": "uv",
+        "args": [
+            "--directory",
+            "D:\\Study\\LangGraph\\Workflow_15_Chatbot_MCP\\MCP-Servers\\ExpenseTracker",
+            "run", "--with", "fastmcp", "fastmcp", "run", "main.py"
+        ],
+        "transport": "stdio"
+    }
+}
 
 async def build_graph():
     # ------------------- TOOL --------------------
