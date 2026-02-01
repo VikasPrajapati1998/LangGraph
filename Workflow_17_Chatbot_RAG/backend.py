@@ -115,12 +115,13 @@ async def build_graph():
     # Create async connection pool for AsyncPostgresSaver
     pool = AsyncConnectionPool(
         conninfo=DB_URI,
+        min_size=1,
         max_size=20,
         kwargs={"autocommit": True, "prepare_threshold": 0},
         open=False
     )
-    
-    await pool.open()
+
+    await pool.open(wait=True, timeout=60)
     
     checkpointer = AsyncPostgresSaver(pool)
     await checkpointer.setup()

@@ -21,9 +21,9 @@ warnings.filterwarnings('ignore', message='coroutine.*was never awaited')
 warnings.filterwarnings('ignore', category=ResourceWarning)
 warnings.filterwarnings('ignore', category=DeprecationWarning)
 
-# Suppress asyncio task destruction warnings
-import logging
-logging.getLogger('asyncio').setLevel(logging.ERROR)
+import sys
+if sys.platform.startswith('win'):
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 # ==================== CLEANUP HANDLERS ====================
 # Simplified cleanup to avoid recursion issues
@@ -51,20 +51,18 @@ atexit.register(cleanup_on_exit)
 
 # -------------------- ENSURE DIRECTORIES EXIST --------------------
 # Create necessary directories
-os.makedirs("data", exist_ok=True)  # Changed from uploaded_pdfs to data
+os.makedirs("data", exist_ok=True)
 setup_vector_data()  # Create vector_data directory
 
 # -------------------- DATABASE SETUP --------------------
 db = ChatDatabase(DB_URI)
 
 # -------------------- EVENT LOOP SETUP --------------------
-# Get or create event loop for async operations
-if "event_loop" not in st.session_state:
-    try:
-        st.session_state.event_loop = asyncio.get_event_loop()
-    except RuntimeError:
-        st.session_state.event_loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(st.session_state.event_loop)
+# Create a fresh SelectorEventLoop every time so psycopg never sees a ProactorEventLoop
+if "event_loop" not in st.session_state or st.session_state.event_loop.is_closed():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    st.session_state.event_loop = loop
 
 # -------------------- CHATBOT INITIALIZATION --------------------
 # Initialize chatbot asynchronously using the same event loop
@@ -113,9 +111,13 @@ if "chat_history" not in st.session_state:
         for msg in messages
     ]
 
-# Initialize uploaded PDFs tracking
+# Initialize uploaded PDFs tracking with metadata
 if "uploaded_pdfs" not in st.session_state:
     st.session_state.uploaded_pdfs = []
+
+# Track processed PDF files to avoid re-processing
+if "processed_pdf_names" not in st.session_state:
+    st.session_state.processed_pdf_names = set()
 
 # Initialize PDF upload status
 if "pdf_upload_status" not in st.session_state:
@@ -148,8 +150,7 @@ def save_uploaded_file(uploaded_file):
 
 def process_uploaded_pdf(uploaded_file):
     """
-    Process the uploaded PDF and prepare it for querying
-    This will save the PDF and trigger vector store creation
+    Process the uploaded PDF and IMMEDIATELY create vector store
     
     Args:
         uploaded_file: Streamlit UploadedFile object
@@ -158,38 +159,58 @@ def process_uploaded_pdf(uploaded_file):
         dict: Status and file path information
     """
     try:
-        # Save the file
+        # Save the file first
         file_path = save_uploaded_file(uploaded_file)
         
-        if file_path:
-            # Import here to avoid circular imports
-            from book_tool import get_retriever
+        if not file_path:
+            return {
+                "success": False,
+                "message": "❌ Failed to save file"
+            }
+        
+        # Import the helper function from book_tool
+        from book_tool import create_vector_store_for_pdf
+        
+        # IMMEDIATELY create vector store (don't wait for first query)
+        print(f"\n🔄 Processing {uploaded_file.name}...")
+        vector_result = create_vector_store_for_pdf(file_path)
+        
+        if vector_result["success"]:
+            # Extract PDF name (without extension) for easy reference
+            pdf_name = os.path.basename(file_path).replace('.pdf', '').replace('.PDF', '')
             
-            # Trigger vector store creation by calling get_retriever
-            # This will create the FAISS index if it doesn't exist
-            try:
-                st.info(f"Creating vector store for {uploaded_file.name}...")
-                retriever = get_retriever(file_path)
-                st.success("Vector store created successfully!")
-            except Exception as e:
-                st.warning(f"Vector store creation will happen on first query: {str(e)}")
+            # Store PDF info in session state
+            pdf_info = {
+                "name": uploaded_file.name,
+                "pdf_name": pdf_name,
+                "path": file_path,
+                "vector_store": vector_result["vector_store_name"],
+                "size": uploaded_file.size,
+                "ready": True
+            }
             
-            # Add to session state
-            if file_path not in st.session_state.uploaded_pdfs:
-                st.session_state.uploaded_pdfs.append(file_path)
+            # Add to uploaded PDFs list if not already there
+            if not any(pdf["name"] == uploaded_file.name for pdf in st.session_state.uploaded_pdfs):
+                st.session_state.uploaded_pdfs.append(pdf_info)
             
             return {
                 "success": True,
                 "file_path": file_path,
                 "file_name": uploaded_file.name,
-                "message": f"✅ Successfully uploaded: {uploaded_file.name}"
+                "pdf_name": pdf_name,
+                "vector_store": vector_result["vector_store_name"],
+                "message": f"✅ {uploaded_file.name} is ready for querying!"
             }
         else:
             return {
                 "success": False,
-                "message": "❌ Failed to save file"
+                "message": f"❌ Vector store creation failed: {vector_result.get('error', 'Unknown error')}"
             }
+            
     except Exception as e:
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"Error processing PDF: {error_details}")
         return {
             "success": False,
             "message": f"❌ Error processing file: {str(e)}"
@@ -197,49 +218,24 @@ def process_uploaded_pdf(uploaded_file):
 
 
 def get_available_pdfs():
-    """Get list of all available PDF files"""
-    available_pdfs = []
-    
-    # Check data directory
-    if os.path.exists("data"):
-        for filename in os.listdir("data"):
-            if filename.endswith(".pdf"):
-                file_path = os.path.join("data", filename)
-                available_pdfs.append({
-                    "name": filename,
-                    "path": file_path,
-                    "size": os.path.getsize(file_path)
-                })
-    
-    # Also check current directory for any PDFs (like software_development.pdf)
-    for filename in os.listdir("."):
-        if filename.endswith(".pdf"):
-            file_path = filename
-            if file_path not in [pdf["path"] for pdf in available_pdfs]:
-                available_pdfs.append({
-                    "name": filename,
-                    "path": file_path,
-                    "size": os.path.getsize(file_path)
-                })
-    
-    return available_pdfs
+    """Get list of all available PDF files from session state"""
+    return st.session_state.uploaded_pdfs
 
 
 def delete_pdf(file_path):
-    """Delete a PDF file"""
+    """Delete a PDF file and its vector store"""
     try:
         if os.path.exists(file_path):
             os.remove(file_path)
             
             # Also remove the vector store for this PDF
-            file_name = os.path.basename(file_path).replace('.pdf', '').replace(' ', '_')
-            vector_db_dir = os.path.join("vector_data", file_name)
+            file_name = os.path.basename(file_path).replace('.pdf', '').replace('.PDF', '').replace(' ', '_')
+            # Clean the name (replace special chars with underscore)
+            clean_name = ''.join(c if c.isalnum() or c == '_' else '_' for c in file_name)
+            vector_db_dir = os.path.join("vector_data", clean_name)
+            
             if os.path.exists(vector_db_dir):
                 shutil.rmtree(vector_db_dir)
-            
-            # Remove from session state
-            if file_path in st.session_state.uploaded_pdfs:
-                st.session_state.uploaded_pdfs.remove(file_path)
             
             return True
         return False
@@ -280,53 +276,68 @@ st.sidebar.title("⚙️ Chat Controls")
 # -------------------- PDF UPLOAD SECTION --------------------
 st.sidebar.header("📄 Document Management")
 
-# File uploader
+# File uploader with automatic processing
 uploaded_file = st.sidebar.file_uploader(
     "Upload PDF Document",
     type=['pdf'],
-    help="Upload a PDF file to ask questions about it"
+    help="Upload a PDF - it will be processed automatically!",
+    key="pdf_uploader"
 )
 
+# AUTOMATIC PROCESSING when file is uploaded
 if uploaded_file is not None:
-    if st.sidebar.button("📤 Process & Upload", use_container_width=True):
-        with st.spinner("Processing PDF..."):
+    # Check if this PDF has already been processed
+    if uploaded_file.name not in st.session_state.processed_pdf_names:
+        with st.spinner(f"🔄 Processing {uploaded_file.name}..."):
             result = process_uploaded_pdf(uploaded_file)
             st.session_state.pdf_upload_status = result
+            
             if result["success"]:
+                # Mark as processed
+                st.session_state.processed_pdf_names.add(uploaded_file.name)
+                st.sidebar.success(result["message"])
+                st.balloons()  # Celebrate!
+                # Rerun to update UI
                 st.rerun()
-
-# Show upload status
-if st.session_state.pdf_upload_status:
-    if st.session_state.pdf_upload_status["success"]:
-        st.sidebar.success(st.session_state.pdf_upload_status["message"])
+            else:
+                st.sidebar.error(result["message"])
     else:
-        st.sidebar.error(st.session_state.pdf_upload_status["message"])
-    
-    # Clear status after showing
-    if st.sidebar.button("Clear Status"):
-        st.session_state.pdf_upload_status = None
-        st.rerun()
+        st.sidebar.info(f"✅ {uploaded_file.name} already processed")
 
-# Show available PDFs
+# Show upload status if available
+if st.session_state.pdf_upload_status and st.session_state.pdf_upload_status["success"]:
+    with st.sidebar.expander("📊 Last Upload Details", expanded=False):
+        st.write(f"**File:** {st.session_state.pdf_upload_status['file_name']}")
+        st.write(f"**PDF Name:** `{st.session_state.pdf_upload_status.get('pdf_name', 'N/A')}`")
+        st.write(f"**Vector Store:** `{st.session_state.pdf_upload_status.get('vector_store', 'N/A')}`")
+        if st.button("Clear Upload Status"):
+            st.session_state.pdf_upload_status = None
+            st.rerun()
+
+# Show available PDFs with enhanced information
 available_pdfs = get_available_pdfs()
 if available_pdfs:
     st.sidebar.subheader(f"📚 Available Documents ({len(available_pdfs)})")
     
     for pdf in available_pdfs:
-        col1, col2 = st.sidebar.columns([4, 1])
-        
-        with col1:
-            size_mb = pdf['size'] / (1024 * 1024)
-            st.sidebar.text(f"📄 {pdf['name']}")
-            st.sidebar.caption(f"Size: {size_mb:.2f} MB")
-        
-        with col2:
-            if st.sidebar.button("🗑️", key=f"delete_pdf_{pdf['name']}", help="Delete PDF"):
+        with st.sidebar.expander(f"📄 {pdf['name']}", expanded=False):
+            st.write(f"**Query name:** `{pdf['pdf_name']}`")
+            st.write(f"**Size:** {pdf['size'] / (1024*1024):.2f} MB")
+            st.write(f"**Vector Store:** `{pdf['vector_store']}`")
+            st.write(f"**Status:** {'✅ Ready' if pdf['ready'] else '⏳ Processing'}")
+            
+            # Delete button for this PDF
+            if st.button("🗑️ Delete", key=f"delete_pdf_{pdf['name']}", use_container_width=True):
                 if delete_pdf(pdf['path']):
-                    st.sidebar.success(f"Deleted {pdf['name']}")
+                    # Remove from session state
+                    st.session_state.uploaded_pdfs = [
+                        p for p in st.session_state.uploaded_pdfs if p['name'] != pdf['name']
+                    ]
+                    st.session_state.processed_pdf_names.discard(pdf['name'])
+                    st.success(f"Deleted {pdf['name']}")
                     st.rerun()
 else:
-    st.sidebar.info("No documents uploaded yet")
+    st.sidebar.info("📭 No documents uploaded yet")
 
 st.sidebar.divider()
 
@@ -458,18 +469,44 @@ st.title("🤖 Arya Chatbot")
 
 # Show helpful info about PDF querying
 if available_pdfs:
-    with st.expander("💡 How to ask questions about your documents"):
+    with st.expander("💡 How to ask questions about your documents", expanded=False):
         st.markdown("""
-        **To query your uploaded PDF documents:**
+        **To query your uploaded PDF documents, simply mention the PDF name in your question!**
         
-        Simply ask questions naturally! The AI will automatically search through your documents when relevant.
+        ### 📝 Query Examples:
+        """)
         
-        **Examples:**
-        - "What does the document say about [topic]?"
-        - "Summarize the main points from [filename]"
-        - "Explain [concept] from the PDF"
+        # Show examples with actual uploaded PDF names
+        for i, pdf in enumerate(available_pdfs[:3], 1):
+            pdf_name = pdf['pdf_name']
+            st.markdown(f"""
+            **{i}. For "{pdf['name']}":**
+            - "From **{pdf_name}**, explain [topic]"
+            - "What does **{pdf_name}** say about [subject]?"
+            - "Ask **{pdf_name}** to summarize [section]"
+            """)
         
-        **Note:** The book_tool will automatically be used when your question relates to document content.
+        st.markdown("""
+        ---
+        ### 📚 Your Available PDFs:
+        """)
+        
+        for pdf in available_pdfs:
+            st.markdown(f"- 📄 **{pdf['name']}** → Use name: `{pdf['pdf_name']}`")
+        
+        st.markdown("""
+        ---
+        ### 🎯 How It Works:
+        1. **Mention the PDF name** in your question
+        2. **AI automatically detects** which PDF to query
+        3. **Gets relevant information** from that specific document
+        4. **Returns answer** based on the document content
+        
+        ### ⚡ Pro Tips:
+        - You don't need to include `.pdf` extension
+        - Case doesn't matter: "mybook" = "MyBook" = "myBook"
+        - The AI will extract the PDF name automatically
+        - You can query multiple PDFs in one conversation
         """)
 
 # Display current chat history (FULL HISTORY for UI)
@@ -547,9 +584,9 @@ if prompt := st.chat_input("Type your message..."):
                                 
                                 # Show PDF file being queried if it's book_tool
                                 if tool_name == "book_tool":
-                                    file_path = tool_args.get('file_path', 'N/A')
+                                    pdf_name = tool_args.get('pdf_name', 'N/A')
                                     query = tool_args.get('query', 'N/A')
-                                    st.write(f"📄 **Document:** {file_path}")
+                                    st.write(f"📄 **PDF Name:** {pdf_name}")
                                     st.write(f"🔍 **Query:** {query}")
                                 else:
                                     st.json(tool_args)
@@ -614,4 +651,3 @@ if prompt := st.chat_input("Type your message..."):
         st.session_state.chat_history.append(error_response)
         # Save error to database
         db.add_message(st.session_state.thread_id, "assistant", f"Error: {str(e)}")
-
