@@ -93,7 +93,6 @@ def get_retriever(file_path: str):
 
     # ========== LOGIC ==========
     if not os.path.exists(vector_db_dir) or not os.listdir(vector_db_dir):
-        print(f"Creating vector store for {file_path}...")
         
         # Ensure the PDF file exists
         if not os.path.exists(file_path):
@@ -105,8 +104,6 @@ def get_retriever(file_path: str):
         
         if not docs:
             raise ValueError(f"No content extracted from PDF: {file_path}")
-        
-        print(f"   Loaded {len(docs)} pages from PDF")
 
         # Split documents
         splitter = RecursiveCharacterTextSplitter(
@@ -114,7 +111,6 @@ def get_retriever(file_path: str):
             chunk_overlap=200
         )
         chunks = splitter.split_documents(docs)
-        print(f"   Split into {len(chunks)} chunks")
 
         # Create FAISS vector store
         vector_store = FAISS.from_documents(
@@ -125,16 +121,13 @@ def get_retriever(file_path: str):
         # Save locally
         os.makedirs(vector_db_dir, exist_ok=True)
         vector_store.save_local(vector_db_dir)
-        print(f"   ✅ Vector store saved to {vector_db_dir}")
         
     else:
-        print(f"Loading existing vector store from {vector_db_dir}...")
         vector_store = FAISS.load_local(
             folder_path=vector_db_dir,
             embeddings=embedding,
             allow_dangerous_deserialization=True
         )
-        print(f"   ✅ Vector store loaded successfully")
 
     # ========== RETRIEVER ==========
     retriever = vector_store.as_retriever(
@@ -186,27 +179,17 @@ def book_tool(query: str, pdf_name: str):
     try:
         # Ensure directories exist
         setup()
-        
-        print(f"\n{'='*60}")
-        print(f"📖 BOOK TOOL CALLED")
-        print(f"{'='*60}")
-        print(f"📝 Query: {query}")
-        print(f"📄 PDF Name: {pdf_name}")
-        
-        # Find the PDF file by name
         try:
             file_path = find_pdf_by_name(pdf_name)
-            print(f"✅ Found PDF: {file_path}")
         except FileNotFoundError as e:
             available_pdfs = list_available_pdfs()
             error_msg = (
-                f"❌ PDF '{pdf_name}' not found.\n\n"
+                f"PDF '{pdf_name}' not found.\n\n"
                 f"**Available PDFs:**\n"
                 + "\n".join([f"  • {pdf}" for pdf in available_pdfs])
                 if available_pdfs else
-                f"❌ PDF '{pdf_name}' not found. No PDFs available in data/ folder."
+                f"PDF '{pdf_name}' not found. No PDFs available in data/ folder."
             )
-            print(error_msg)
             return {"error": error_msg, "available_pdfs": available_pdfs}
         
         # Get retriever for the specific file
@@ -214,9 +197,6 @@ def book_tool(query: str, pdf_name: str):
         
         # Retrieve relevant documents
         docs = retriever.invoke(query)
-        
-        print(f"✅ Found {len(docs)} relevant chunks")
-        print(f"{'='*60}\n")
         
         # Format the context
         context = "\n\n---\n\n".join(d.page_content for d in docs)
@@ -232,12 +212,10 @@ def book_tool(query: str, pdf_name: str):
         
     except FileNotFoundError as e:
         error_msg = str(e)
-        print(f"❌ {error_msg}")
         return {"error": error_msg}
         
     except Exception as e:
         error_msg = f"Book Tool Error: {str(e)}"
-        print(f"❌ {error_msg}")
         return {"error": error_msg}
 
 
@@ -254,18 +232,11 @@ def create_vector_store_for_pdf(file_path: str) -> dict:
     """
     try:
         setup()
-        print(f"\n{'='*60}")
-        print(f"🔄 CREATING VECTOR STORE")
-        print(f"{'='*60}")
-        print(f"📄 File: {file_path}")
-        
         # Create the retriever (this will create the vector store)
         retriever = get_retriever(file_path)
         
         vector_store_name = get_vector_store_name(file_path)
         vector_db_dir = os.path.join("vector_data", vector_store_name)
-        
-        print(f"{'='*60}\n")
         
         return {
             "success": True,
@@ -277,7 +248,6 @@ def create_vector_store_for_pdf(file_path: str) -> dict:
         
     except Exception as e:
         error_msg = f"Failed to create vector store: {str(e)}"
-        print(f"❌ {error_msg}")
         return {
             "success": False,
             "error": error_msg
@@ -288,44 +258,17 @@ def create_vector_store_for_pdf(file_path: str) -> dict:
 if __name__ == "__main__":
     # Example usage
     setup()
-    
-    print("=" * 60)
-    print("TESTING BOOK TOOL")
-    print("=" * 60)
-    
-    # Test 1: List available PDFs
-    print("\n1. Listing available PDFs:")
     available = list_available_pdfs()
-    for pdf in available:
-        print(f"   • {pdf}")
     
     if available:
         # Test 2: Query a PDF by name
         test_pdf = available[0].replace('.pdf', '')
         query = "What are the main topics covered?"
         
-        print(f"\n2. Testing query with PDF: {test_pdf}")
-        print(f"   Query: {query}")
-        
         result = book_tool.invoke({
             "query": query,
             "pdf_name": test_pdf
         })
-        
-        print("\n" + "=" * 60)
-        print("RESULT:")
-        print("=" * 60)
-        
-        if "error" in result:
-            print(f"❌ Error: {result['error']}")
-        else:
-            print(f"✅ Query: {result['query']}")
-            print(f"✅ PDF: {result['pdf_name']}")
-            print(f"✅ Found {result['num_chunks']} relevant chunks")
-            print(f"\nContext preview:\n{result['context'][:300]}...")
-    else:
-        print("\n❌ No PDFs found in data/ folder")
-        print("💡 Upload a PDF first!")
 
 
 __all__ = [

@@ -74,7 +74,6 @@ class ChatDatabase:
                     )
             return True
         except Exception as e:
-            print(f"Error creating thread: {e}")
             return False
     
     def get_all_threads(self) -> List[Dict]:
@@ -89,7 +88,6 @@ class ChatDatabase:
                     """)
                     return cur.fetchall()
         except Exception as e:
-            print(f"Error fetching threads: {e}")
             return []
     
     def get_thread_messages(self, thread_id: str) -> List[Dict]:
@@ -105,7 +103,6 @@ class ChatDatabase:
                     """, (thread_id,))
                     return cur.fetchall()
         except Exception as e:
-            print(f"Error fetching messages for thread {thread_id}: {e}")
             return []
     
     def add_message(self, thread_id: str, role: str, content: str) -> bool:
@@ -144,7 +141,6 @@ class ChatDatabase:
                         """, (title, thread_id))
             return True
         except Exception as e:
-            print(f"Error adding message: {e}")
             return False
     
     def delete_thread(self, thread_id: str) -> bool:
@@ -155,7 +151,6 @@ class ChatDatabase:
                     cur.execute("DELETE FROM chat_threads WHERE thread_id = %s", (thread_id,))
             return True
         except Exception as e:
-            print(f"Error deleting thread: {e}")
             return False
     
     def get_thread_title(self, thread_id: str) -> Optional[str]:
@@ -167,7 +162,6 @@ class ChatDatabase:
                     result = cur.fetchone()
                     return result['title'] if result else None
         except Exception as e:
-            print(f"Error fetching thread title: {e}")
             return None
     
     # ==================== SUMMARY METHODS ====================
@@ -190,7 +184,6 @@ class ChatDatabase:
                     """, (thread_id, summary, messages_covered, last_message_order, datetime.now()))
             return True
         except Exception as e:
-            print(f"Error saving summary: {e}")
             return False
     
     def get_summary(self, thread_id: str) -> Optional[Dict]:
@@ -206,7 +199,6 @@ class ChatDatabase:
                     result = cur.fetchone()
                     return result if result else None
         except Exception as e:
-            print(f"Error fetching summary: {e}")
             return None
     
     def delete_summary(self, thread_id: str) -> bool:
@@ -217,5 +209,4 @@ class ChatDatabase:
                     cur.execute("DELETE FROM conversation_summaries WHERE thread_id = %s", (thread_id,))
             return True
         except Exception as e:
-            print(f"Error deleting summary: {e}")
             return False

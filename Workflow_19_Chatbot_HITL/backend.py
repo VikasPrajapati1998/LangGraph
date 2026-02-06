@@ -163,19 +163,6 @@ async def test_chatbot():
     
     # Invoke the chatbot
     result = await chatbot.ainvoke(initial_input, config=config)
-    
-    # Check for HITL interrupt from purchase
-    interrupts = result.get("__interrupt__", [])
-    
-    if interrupts:
-        prompt_to_human = interrupts[0].value
-        print(f"HITL: {prompt_to_human}")
-        decision = input("Your decision: ").strip().lower()
-        
-        result = await chatbot.ainvoke(
-            Command(resume=decision),
-            config={"configurable": {"thread_id": thread_id}}
-        )
 
     messages = result["messages"][-1].content
     print(messages)
