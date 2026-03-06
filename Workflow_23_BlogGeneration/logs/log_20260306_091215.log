@@ -1,0 +1,12 @@
+2026-03-06 09:12:15 | INFO     | BlogWriter | Logger initialised. Log file: logs\log_20260306_091215.log
+2026-03-06 09:12:15 | DEBUG    | BlogWriter | [SETUP] Initialising LLMs...
+2026-03-06 09:12:15 | DEBUG    | BlogWriter | [SETUP] LLMs ready. blog_llm=llama3.2:3b | decision_llm=llama3.2:3b
+2026-03-06 09:12:15 | DEBUG    | BlogWriter | [SETUP] Building LangGraph state graph...
+2026-03-06 09:12:15 | DEBUG    | BlogWriter | [SETUP] LangGraph compiled successfully.
+2026-03-06 09:12:15 | INFO     | BlogWriter | =================================================================
+2026-03-06 09:12:15 | INFO     | BlogWriter | [RUN] Blog generation pipeline STARTING
+2026-03-06 09:12:15 | INFO     | BlogWriter | [RUN] Topic : 'Write a blog on the Evolution of ChatGPT from 2022 to 2026'
+2026-03-06 09:12:15 | INFO     | BlogWriter | =================================================================
+2026-03-06 09:12:15 | INFO     | BlogWriter | [ROUTER] ── START ──────────────────────────────────────
+2026-03-06 09:12:15 | INFO     | BlogWriter | [ROUTER] Topic received: 'Write a blog on the Evolution of ChatGPT from 2022 to 2026'
+2026-03-06 09:12:15 | DEBUG    | BlogWriter | [ROUTER] Invoking decision LLM with structured output (RouterDecision)...

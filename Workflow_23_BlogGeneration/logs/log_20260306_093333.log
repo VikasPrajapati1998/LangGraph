@@ -1,0 +1,155 @@
+2026-03-06 09:33:33 | INFO     | BlogWriter | Logger initialised. Log file: logs\log_20260306_093333.log
+2026-03-06 09:33:33 | DEBUG    | BlogWriter | [SETUP] Initialising LLMs...
+2026-03-06 09:33:34 | DEBUG    | BlogWriter | [SETUP] LLMs ready. blog_llm=llama3.2:3b | decision_llm=llama3.2:3b
+2026-03-06 09:33:34 | DEBUG    | BlogWriter | [SETUP] Building LangGraph state graph...
+2026-03-06 09:33:34 | DEBUG    | BlogWriter | [SETUP] LangGraph compiled successfully.
+2026-03-06 09:33:34 | INFO     | BlogWriter | =================================================================
+2026-03-06 09:33:34 | INFO     | BlogWriter | [RUN] Blog generation pipeline STARTING
+2026-03-06 09:33:34 | INFO     | BlogWriter | [RUN] Topic : 'Write a blog on the Future of Quantum AI. The capability of Artificial Intellegence using the power of Quantum Computing.'
+2026-03-06 09:33:34 | INFO     | BlogWriter | =================================================================
+2026-03-06 09:33:34 | INFO     | BlogWriter | [ROUTER] ── START ──────────────────────────────────────
+2026-03-06 09:33:34 | INFO     | BlogWriter | [ROUTER] Topic received: 'Write a blog on the Future of Quantum AI. The capability of Artificial Intellegence using the power of Quantum Computing.'
+2026-03-06 09:33:34 | DEBUG    | BlogWriter | [ROUTER] Invoking decision LLM with structured output (RouterDecision)...
+2026-03-06 09:33:42 | INFO     | BlogWriter | [ROUTER] Decision => mode='open_book' | needs_research=True | num_queries=3
+2026-03-06 09:33:42 | DEBUG    | BlogWriter | [ROUTER]   Query 1: Quantum AI future implications
+2026-03-06 09:33:42 | DEBUG    | BlogWriter | [ROUTER]   Query 2: Quantum computing and artificial intelligence applications
+2026-03-06 09:33:42 | DEBUG    | BlogWriter | [ROUTER]   Query 3: AI capabilities with quantum power
+2026-03-06 09:33:42 | INFO     | BlogWriter | [ROUTER] ── END ────────────────────────────────────────
+2026-03-06 09:33:42 | INFO     | BlogWriter | [ROUTER] Routing graph → 'research'
+2026-03-06 09:33:42 | INFO     | BlogWriter | [RESEARCH] ── START ─────────────────────────────────────
+2026-03-06 09:33:42 | INFO     | BlogWriter | [RESEARCH] 3 search queries to run (max_results=6 each)
+2026-03-06 09:33:42 | INFO     | BlogWriter | [RESEARCH] Query 1/3: 'Quantum AI future implications'
+2026-03-06 09:33:42 | DEBUG    | BlogWriter | [TAVILY] Searching: 'Quantum AI future implications' (max_results=6)
+2026-03-06 09:33:44 | DEBUG    | BlogWriter | [TAVILY] Raw hits received: 6 for query 'Quantum AI future implications'
+2026-03-06 09:33:44 | DEBUG    | BlogWriter | [TAVILY] Normalised 6 results for query 'Quantum AI future implications'
+2026-03-06 09:33:44 | DEBUG    | BlogWriter | [RESEARCH] Cumulative raw results so far: 6
+2026-03-06 09:33:44 | INFO     | BlogWriter | [RESEARCH] Query 2/3: 'Quantum computing and artificial intelligence applications'
+2026-03-06 09:33:44 | DEBUG    | BlogWriter | [TAVILY] Searching: 'Quantum computing and artificial intelligence applications' (max_results=6)
+2026-03-06 09:33:47 | DEBUG    | BlogWriter | [TAVILY] Raw hits received: 6 for query 'Quantum computing and artificial intelligence applications'
+2026-03-06 09:33:47 | DEBUG    | BlogWriter | [TAVILY] Normalised 6 results for query 'Quantum computing and artificial intelligence applications'
+2026-03-06 09:33:47 | DEBUG    | BlogWriter | [RESEARCH] Cumulative raw results so far: 12
+2026-03-06 09:33:47 | INFO     | BlogWriter | [RESEARCH] Query 3/3: 'AI capabilities with quantum power'
+2026-03-06 09:33:47 | DEBUG    | BlogWriter | [TAVILY] Searching: 'AI capabilities with quantum power' (max_results=6)
+2026-03-06 09:33:49 | DEBUG    | BlogWriter | [TAVILY] Raw hits received: 6 for query 'AI capabilities with quantum power'
+2026-03-06 09:33:49 | DEBUG    | BlogWriter | [TAVILY] Normalised 6 results for query 'AI capabilities with quantum power'
+2026-03-06 09:33:49 | DEBUG    | BlogWriter | [RESEARCH] Cumulative raw results so far: 18
+2026-03-06 09:33:49 | INFO     | BlogWriter | [RESEARCH] Total raw results collected: 18
+2026-03-06 09:33:49 | DEBUG    | BlogWriter | [RESEARCH] Invoking blog LLM to extract and deduplicate EvidenceItems...
+2026-03-06 09:38:14 | INFO     | BlogWriter | [RESEARCH] Evidence items after deduplication: 6
+2026-03-06 09:38:14 | DEBUG    | BlogWriter | [RESEARCH]   Evidence 1: https://www.fastcompany.com/91358447/smarter-faster-deeper-what-happens-when-ai-gets-quantum-power
+2026-03-06 09:38:14 | DEBUG    | BlogWriter | [RESEARCH]   Evidence 2: https://www.globalpolicywatch.com/2025/10/harnessing-the-complementary-power-of-ai-and-quantum-computing/
+2026-03-06 09:38:14 | DEBUG    | BlogWriter | [RESEARCH]   Evidence 3: https://www.quantinuum.com/blog/quantum-computers-will-make-ai-better
+2026-03-06 09:38:14 | DEBUG    | BlogWriter | [RESEARCH]   Evidence 4: https://www.pasqal.com/how-quantum-powers-artificial-intelligence/
+2026-03-06 09:38:14 | DEBUG    | BlogWriter | [RESEARCH]   Evidence 5: https://developer.nvidia.com/blog/nvidia-partners-accelerate-quantum-breakthroughs-with-ai-supercomputing/
+2026-03-06 09:38:14 | DEBUG    | BlogWriter | [RESEARCH]   Evidence 6: https://www.quantumpowerai.com/
+2026-03-06 09:38:14 | INFO     | BlogWriter | [RESEARCH] ── END ──────────────────────────────────────
+2026-03-06 09:38:14 | INFO     | BlogWriter | [ORCHESTRATOR] ── START ──────────────────────────────────
+2026-03-06 09:38:14 | INFO     | BlogWriter | [ORCHESTRATOR] Topic: 'Write a blog on the Future of Quantum AI. The capability of Artificial Intellegence using the power of Quantum Computing.' | Mode: 'open_book'
+2026-03-06 09:38:14 | DEBUG    | BlogWriter | [ORCHESTRATOR] Evidence items available for context: 6
+2026-03-06 09:38:14 | INFO     | BlogWriter | [ORCHESTRATOR] Planning attempt 1/3...
+2026-03-06 09:40:58 | INFO     | BlogWriter | [ORCHESTRATOR] Plan accepted: 8 tasks generated.
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [ORCHESTRATOR] Blog title : 'The Future of Quantum AI: Unlocking the Power of Artificial Intelligence'
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [ORCHESTRATOR] Audience   : 'developers and researchers'
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [ORCHESTRATOR] Tone       : 'informative'
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [ORCHESTRATOR] Blog kind  : 'news_roundup'
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [ORCHESTRATOR]   Task 01: 'Understanding the Synergy Between Quantum Computing and AI' | ~250w | code=False | citations=True
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [ORCHESTRATOR]   Task 02: 'Quantum Computing for Machine Learning' | ~300w | code=False | citations=False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [ORCHESTRATOR]   Task 03: 'Harnessing the Power of Quantum AI' | ~300w | code=False | citations=False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [ORCHESTRATOR]   Task 04: 'Challenges and Limitations of Quantum AI' | ~250w | code=False | citations=False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [ORCHESTRATOR]   Task 05: 'Real-World Applications of Quantum AI' | ~350w | code=False | citations=False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [ORCHESTRATOR]   Task 06: 'The Future of Quantum AI: Trends and Predictions' | ~250w | code=False | citations=False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [ORCHESTRATOR]   Task 07: 'Debugging and Observability in Quantum AI' | ~250w | code=False | citations=False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [ORCHESTRATOR]   Task 08: 'Security and Privacy Concerns in Quantum AI' | ~250w | code=False | citations=False
+2026-03-06 09:40:58 | INFO     | BlogWriter | [ORCHESTRATOR] ── END ────────────────────────────────────
+2026-03-06 09:40:58 | INFO     | BlogWriter | [DISPATCHER] ── START ────────────────────────────────────
+2026-03-06 09:40:58 | INFO     | BlogWriter | [DISPATCHER] Dispatching 8 parallel worker(s)...
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [DISPATCHER]   → Worker for Task 1: 'Understanding the Synergy Between Quantum Computing and AI'
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [DISPATCHER]   → Worker for Task 2: 'Quantum Computing for Machine Learning'
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [DISPATCHER]   → Worker for Task 3: 'Harnessing the Power of Quantum AI'
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [DISPATCHER]   → Worker for Task 4: 'Challenges and Limitations of Quantum AI'
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [DISPATCHER]   → Worker for Task 5: 'Real-World Applications of Quantum AI'
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [DISPATCHER]   → Worker for Task 6: 'The Future of Quantum AI: Trends and Predictions'
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [DISPATCHER]   → Worker for Task 7: 'Debugging and Observability in Quantum AI'
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [DISPATCHER]   → Worker for Task 8: 'Security and Privacy Concerns in Quantum AI'
+2026-03-06 09:40:58 | INFO     | BlogWriter | [DISPATCHER] ── END ──────────────────────────────────────
+2026-03-06 09:40:58 | INFO     | BlogWriter | [WORKER] ── Task 1: 'Understanding the Synergy Between Quantum Computing and AI' ─────────────────
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Goal           : Summarize how quantum computing can accelerate AI capabilities.
+2026-03-06 09:40:58 | INFO     | BlogWriter | [WORKER] ── Task 2: 'Quantum Computing for Machine Learning' ─────────────────
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Target words   : 250
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   requires_code  : False
+2026-03-06 09:40:58 | INFO     | BlogWriter | [WORKER] ── Task 3: 'Harnessing the Power of Quantum AI' ─────────────────
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   requires_cit.  : True
+2026-03-06 09:40:58 | INFO     | BlogWriter | [WORKER] ── Task 4: 'Challenges and Limitations of Quantum AI' ─────────────────
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Goal           : Discuss the potential applications of quantum computing in machine learning.
+2026-03-06 09:40:58 | INFO     | BlogWriter | [WORKER] ── Task 5: 'Real-World Applications of Quantum AI' ─────────────────
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Goal           : Explore the potential applications and benefits of quantum AI.
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Bullets (3)   : ['Explain how quantum computers can process and analyze large, complex datasets more efficiently than classical computers', 'Describe how this enables AI models to achieve more powerful training, reasoning, and understanding', 'Highlight the complementary nature of AI and quantum computing']
+2026-03-06 09:40:58 | INFO     | BlogWriter | [WORKER] ── Task 6: 'The Future of Quantum AI: Trends and Predictions' ─────────────────
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Goal           : Discuss the challenges and limitations of quantum AI.
+2026-03-06 09:40:58 | INFO     | BlogWriter | [WORKER] ── Task 7: 'Debugging and Observability in Quantum AI' ─────────────────
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Target words   : 300
+2026-03-06 09:40:58 | INFO     | BlogWriter | [WORKER] ── Task 8: 'Security and Privacy Concerns in Quantum AI' ─────────────────
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Target words   : 300
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Goal           : Explore real-world applications and examples of quantum AI.
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Evidence items : 6
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Target words   : 250
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Goal           : Discuss trends and predictions for the future of quantum AI.
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Goal           : Discuss the importance of debugging and observability in quantum AI.
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   requires_code  : False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   requires_code  : False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Goal           : Discuss the security and privacy concerns associated with quantum AI.
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Target words   : 350
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Invoking blog LLM to write section...
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   requires_code  : False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Target words   : 250
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Target words   : 250
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   requires_cit.  : False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   requires_cit.  : False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Target words   : 250
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   requires_code  : False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   requires_cit.  : False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Bullets (3)   : ['Explain the potential risks and vulnerabilities of quantum AI systems', 'Describe techniques for improving security and privacy, such as encryption and access control', 'Highlight the need for further research and development in this area']
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Evidence items : 6
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Bullets (3)   : ['Explain how quantum computers can be used to speed up certain machine learning algorithms, such as k-means and support vector machines', 'Describe how this can lead to faster training times and improved model performance', 'Highlight the potential for quantum computing to solve complex machine learning problems that are currently unsolvable with classical computers']
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Bullets (3)   : ['Explain how quantum AI can be used to solve complex problems in fields such as medicine, finance, and climate science', 'Describe the potential for quantum AI to improve decision-making and optimize processes', 'Highlight the need for further research and development in this area']
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   requires_code  : False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   requires_cit.  : False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   requires_code  : False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   requires_code  : False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Invoking blog LLM to write section...
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Evidence items : 6
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Evidence items : 6
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Invoking blog LLM to write section...
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   requires_cit.  : False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   requires_cit.  : False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   requires_cit.  : False
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Invoking blog LLM to write section...
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Bullets (3)   : ['Explain the need for more efficient quantum algorithms and better hardware', 'Describe the potential risks and security concerns associated with quantum AI', 'Highlight the need for further research and development in this area']
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Bullets (3)   : ['Explain how quantum AI is being used in industries such as finance, medicine, and climate science', 'Describe specific examples of quantum AI in action, such as quantum machine learning algorithms and quantum optimization techniques', 'Highlight the potential for quantum AI to drive innovation and solve complex problems']
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Bullets (3)   : ['Explain the potential for quantum AI to become more widespread and mainstream', 'Describe emerging trends and technologies, such as quantum machine learning and quantum optimization', 'Highlight the need for further research and development in this area']
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Bullets (3)   : ['Explain the challenges of debugging and observing quantum AI systems', 'Describe techniques for improving debugging and observability, such as visualization tools and logging mechanisms', 'Highlight the need for further research and development in this area']
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Evidence items : 6
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Evidence items : 6
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Evidence items : 6
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Evidence items : 6
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Invoking blog LLM to write section...
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Invoking blog LLM to write section...
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Invoking blog LLM to write section...
+2026-03-06 09:40:58 | DEBUG    | BlogWriter | [WORKER]   Invoking blog LLM to write section...
+2026-03-06 09:41:35 | INFO     | BlogWriter | [WORKER] Task 1 done — 'Understanding the Synergy Between Quantum Computing and AI' | ~236 words written
+2026-03-06 09:42:09 | INFO     | BlogWriter | [WORKER] Task 8 done — 'Security and Privacy Concerns in Quantum AI' | ~248 words written
+2026-03-06 09:42:49 | INFO     | BlogWriter | [WORKER] Task 5 done — 'Real-World Applications of Quantum AI' | ~265 words written
+2026-03-06 09:43:16 | INFO     | BlogWriter | [WORKER] Task 7 done — 'Debugging and Observability in Quantum AI' | ~232 words written
+2026-03-06 09:44:09 | INFO     | BlogWriter | [WORKER] Task 2 done — 'Quantum Computing for Machine Learning' | ~334 words written
+2026-03-06 09:44:45 | INFO     | BlogWriter | [WORKER] Task 4 done — 'Challenges and Limitations of Quantum AI' | ~247 words written
+2026-03-06 09:45:26 | INFO     | BlogWriter | [WORKER] Task 3 done — 'Harnessing the Power of Quantum AI' | ~260 words written
+2026-03-06 09:46:02 | INFO     | BlogWriter | [WORKER] Task 6 done — 'The Future of Quantum AI: Trends and Predictions' | ~206 words written
+2026-03-06 09:46:02 | INFO     | BlogWriter | [REDUCER] ── START ───────────────────────────────────────
+2026-03-06 09:46:02 | INFO     | BlogWriter | [REDUCER] Assembling 8 section(s) for blog: 'The Future of Quantum AI: Unlocking the Power of Artificial Intelligence'
+2026-03-06 09:46:02 | INFO     | BlogWriter | [REDUCER] Total blog word count: ~2040
+2026-03-06 09:46:02 | INFO     | BlogWriter | [REDUCER] Blog saved → output\The Future of Quantum AI_ Unlocking the Power of Artificial Intelligence.md
+2026-03-06 09:46:02 | INFO     | BlogWriter | [REDUCER] ── END ─────────────────────────────────────────
+2026-03-06 09:46:02 | INFO     | BlogWriter | =================================================================
+2026-03-06 09:46:02 | INFO     | BlogWriter | [RUN] Pipeline COMPLETE
+2026-03-06 09:46:02 | INFO     | BlogWriter | =================================================================
+2026-03-06 09:46:02 | INFO     | BlogWriter | [RESPONSE] Blog Generation Complete.
