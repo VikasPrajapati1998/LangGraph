@@ -1,5 +1,6 @@
 # Blog Gen with Image
 
+
 from __future__ import annotations
 
 import re
@@ -15,7 +16,6 @@ from langgraph.types import Send
 
 from langchain_ollama import ChatOllama
 from langchain_core.messages import SystemMessage, HumanMessage
-# from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_tavily import TavilySearch
 from dotenv import load_dotenv, find_dotenv
 
@@ -115,14 +115,39 @@ class EvidenceItem(BaseModel):
 
 class RouterDecision(BaseModel):
     needs_research: bool = False
-    # Added default "closed_book" so if the LLM fails to emit a valid
-    # mode value, we don't get a ValidationError that crashes the router.
     mode: Literal["closed_book", "hybrid", "open_book"] = "closed_book"
     queries: List[str] = Field(default_factory=list)
 
 
 class EvidencePack(BaseModel):
     evidence: List[EvidenceItem] = Field(default_factory=list)
+
+class ImageSpec(BaseModel):
+    placeholder: str = Field(
+        ...,
+        description=(
+            "Exact placeholder token to insert. MUST be one of: "
+            "[[IMAGE_1]], [[IMAGE_2]], [[IMAGE_3]]. "
+            "No extra text, colons, or spaces inside the brackets."
+        )
+    )
+    insert_after_heading: str = Field(
+        ...,
+        description=(
+            "The exact ## heading text (without the '## ' prefix) of the section "
+            "after whose first paragraph this image should be inserted. "
+            "Must match a heading that exists in the blog."
+        )
+    )
+    filename: str = Field(..., description="Save under images/, e.g. qkv_flow.png")
+    alt: str
+    caption: str
+    prompt: str = Field(..., description="Prompt to send to the image model.")
+    size: Literal["1024x1024", "1024x1536", "1536x1024"] = "1024x1024"
+    quality: Literal["low", "medium", "high"] = "medium"
+
+class GlobalImagePlan(BaseModel):
+    images: List[ImageSpec] = Field(default_factory=list)
 
 
 #------------------------------
@@ -141,6 +166,12 @@ class State(TypedDict):
 
     # workers
     sections: Annotated[List[tuple[int, str]], operator.add]
+
+    # reducer/image
+    merged_md: str
+    md_with_placeholders: str
+    image_specs: List[dict]
+    
     final: str
 
 
@@ -179,25 +210,28 @@ If needs_research=true:
 
 def router_node(state: State) -> dict:
     topic = state["topic"]
-    logger.info("[ROUTER] ── START ──────────────────────────────────────")
-    logger.info(f"[ROUTER] Topic received: '{topic}'")
-    logger.debug("[ROUTER] Invoking decision LLM with structured output (RouterDecision)...")
+    logger.info(f"[ROUTER] ── Entering router node ──────────────────────────")
+    logger.debug(f"[ROUTER]   Topic: '{topic}'")
+    logger.debug(f"[ROUTER]   Invoking decision LLM for routing decision...")
 
     decider = decision_llm.with_structured_output(RouterDecision)
-    decision = decider.invoke(
-        [
-            SystemMessage(content=ROUTER_SYSTEM),
-            HumanMessage(content=f"Topic: {topic}"),
-        ]
-    )
 
-    # If the LLM emits queries but sets needs_research=False, force research to run.
+    try:
+        decision = decider.invoke(
+            [
+                SystemMessage(content=ROUTER_SYSTEM),
+                HumanMessage(content=f"Topic: {topic}"),
+            ]
+        )
+    except Exception as e:
+        logger.error(f"[ROUTER] LLM invocation failed: {e}", exc_info=True)
+        raise
+
     needs_research = decision.needs_research or bool(decision.queries)
 
-    logger.info(f"[ROUTER] Decision => mode='{decision.mode}' | needs_research={needs_research} | num_queries={len(decision.queries)}")
-    for i, q in enumerate(decision.queries, 1):
-        logger.debug(f"[ROUTER]   Query {i}: {q}")
-    logger.info("[ROUTER] ── END ────────────────────────────────────────")
+    logger.info(f"[ROUTER]   Decision   : mode='{decision.mode}' | needs_research={needs_research}")
+    logger.debug(f"[ROUTER]   Queries ({len(decision.queries)}): {decision.queries}")
+    logger.info(f"[ROUTER] ── Router node complete ────────────────────────────")
 
     return {
         "needs_research": needs_research,
@@ -205,10 +239,9 @@ def router_node(state: State) -> dict:
         "queries": decision.queries,
     }
 
-
 def route_next(state: State) -> str:
     next_node = "research" if state["needs_research"] else "orchestrator"
-    logger.info(f"[ROUTER] Routing graph → '{next_node}'")
+    logger.info(f"[ROUTER] Routing graph → '{next_node}' (needs_research={state['needs_research']})")
     return next_node
 
 
@@ -217,22 +250,22 @@ def route_next(state: State) -> str:
 #------------------------------
 
 def _tavily_search(query: str, max_results: int = 5) -> List[dict]:
-    logger.debug(f"[TAVILY] Searching: '{query}' (max_results={max_results})")
-    # tool = TavilySearchResults(max_results=max_results)
+    logger.debug(f"[RESEARCH] Tavily search — query='{query}' | max_results={max_results}")
     tool = TavilySearch(max_results=max_results)
-    response = tool.invoke({"query": query})
 
-    # langchain_tavily.TavilySearch returns a dict: {"query": ..., "results": [...]}
-    # whereas the old TavilySearchResults returned a plain list.
-    # Extract the "results" list; fall back gracefully if the shape is unexpected.
+    try:
+        response = tool.invoke({"query": query})
+    except Exception as e:
+        logger.error(f"[RESEARCH] Tavily search failed for query='{query}': {e}", exc_info=True)
+        return []
+
     if isinstance(response, dict):
         results = response.get("results") or []
     elif isinstance(response, list):
         results = response  # legacy / alternative wrapper — keep working
     else:
+        logger.warning(f"[RESEARCH] Unexpected Tavily response type: {type(response)}. Returning empty.")
         results = []
-
-    logger.debug(f"[TAVILY] Raw hits received: {len(results)} for query '{query}'")
 
     normalized: List[dict] = []
     for r in results or []:
@@ -245,7 +278,8 @@ def _tavily_search(query: str, max_results: int = 5) -> List[dict]:
                 "source": r.get("source"),
             }
         )
-    logger.debug(f"[TAVILY] Normalised {len(normalized)} results for query '{query}'")
+
+    logger.debug(f"[RESEARCH] Tavily returned {len(normalized)} results for query='{query}'")
     return normalized
 
 
@@ -266,43 +300,55 @@ def research_node(state: State) -> dict:
     queries = (state.get("queries", []) or [])
     max_results = 6
 
-    logger.info("[RESEARCH] ── START ─────────────────────────────────────")
-    logger.info(f"[RESEARCH] {len(queries)} search queries to run (max_results={max_results} each)")
+    logger.info(f"[RESEARCH] ── Entering research node ─────────────────────────")
+    logger.info(f"[RESEARCH]   Queries to process : {len(queries)}")
+    logger.debug(f"[RESEARCH]   Query list         : {queries}")
 
     raw_results: List[dict] = []
-    for i, q in enumerate(queries, 1):
-        logger.info(f"[RESEARCH] Query {i}/{len(queries)}: '{q}'")
+    for i, q in enumerate(queries, start=1):
+        logger.debug(f"[RESEARCH]   Running query {i}/{len(queries)}: '{q}'")
         results = _tavily_search(q, max_results=max_results)
         raw_results.extend(results)
-        logger.debug(f"[RESEARCH] Cumulative raw results so far: {len(raw_results)}")
+        logger.debug(f"[RESEARCH]   Cumulative raw results so far: {len(raw_results)}")
 
-    logger.info(f"[RESEARCH] Total raw results collected: {len(raw_results)}")
+    logger.info(f"[RESEARCH]   Total raw results fetched: {len(raw_results)}")
 
     if not raw_results:
-        logger.warning("[RESEARCH] No raw results found — returning empty evidence.")
-        logger.info("[RESEARCH] ── END ──────────────────────────────────────")
+        logger.warning("[RESEARCH]   No raw results returned from any query. Returning empty evidence.")
         return {"evidence": []}
 
-    logger.debug("[RESEARCH] Invoking blog LLM to extract and deduplicate EvidenceItems...")
+    logger.debug(f"[RESEARCH]   Invoking LLM to synthesize and deduplicate evidence...")
     extractor = blog_llm.with_structured_output(EvidencePack)
-    pack = extractor.invoke(
-        [
-            SystemMessage(content=RESEARCH_SYSTEM),
-            HumanMessage(content=f"Raw results:\n{raw_results}"),
-        ]
-    )
+
+    try:
+        pack = extractor.invoke(
+            [
+                SystemMessage(content=RESEARCH_SYSTEM),
+                HumanMessage(content=f"Raw results:\n{raw_results}"),
+            ]
+        )
+    except Exception as e:
+        logger.error(f"[RESEARCH] LLM evidence extraction failed: {e}", exc_info=True)
+        raise
 
     dedup = {}
     for e in pack.evidence:
         if e.url:
             dedup[e.url] = e
 
-    logger.info(f"[RESEARCH] Evidence items after deduplication: {len(dedup)}")
-    for idx, url in enumerate(dedup.keys(), 1):
-        logger.debug(f"[RESEARCH]   Evidence {idx}: {url}")
-    logger.info("[RESEARCH] ── END ──────────────────────────────────────")
+    deduped_count = len(dedup)
+    logger.info(f"[RESEARCH]   Evidence after deduplication: {deduped_count} items")
+    logger.debug(f"[RESEARCH]   Evidence URLs: {list(dedup.keys())}")
+    if deduped_count == 0:
+        logger.warning(
+            f"[RESEARCH]   All {len(raw_results)} raw results were discarded during "
+            "LLM synthesis (empty URLs, low relevance, or model hallucination). "
+            "Pipeline will continue without evidence (closed-book fallback)."
+        )
+    logger.info(f"[RESEARCH] ── Research node complete ───────────────────────────")
 
     return {"evidence": list(dedup.values())}
+
 
 
 #------------------------------
@@ -387,14 +433,15 @@ Output must strictly match the Plan schema.
 
 def orchestrator_node(state: State) -> dict:
     """Planner — generates a structured blog outline."""
-    logger.info("[ORCHESTRATOR] ── START ──────────────────────────────────")
-    logger.info(f"[ORCHESTRATOR] Topic: '{state['topic']}' | Mode: '{state.get('mode', 'closed_book')}'")
+    logger.info(f"[ORCH] ── Entering orchestrator node ──────────────────────")
+    logger.debug(f"[ORCH]   Topic          : '{state['topic']}'")
+    logger.debug(f"[ORCH]   Mode           : '{state.get('mode', 'closed_book')}'")
+    logger.debug(f"[ORCH]   Evidence items : {len(state.get('evidence', []))}")
 
     planner = blog_llm.with_structured_output(Plan)
+
     evidence = state.get("evidence", [])
     mode = state.get("mode", "closed_book")
-
-    logger.debug(f"[ORCHESTRATOR] Evidence items available for context: {len(evidence)}")
 
     messages = [
         SystemMessage(content=ORCH_SYSTEM),
@@ -409,24 +456,26 @@ def orchestrator_node(state: State) -> dict:
     ]
 
     plan = None
-    for attempt in range(3):
-        logger.info(f"[ORCHESTRATOR] Planning attempt {attempt + 1}/3...")
-        plan = planner.invoke(messages)
+    max_attempts = 3
+    for attempt in range(1, max_attempts + 1):
+        logger.info(f"[ORCH]   Planning attempt {attempt}/{max_attempts}...")
+        try:
+            plan = planner.invoke(messages)
+        except Exception as e:
+            logger.error(f"[ORCH]   LLM invocation failed on attempt {attempt}: {e}", exc_info=True)
+            if attempt == max_attempts:
+                raise
+            continue
 
-        if plan.tasks:
-            logger.info(f"[ORCHESTRATOR] Plan accepted: {len(plan.tasks)} tasks generated.")
-            logger.debug(f"[ORCHESTRATOR] Blog title : '{plan.blog_title}'")
-            logger.debug(f"[ORCHESTRATOR] Audience   : '{plan.audience}'")
-            logger.debug(f"[ORCHESTRATOR] Tone       : '{plan.tone}'")
-            logger.debug(f"[ORCHESTRATOR] Blog kind  : '{plan.blog_kind}'")
-            for t in plan.tasks:
-                logger.debug(
-                    f"[ORCHESTRATOR]   Task {t.id:02d}: '{t.title}' "
-                    f"| ~{t.target_words}w | code={t.requires_code} | citations={t.requires_citations}"
-                )
+        task_count = len(plan.tasks) if plan else 0
+        logger.debug(f"[ORCH]   Attempt {attempt} returned {task_count} tasks")
+
+        if plan and plan.tasks:
+            logger.info(f"[ORCH]   Plan accepted on attempt {attempt} — {task_count} tasks generated")
             break
 
-        logger.warning(f"[ORCHESTRATOR] Attempt {attempt + 1} returned empty tasks — escalating prompt...")
+        logger.warning(f"[ORCH]   Attempt {attempt} returned empty tasks list. Retrying with stricter prompt...")
+        # Escalate on subsequent retries
         messages = [
             SystemMessage(content=ORCH_SYSTEM),
             HumanMessage(
@@ -442,10 +491,20 @@ def orchestrator_node(state: State) -> dict:
             ),
         ]
 
-    if not plan or not plan.tasks:
-        logger.error("[ORCHESTRATOR] All 3 attempts produced empty tasks. Pipeline will fail.")
+    if plan and plan.tasks:
+        logger.info(f"[ORCH]   Blog title : '{plan.blog_title}'")
+        logger.info(f"[ORCH]   Audience   : '{plan.audience}' | Tone: '{plan.tone}' | Kind: '{plan.blog_kind}'")
+        logger.debug(f"[ORCH]   Task breakdown:")
+        for t in plan.tasks:
+            logger.debug(
+                f"[ORCH]     Task {t.id:02d} | '{t.title}' | "
+                f"~{t.target_words}w | code={t.requires_code} | "
+                f"research={t.requires_research} | citations={t.requires_citations}"
+            )
+    else:
+        logger.error(f"[ORCH]   All {max_attempts} attempts returned empty tasks. Plan may be unusable.")
 
-    logger.info("[ORCHESTRATOR] ── END ────────────────────────────────────")
+    logger.info(f"[ORCH] ── Orchestrator node complete ─────────────────────────")
     return {"plan": plan}
 
 
@@ -454,34 +513,39 @@ def orchestrator_node(state: State) -> dict:
 #------------------------------
 
 def sub_worker(state: State):
-    logger.info("[DISPATCHER] ── START ────────────────────────────────────")
+    logger.info(f"[DISPATCHER] ── Entering sub-worker dispatcher ───────────────")
 
     if not state.get("plan") or not state["plan"].tasks:
-        logger.error("[DISPATCHER] No tasks in plan — aborting pipeline.")
+        logger.error("[DISPATCHER] Orchestrator produced no tasks after all retries. Cannot dispatch workers.")
         raise ValueError(
             "Orchestrator produced no tasks after all retries. "
             "Cannot generate blog sections. Try a more capable model."
         )
 
-    tasks = state["plan"].tasks
-    logger.info(f"[DISPATCHER] Dispatching {len(tasks)} parallel worker(s)...")
-    for t in tasks:
-        logger.debug(f"[DISPATCHER]   → Worker for Task {t.id}: '{t.title}'")
-    logger.info("[DISPATCHER] ── END ──────────────────────────────────────")
+    task_count = len(state["plan"].tasks)
+    logger.info(f"[DISPATCHER]   Dispatching {task_count} parallel worker(s)...")
 
-    return [
-        Send(
-            "worker",
-            {
-                "task": task.model_dump(),
-                "topic": state["topic"],
-                "mode": state["mode"],
-                "plan": state["plan"].model_dump(),
-                "evidence": [e.model_dump() for e in state.get("evidence", [])]
-            },
+    sends = []
+    for task in state["plan"].tasks:
+        logger.debug(
+            f"[DISPATCHER]   → Send worker for Task {task.id}: '{task.title}'"
         )
-        for task in tasks
-    ]
+        sends.append(
+            Send(
+                "worker",
+                {
+                    "task": task.model_dump(),
+                    "topic": state["topic"],
+                    "mode": state["mode"],
+                    "plan": state["plan"].model_dump(),
+                    "evidence": [e.model_dump() for e in state.get("evidence", [])]
+                },
+            )
+        )
+
+    logger.info(f"[DISPATCHER]   All {len(sends)} worker Send objects created")
+    logger.info(f"[DISPATCHER] ── Dispatcher complete ───────────────────────────")
+    return sends
 
 
 #------------------------------
@@ -535,6 +599,7 @@ def worker_node(payload: dict) -> dict:
     logger.debug(f"[WORKER]   requires_cit.  : {task.requires_citations}")
     logger.debug(f"[WORKER]   Bullets ({len(task.bullets)})   : {task.bullets}")
     logger.debug(f"[WORKER]   Evidence items : {len(evidence)}")
+    logger.debug(f"[WORKER]   Blog kind      : {plan.blog_kind} | Mode: {mode}")
 
     bullets_text = "\n- " + "\n- ".join(task.bullets)
 
@@ -544,85 +609,481 @@ def worker_node(payload: dict) -> dict:
             f"- {e.title} | {e.url} | {e.published_at or 'date:unknown'}".strip()
             for e in evidence[:20]
         )
+        logger.debug(f"[WORKER]   Injecting {min(len(evidence), 20)} evidence items into prompt")
+    else:
+        logger.debug(f"[WORKER]   No evidence to inject (closed_book or empty research)")
 
     logger.debug(f"[WORKER]   Invoking blog LLM to write section...")
-    section_md = blog_llm.invoke(
-        [
-            SystemMessage(content=WORKER_SYSTEM),
-            HumanMessage(
-                content=(
-                    f"Blog title: {plan.blog_title}\n"
-                    f"Audience: {plan.audience}\n"
-                    f"Tone: {plan.tone}\n"
-                    f"Blog kind: {plan.blog_kind}\n"
-                    f"Constraints: {plan.constraints}\n"
-                    f"Topic: {topic}\n"
-                    f"Mode: {mode}\n\n"
-                    f"Section title: {task.title}\n"
-                    f"Goal: {task.goal}\n"
-                    f"Target words: {task.target_words}\n"
-                    f"Tags: {task.tags}\n"
-                    f"requires_research: {task.requires_research}\n"
-                    f"requires_citations: {task.requires_citations}\n"
-                    f"requires_code: {task.requires_code}\n"
-                    f"Bullets:{bullets_text}\n\n"
-                    f"Evidence (ONLY use these URLs when citing):\n{evidence_text}\n"
+
+    try:
+        section_md = blog_llm.invoke(
+            [
+                SystemMessage(content=WORKER_SYSTEM),
+                HumanMessage(
+                    content=(
+                        f"Blog title: {plan.blog_title}\n"
+                        f"Audience: {plan.audience}\n"
+                        f"Tone: {plan.tone}\n"
+                        f"Blog kind: {plan.blog_kind}\n"
+                        f"Constraints: {plan.constraints}\n"
+                        f"Topic: {topic}\n"
+                        f"Mode: {mode}\n\n"
+                        f"Section title: {task.title}\n"
+                        f"Goal: {task.goal}\n"
+                        f"Target words: {task.target_words}\n"
+                        f"Tags: {task.tags}\n"
+                        f"requires_research: {task.requires_research}\n"
+                        f"requires_citations: {task.requires_citations}\n"
+                        f"requires_code: {task.requires_code}\n"
+                        f"Bullets:{bullets_text}\n\n"
+                        f"Evidence (ONLY use these URLs when citing):\n{evidence_text}\n"
+                    )
                 )
-            )
-        ],
-    ).content.strip()
+            ],
+        ).content.strip()
+    except Exception as e:
+        logger.error(f"[WORKER] Task {task.id} — LLM invocation failed: {e}", exc_info=True)
+        raise
 
     word_count = len(section_md.split())
-    logger.info(f"[WORKER] Task {task.id} done — '{task.title}' | ~{word_count} words written")
+    target = task.target_words
+    deviation_pct = abs(word_count - target) / max(target, 1) * 100
 
+    logger.info(
+        f"[WORKER] Task {task.id} done — '{task.title}' | "
+        f"~{word_count} words written (target={target}, deviation={deviation_pct:.1f}%)"
+    )
+
+    if deviation_pct > 20:
+        logger.warning(
+            f"[WORKER] Task {task.id} word count deviation > 20%: "
+            f"got {word_count}, target {target}"
+        )
+
+    logger.info(f"[WORKER] ── Task {task.id} complete ─────────────────────────")
     return {"sections": [(task.id, section_md)]}
 
 
 #------------------------------
-# Reducer
+# Reducer: Merge Content
 #------------------------------
 
-def reducer_node(state: State) -> dict:
-    """Stitches all worker sections into the final markdown blog post."""
-    plan = state["plan"]
-    sections = state["sections"]
+def merge_content(state: State) -> dict:
+    logger.info(f"[MERGE] ── Entering merge_content node ──────────────────────")
 
-    logger.info("[REDUCER] ── START ───────────────────────────────────────")
-    logger.info(f"[REDUCER] Assembling {len(sections)} section(s) for blog: '{plan.blog_title}'")
+    plan = state["plan"]
+    sections = state.get("sections", [])
+
+    logger.info(f"[MERGE]   Sections received : {len(sections)}")
+    logger.debug(f"[MERGE]   Section IDs      : {sorted(sid for sid, _ in sections)}")
 
     ordered_sections = [md for _, md in sorted(sections, key=lambda x: x[0])]
     body = "\n\n".join(ordered_sections).strip()
-    final_md = f"# {plan.blog_title}\n\n{body}\n"
+    merged_md = f"# {plan.blog_title}\n\n{body}\n"
 
-    total_words = len(final_md.split())
-    logger.info(f"[REDUCER] Total blog word count: ~{total_words}")
+    total_words = len(merged_md.split())
+    logger.info(f"[MERGE]   Blog title       : '{plan.blog_title}'")
+    logger.info(f"[MERGE]   Total word count : ~{total_words} words")
+    logger.debug(f"[MERGE]   Merged markdown length: {len(merged_md)} chars")
+    logger.info(f"[MERGE] ── merge_content node complete ───────────────────────")
 
+    return {"merged_md": merged_md}
+
+
+DECIDE_IMAGE_SYSTEM = """You are an expert technical editor.
+Decide if images/diagrams would materially improve understanding of THIS blog.
+
+Rules:
+- Max 3 images total.
+- Only include images that add real value: diagrams, flows, comparisons, architecture.
+- Avoid decorative images.
+- If no images are needed, return images=[].
+
+For each image you want to add, output an ImageSpec with:
+
+1. placeholder — MUST be EXACTLY one of (no extra text, no colons, nothing else):
+     [[IMAGE_1]]
+     [[IMAGE_2]]
+     [[IMAGE_3]]
+
+2. insert_after_heading — the exact text of the ## section heading (without "## ")
+   after which this image should appear. Must match a heading in the blog exactly.
+
+3. filename  — e.g. "qkv_attention_flow.png"
+4. alt       — short alt text
+5. caption   — one-sentence caption
+6. prompt    — detailed image generation prompt
+
+DO NOT return the blog markdown. Only return the GlobalImagePlan JSON.
+"""
+
+# Matches both [[IMAGE_1]] and [IMAGE_1] and verbose forms like [[IMAGE_1: desc]]
+_PLACEHOLDER_RE = re.compile(r'\[{1,2}IMAGE_(\d+)[^\]]*\]{1,2}')
+
+def _inject_placeholders(merged_md: str, images: list) -> str:
+    """
+    Insert [[IMAGE_N]] placeholders into merged_md by locating each heading
+    specified in ImageSpec.insert_after_heading, then placing the token after
+    the first paragraph that follows that heading.
+
+    Strategy: rebuild the heading index from scratch after every insertion so
+    line numbers are always accurate regardless of how many images are placed.
+    """
+    def _build_heading_index(lines: list) -> dict:
+        return {
+            line[3:].strip(): i
+            for i, line in enumerate(lines)
+            if line.startswith("## ")
+        }
+
+    # Sort by placeholder number ascending so IMAGE_1 is placed before IMAGE_2
+    ordered = sorted(
+        images,
+        key=lambda x: int(_PLACEHOLDER_RE.search(x.placeholder).group(1))
+        if _PLACEHOLDER_RE.search(x.placeholder) else 999
+    )
+
+    result = merged_md.split("\n")
+
+    for img in ordered:
+        target_heading = img.insert_after_heading.strip()
+        # Strip "## " prefix if the LLM accidentally included it in insert_after_heading
+        if target_heading.startswith("## "):
+            target_heading = target_heading[3:].strip()
+        canonical = f"[[IMAGE_{_PLACEHOLDER_RE.search(img.placeholder).group(1)}]]" \
+            if _PLACEHOLDER_RE.search(img.placeholder) else img.placeholder
+
+        # Rebuild index each iteration so previous insertions are reflected
+        heading_index = _build_heading_index(result)
+
+        # Exact match first, then case-insensitive fallback
+        idx = heading_index.get(target_heading)
+        if idx is None:
+            for h, i in heading_index.items():
+                if h.lower() == target_heading.lower():
+                    idx = i
+                    break
+
+        if idx is None:
+            logger.warning(
+                f"[IMAGES]   Could not find heading '{target_heading}' for "
+                f"placeholder '{canonical}'. Appending at end of blog."
+            )
+            result.append("")
+            result.append(canonical)
+            continue
+
+        # Walk forward past the heading line itself, then past the first paragraph
+        insert_at = idx + 1
+        while insert_at < len(result) and result[insert_at].strip():
+            insert_at += 1
+
+        result.insert(insert_at, canonical)
+        result.insert(insert_at, "")   # blank line before placeholder
+        logger.debug(
+            f"[IMAGES]   Injected '{canonical}' after line {insert_at} "
+            f"(heading: '{target_heading}')"
+        )
+
+    return "\n".join(result)
+
+
+def decide_images(state: State) -> dict:
+    logger.info(f"[IMAGES] ── Entering decide_images node ──────────────────────")
+
+    planner = decision_llm.with_structured_output(GlobalImagePlan)
+    merged_md = state["merged_md"]
+    plan = state["plan"]
+    assert plan is not None
+
+    merged_word_count = len(merged_md.split())
+    logger.debug(f"[IMAGES]   Blog kind        : '{plan.blog_kind}'")
+    logger.debug(f"[IMAGES]   Topic            : '{state['topic']}'")
+    logger.debug(f"[IMAGES]   Markdown length  : ~{merged_word_count} words / {len(merged_md)} chars")
+
+    # Send only headings + first sentence of each section to the LLM — not the
+    # full markdown — so small models cannot truncate the blog content.
+    headings_summary = []
+    for line in merged_md.split("\n"):
+        if line.startswith("## "):
+            headings_summary.append(line)
+    headings_block = "\n".join(headings_summary)
+    logger.debug(f"[IMAGES]   Sections found   : {len(headings_summary)}")
+    logger.debug(f"[IMAGES]   Invoking decision LLM to plan image placement...")
+
+    try:
+        image_plan = planner.invoke(
+            [
+                SystemMessage(content=DECIDE_IMAGE_SYSTEM),
+                HumanMessage(
+                    content=(
+                        f"Blog kind: {plan.blog_kind}\n"
+                        f"Topic: {state['topic']}\n\n"
+                        f"Section headings available for image placement:\n"
+                        f"{headings_block}\n\n"
+                        "Decide which sections need images and fill in the ImageSpec list."
+                    )
+                ),
+            ]
+        )
+    except Exception as e:
+        logger.error(f"[IMAGES] LLM invocation failed in decide_images: {e}", exc_info=True)
+        raise
+
+    image_count = len(image_plan.images)
+    logger.info(f"[IMAGES]   Images planned   : {image_count}")
+
+    # Normalise placeholder tokens (handle [IMAGE_1], [[IMAGE_1: desc]], etc.)
+    fixed_images = []
+    for img in image_plan.images:
+        m = _PLACEHOLDER_RE.search(img.placeholder)
+        canonical = f"[[IMAGE_{m.group(1)}]]" if m else img.placeholder
+        if canonical != img.placeholder:
+            logger.warning(
+                f"[IMAGES]   Non-canonical placeholder: '{img.placeholder}' "
+                f"→ normalised to '{canonical}'"
+            )
+            img = img.model_copy(update={"placeholder": canonical})
+        fixed_images.append(img)
+
+    for i, img in enumerate(fixed_images, start=1):
+        logger.debug(
+            f"[IMAGES]   Image {i}: placeholder='{img.placeholder}' | "
+            f"insert_after='{img.insert_after_heading}' | "
+            f"filename='{img.filename}' | size='{img.size}' | quality='{img.quality}'"
+        )
+        logger.debug(f"[IMAGES]   Image {i} alt     : '{img.alt}'")
+        logger.debug(f"[IMAGES]   Image {i} caption : '{img.caption}'")
+        logger.debug(f"[IMAGES]   Image {i} prompt  : '{img.prompt[:80]}...'")
+
+    if image_count == 0:
+        logger.info(f"[IMAGES]   No images deemed necessary for this blog.")
+        md_with_placeholders = merged_md
+    else:
+        logger.info(f"[IMAGES]   {image_count} image(s) will be generated and placed.")
+        # Inject placeholders into the full merged_md ourselves — never trust the
+        # LLM to echo back the complete document without truncating it.
+        md_with_placeholders = _inject_placeholders(merged_md, fixed_images)
+        injected_chars = len(md_with_placeholders)
+        logger.debug(
+            f"[IMAGES]   md_with_placeholders length after injection: {injected_chars} chars "
+            f"(original: {len(merged_md)} chars)"
+        )
+
+    logger.info(f"[IMAGES] ── decide_images node complete ────────────────────────")
+
+    return {
+        "md_with_placeholders": md_with_placeholders,
+        "image_specs": [img.model_dump() for img in fixed_images],
+    }
+
+import os
+from google import genai
+import google.genai.types as types
+
+def _gemini_generate_image_bytes(prompt: str) -> bytes:
+    """
+    Returns raw image bytes generated by Gemini.
+    Requires: google-genai
+              Google API Key
+    """
+    IMAGE_MODEL = "gemini-2.5-flash-image"
+    GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+
+    logger.debug(f"[IMGGEN] Gemini image generation — model='{IMAGE_MODEL}'")
+    logger.debug(f"[IMGGEN] Prompt (first 100 chars): '{prompt[:100]}...'")
+
+    if not GOOGLE_API_KEY:
+        logger.error("[IMGGEN] GOOGLE_API_KEY environment variable is not set.")
+        raise RuntimeError("GOOGLE API KEY is not set.")
+
+    logger.debug(f"[IMGGEN] Initialising Gemini client...")
+    client = genai.Client(api_key=GOOGLE_API_KEY)
+
+    try:
+        response = client.models.generate_content(
+            model=IMAGE_MODEL,
+            contents=[prompt],
+            config=types.GenerateContentConfig(
+                response_modalities=["IMAGE"],
+                safety_settings=[
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_DANGEROUS_CONTENT",
+                        threshold="BLOCK_ONLY_HIGH",
+                    )
+                ],
+            ),
+        )
+    except Exception as e:
+        logger.error(f"[IMGGEN] Gemini API call failed: {e}", exc_info=True)
+        raise
+
+    # Depending on SDK version, parts may hang off resp.candidates[0].content.parts
+    parts = getattr(response, "parts", None)
+
+    if not parts and getattr(response, "candidates", None):
+        logger.debug(f"[IMGGEN] Falling back to candidates[0].content.parts")
+        try:
+            parts = response.candidates[0].content.parts
+        except Exception as e:
+            logger.warning(f"[IMGGEN] Could not access candidates[0].content.parts: {e}")
+            parts = None
+
+    if not parts:
+        logger.error("[IMGGEN] No image content returned (safety block / quota / SDK change).")
+        raise RuntimeError("No image content returned (safety/quota/SDK change).")
+
+    for part in parts:
+        inline = getattr(part, "inline_data", None)
+        if inline and getattr(inline, "data", None):
+            data_len = len(inline.data)
+            logger.debug(f"[IMGGEN] Inline image bytes received: {data_len} bytes")
+            return inline.data
+
+    logger.error("[IMGGEN] Iterated all parts but found no inline image bytes.")
+    raise RuntimeError("No inline image bytes found in response.")
+
+
+def _sanitize_filename(name: str) -> str:
+    """Replace characters that are invalid in Windows/Unix filenames.
+
+    On Windows a colon triggers Alternate Data Stream (ADS) behaviour —
+    content written to 'foo: bar.md' lands in an invisible ADS while the
+    visible 'foo' file stays empty.  Strip / replace the full set of
+    reserved characters to prevent this.
+    """
+    # Characters illegal on Windows: \ / : * ? " < > |
+    sanitized = re.sub(r'[\\/:*?"<>|]', '-', name)
+    # Collapse runs of dashes and trim surrounding whitespace / dashes
+    sanitized = re.sub(r'-+', '-', sanitized).strip(' -')
+    return sanitized
+
+
+def generate_and_place_images(state: State) -> dict:
+    logger.info(f"[IMGPLACE] ── Entering generate_and_place_images node ──────────")
+
+    plan = state["plan"]
+    assert plan is not None
+
+    md = state.get("md_with_placeholders") or state["merged_md"]
+    image_specs = state.get("image_specs", []) or []
+
+    logger.info(f"[IMGPLACE]   Image specs to process : {len(image_specs)}")
+
+    # Output dirs
     output_dir = Path("output")
+    images_dir = output_dir / "images"
     output_dir.mkdir(parents=True, exist_ok=True)
+    images_dir.mkdir(parents=True, exist_ok=True)
+    logger.debug(f"[IMGPLACE]   Output directory : '{output_dir.resolve()}'")
+    logger.debug(f"[IMGPLACE]   Images directory : '{images_dir.resolve()}'")
 
-    # Sanitize blog title for use as a filename
-    safe_title = re.sub(r"[^\w\s-]", "_", plan.blog_title).strip()
-    filename = output_dir / f"{safe_title}.md"
-    filename.write_text(final_md, encoding="utf-8")
+    # If no images requested, just write merged markdown
+    if not image_specs:
+        out_md_path = output_dir / f"{_sanitize_filename(plan.blog_title)}.md"
+        logger.info(f"[IMGPLACE]   No images to generate. Writing markdown directly → '{out_md_path}'")
+        try:
+            out_md_path.write_text(md, encoding="utf-8")
+            logger.info(f"[IMGPLACE]   File written: '{out_md_path}' ({len(md)} chars)")
+        except Exception as e:
+            logger.error(f"[IMGPLACE]   Failed to write markdown file '{out_md_path}': {e}", exc_info=True)
+            raise
+        return {"final": md}
 
-    logger.info(f"[REDUCER] Blog saved → {filename}")
-    logger.info("[REDUCER] ── END ─────────────────────────────────────────")
+    success_count = 0
+    failure_count = 0
 
-    return {"final": final_md}
+    for i, spec in enumerate(image_specs, start=1):
+        placeholder = spec["placeholder"]
+        filename = spec["filename"]
+        out_path = images_dir / filename
+
+        logger.info(
+            f"[IMGPLACE]   Processing image {i}/{len(image_specs)}: "
+            f"placeholder='{placeholder}' | filename='{filename}'"
+        )
+
+        # generate only if needed
+        if out_path.exists():
+            logger.info(f"[IMGPLACE]   Image already exists on disk, skipping generation: '{out_path}'")
+        else:
+            logger.debug(f"[IMGPLACE]   Generating image via Gemini...")
+            try:
+                img_bytes = _gemini_generate_image_bytes(spec["prompt"])
+                out_path.write_bytes(img_bytes)
+                logger.info(
+                    f"[IMGPLACE]   Image {i} saved: '{out_path}' "
+                    f"({len(img_bytes)} bytes)"
+                )
+                success_count += 1
+            except Exception as e:
+                logger.error(
+                    f"[IMGPLACE]   Image {i} generation FAILED for placeholder='{placeholder}': {e}",
+                    exc_info=True
+                )
+                failure_count += 1
+                # graceful fallback: keep doc usable
+                prompt_block = (
+                    f"> **[IMAGE GENERATION FAILED]** {spec.get('caption', '')}\n>\n"
+                    f"> **Alt:** {spec.get('alt', '')}\n>\n"
+                    f"> **Prompt:** {spec.get('prompt', '')}\n\n"
+                    f"> **Error:** {e}\n"
+                )
+                md = md.replace(placeholder, prompt_block)
+                logger.debug(f"[IMGPLACE]   Replaced placeholder '{placeholder}' with failure block.")
+                continue
+
+        # Image ref path is relative to the output/ folder where the .md lives
+        img_md = f"![{spec['alt']}](images/{filename})\n*{spec['caption']}*"
+        md = md.replace(placeholder, img_md)
+        logger.debug(f"[IMGPLACE]   Replaced placeholder '{placeholder}' with image markdown.")
+
+    logger.info(
+        f"[IMGPLACE]   Image processing summary — "
+        f"success={success_count} | failed={failure_count} | skipped (cached)={len(image_specs) - success_count - failure_count}"
+    )
+
+    out_md_path = output_dir / f"{_sanitize_filename(plan.blog_title)}.md"
+    logger.info(f"[IMGPLACE]   Writing final markdown → '{out_md_path}'")
+
+    try:
+        out_md_path.write_text(md, encoding="utf-8")
+        logger.info(f"[IMGPLACE]   File written: '{out_md_path}' ({len(md)} chars, ~{len(md.split())} words)")
+    except Exception as e:
+        logger.error(f"[IMGPLACE]   Failed to write final markdown file '{out_md_path}': {e}", exc_info=True)
+        raise
+
+    logger.info(f"[IMGPLACE] ── generate_and_place_images node complete ───────────")
+    return {"final": md}
+
+
+#------------------------------
+# Reducer: Sub-Graph
+#------------------------------
+reducer_graph = StateGraph(State)
+reducer_graph.add_node("merge_content", merge_content)
+reducer_graph.add_node("decide_images", decide_images)
+reducer_graph.add_node("generate_and_place_images", generate_and_place_images)
+
+reducer_graph.add_edge(START, "merge_content")
+reducer_graph.add_edge("merge_content", "decide_images")
+reducer_graph.add_edge("decide_images", "generate_and_place_images")
+reducer_graph.add_edge("generate_and_place_images", END)
+
+reducer_subgraph = reducer_graph.compile()
 
 
 #------------------------------
 # Graph
 #------------------------------
 
-logger.debug("[SETUP] Building LangGraph state graph...")
 g = StateGraph(State)
 
 g.add_node("router", router_node)
 g.add_node("research", research_node)
 g.add_node("orchestrator", orchestrator_node)
 g.add_node("worker", worker_node)
-g.add_node("reducer", reducer_node)
+g.add_node("reducer", reducer_subgraph)
 
 g.add_edge(START, "router")
 g.add_conditional_edges("router", route_next, {"research": "research", "orchestrator": "orchestrator"})
@@ -632,8 +1093,6 @@ g.add_edge("worker", "reducer")
 g.add_edge("reducer", END)
 
 app = g.compile()
-logger.debug("[SETUP] LangGraph compiled successfully.")
-
 
 #------------------------------
 # Runner
@@ -645,29 +1104,41 @@ def run(topic: str):
     logger.info(f"[RUN] Topic : '{topic}'")
     logger.info("=" * 65)
 
-    out = app.invoke(
-        {
-            "topic": topic,
-            "mode": "",
-            "needs_research": False,
-            "queries": [],
-            "evidence": [],
-            "plan": None,
-            "sections": [],
-            "final": "",
-        }
-    )
+    start_time = datetime.now()
+    logger.debug(f"[RUN] Start timestamp: {start_time.isoformat()}")
+
+    try:
+        out = app.invoke(
+            {
+                "topic": topic,
+                "mode": "",
+                "needs_research": False,
+                "queries": [],
+                "evidence": [],
+                "plan": None,
+                "sections": [],
+                "final": "",
+            }
+        )
+    except Exception as e:
+        logger.critical(f"[RUN] Pipeline FAILED with unhandled exception: {e}", exc_info=True)
+        raise
+
+    elapsed = (datetime.now() - start_time).total_seconds()
+    final_word_count = len((out.get("final") or "").split())
 
     logger.info("=" * 65)
     logger.info("[RUN] Pipeline COMPLETE")
+    logger.info(f"[RUN] Elapsed time    : {elapsed:.2f}s")
+    logger.info(f"[RUN] Final word count: ~{final_word_count} words")
+    logger.info(f"[RUN] Mode used       : '{out.get('mode', 'N/A')}'")
+    logger.info(f"[RUN] Evidence items  : {len(out.get('evidence', []))}")
+    logger.info(f"[RUN] Sections written: {len(out.get('sections', []))}")
     logger.info("=" * 65)
+
     return out
 
 
-query = "Write a blog on the Quantum Entanglement."
+query = "Write a blog on the Requirements of 6th Generation Fighter Jet."
 response = run(query)
 logger.info("[RESPONSE] Blog Generation Complete.")
-
-print("\n"*2)
-print(response)
-print("\n"*2)
