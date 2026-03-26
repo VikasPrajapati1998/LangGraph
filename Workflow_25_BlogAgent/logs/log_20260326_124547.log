@@ -1,0 +1,23 @@
+2026-03-26 12:45:47 | INFO     | BlogWriter | Logger initialised. Log file: logs\log_20260326_124547.log
+2026-03-26 12:45:47 | DEBUG    | BlogWriter | [SETUP] Initialising LLMs...
+2026-03-26 12:45:47 | DEBUG    | BlogWriter | [SETUP] LLMs ready.
+2026-03-26 12:45:47 | INFO     | BlogWriter | [STARTUP] PostgreSQL tables ready.
+2026-03-26 12:45:47 | INFO     | BlogWriter | [STARTUP] LangGraph workflow compiled. Checkpointer DB: 'blog_hitl.db'
+2026-03-26 12:46:40 | INFO     | BlogWriter | [API] /blogs/generate — topic='Global Warming' thread_id='67c47556-7aed-493b-b678-ed11fa1b1fca'
+2026-03-26 12:46:40 | INFO     | BlogWriter | [BG] Starting workflow for thread_id='67c47556-7aed-493b-b678-ed11fa1b1fca' topic='Global Warming'
+2026-03-26 12:46:40 | ERROR    | BlogWriter | [BG] Workflow FAILED for thread='67c47556-7aed-493b-b678-ed11fa1b1fca': 'Connection' object has no attribute 'is_alive'
+Traceback (most recent call last):
+  File "D:\Study\LangGraph\Workflow_25_BlogAgent\main.py", line 128, in _run_workflow
+    async for event in workflow.astream(
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langgraph\pregel\main.py", line 2891, in astream
+    async with AsyncPregelLoop(
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langgraph\pregel\_loop.py", line 1264, in __aenter__
+    saved = await self.checkpointer.aget_tuple(self.checkpoint_config)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langgraph\checkpoint\sqlite\aio.py", line 330, in aget_tuple
+    await self.setup()
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langgraph\checkpoint\sqlite\aio.py", line 284, in setup
+    if not self.conn.is_alive():
+           ^^^^^^^^^^^^^^^^^^
+AttributeError: 'Connection' object has no attribute 'is_alive'
+2026-03-26 12:49:12 | INFO     | BlogWriter | [SHUTDOWN] Application shutting down.
