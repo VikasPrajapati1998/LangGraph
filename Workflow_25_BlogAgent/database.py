@@ -11,7 +11,7 @@ from typing import Optional
 from dotenv import load_dotenv, find_dotenv
 from sqlalchemy import (
     Column, String, Text, DateTime, Enum,
-    Integer, func, text,
+    Integer, func,
 )
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
@@ -133,3 +133,5 @@ async def init_db() -> None:
     """Create all tables if they don't exist (run once at startup)."""
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+

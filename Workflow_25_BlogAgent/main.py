@@ -133,128 +133,114 @@ class StatusResponse(BaseModel):
 
 
 # ──────────────────────────────────────────────────────────────
+# Shared helpers
+# ──────────────────────────────────────────────────────────────
+
+async def _update_blog(db: AsyncSession, thread_id: str, **values) -> None:
+    """Single helper for all Postgres blog-post updates."""
+    values["updated_at"] = datetime.now(timezone.utc)
+    await db.execute(
+        update(BlogPost).where(BlogPost.thread_id == thread_id).values(**values)
+    )
+    await db.commit()
+
+
+async def _validate_pending_blog(thread_id: str, db: AsyncSession):
+    """
+    Shared guard used by approve and reject endpoints.
+    Returns (blog, config) if valid; raises HTTPException otherwise.
+    """
+    result = await db.execute(select(BlogPost).where(BlogPost.thread_id == thread_id))
+    blog   = result.scalar_one_or_none()
+    if blog is None:
+        raise HTTPException(status_code=404, detail=f"Blog '{thread_id}' not found.")
+    if blog.status != BlogStatus.PENDING:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Blog is not in PENDING state (current: {blog.status.value})."
+        )
+    config     = {"configurable": {"thread_id": thread_id}}
+    state      = await workflow.aget_state(config)
+    next_nodes = list(state.next) if state.next else []
+    if "human_approval" not in next_nodes:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Workflow is not paused at human_approval. next={next_nodes}"
+        )
+    return blog, config
+
+
+# ──────────────────────────────────────────────────────────────
 # Background task — run workflow until HITL checkpoint
 # ──────────────────────────────────────────────────────────────
 
 async def _run_workflow(thread_id: str, topic: str, db: AsyncSession):
     config = {"configurable": {"thread_id": thread_id}}
-
     try:
-        logger.info(f"[BG] Starting workflow for thread_id='{thread_id}' topic='{topic}'")
+        logger.info(f"[BG] Starting workflow thread='{thread_id}' topic='{topic}'")
 
         async for event in workflow.astream(
             {
-                "topic":           topic,
-                "mode":            "",
-                "needs_research":  False,
-                "queries":         [],
-                "evidence":        [],
-                "plan":            None,
-                "sections":        [],
-                "final":           "",
-                "approval_status": None,
-                "rejection_reason": None,
+                "topic": topic, "mode": "", "needs_research": False,
+                "queries": [], "evidence": [], "plan": None,
+                "sections": [], "final": "",
+                "approval_status": None, "rejection_reason": None,
             },
-            config=config,
-            stream_mode="values",
+            config=config, stream_mode="values",
         ):
-            plan    = event.get("plan")
-            merged  = event.get("merged_md") or event.get("final") or ""
-
+            plan   = event.get("plan")
+            merged = event.get("merged_md") or event.get("final") or ""
             if plan or merged:
-                await db.execute(
-                    update(BlogPost)
-                    .where(BlogPost.thread_id == thread_id)
-                    .values(
-                        blog_title = plan.blog_title if plan else None,
-                        content    = merged or None,
-                        updated_at = datetime.now(timezone.utc),
-                    )
+                await _update_blog(db, thread_id,
+                    blog_title = plan.blog_title if plan else None,
+                    content    = merged or None,
                 )
-                await db.commit()
 
-        # Workflow paused at HITL checkpoint
         state = await workflow.aget_state(config)
         logger.info(f"[BG] Workflow paused. next={state.next} thread='{thread_id}'")
-
-        await db.execute(
-            update(BlogPost)
-            .where(BlogPost.thread_id == thread_id)
-            .values(status=BlogStatus.PENDING, updated_at=datetime.now(timezone.utc))
-        )
-        await db.commit()
-        logger.info(f"[BG] Postgres updated → PENDING for thread='{thread_id}'")
+        await _update_blog(db, thread_id, status=BlogStatus.PENDING)
+        logger.info(f"[BG] Postgres → PENDING thread='{thread_id}'")
 
     except Exception as e:
-        logger.error(f"[BG] Workflow FAILED for thread='{thread_id}': {e}", exc_info=True)
-        await db.execute(
-            update(BlogPost)
-            .where(BlogPost.thread_id == thread_id)
-            .values(status=BlogStatus.FAILED, updated_at=datetime.now(timezone.utc))
-        )
-        await db.commit()
+        logger.error(f"[BG] Workflow FAILED thread='{thread_id}': {e}", exc_info=True)
+        await _update_blog(db, thread_id, status=BlogStatus.FAILED)
 
 
 async def _resume_workflow(thread_id: str, db: AsyncSession):
     config = {"configurable": {"thread_id": thread_id}}
-
     try:
-        logger.info(f"[BG] Resuming workflow for thread='{thread_id}'")
+        logger.info(f"[BG] Resuming workflow thread='{thread_id}'")
 
         async for event in workflow.astream(None, config=config, stream_mode="values"):
             final = event.get("final")
             plan  = event.get("plan")
             if final or plan:
-                await db.execute(
-                    update(BlogPost)
-                    .where(BlogPost.thread_id == thread_id)
-                    .values(
-                        blog_title = plan.blog_title if plan else None,
-                        content    = final or None,
-                        updated_at = datetime.now(timezone.utc),
-                    )
+                await _update_blog(db, thread_id,
+                    blog_title = plan.blog_title if plan else None,
+                    content    = final or None,
                 )
-                await db.commit()
 
-        # Determine final status
-        state = await workflow.aget_state(config)
+        state           = await workflow.aget_state(config)
         approval_status = state.values.get("approval_status", "").lower()
 
         if approval_status == "approved":
-            await db.execute(
-                update(BlogPost)
-                .where(BlogPost.thread_id == thread_id)
-                .values(
-                    status      = BlogStatus.COMPLETED,
-                    approved_at = datetime.now(timezone.utc),
-                    updated_at  = datetime.now(timezone.utc),
-                )
+            await _update_blog(db, thread_id,
+                status      = BlogStatus.COMPLETED,
+                approved_at = datetime.now(timezone.utc),
             )
-            logger.info(f"[BG] Workflow COMPLETED (approved) for thread='{thread_id}'")
+            logger.info(f"[BG] Workflow COMPLETED (approved) thread='{thread_id}'")
         else:
-            rejection_reason = state.values.get("rejection_reason") or "No reason provided."
-            await db.execute(
-                update(BlogPost)
-                .where(BlogPost.thread_id == thread_id)
-                .values(
-                    status           = BlogStatus.REJECTED,
-                    rejection_reason = rejection_reason,
-                    rejected_at      = datetime.now(timezone.utc),
-                    updated_at       = datetime.now(timezone.utc),
-                )
+            reason = state.values.get("rejection_reason") or "No reason provided."
+            await _update_blog(db, thread_id,
+                status           = BlogStatus.REJECTED,
+                rejection_reason = reason,
+                rejected_at      = datetime.now(timezone.utc),
             )
-            logger.info(f"[BG] Workflow COMPLETED (rejected) for thread='{thread_id}'")
-
-        await db.commit()
+            logger.info(f"[BG] Workflow COMPLETED (rejected) thread='{thread_id}'")
 
     except Exception as e:
-        logger.error(f"[BG] Resume FAILED for thread='{thread_id}': {e}", exc_info=True)
-        await db.execute(
-            update(BlogPost)
-            .where(BlogPost.thread_id == thread_id)
-            .values(status=BlogStatus.FAILED, updated_at=datetime.now(timezone.utc))
-        )
-        await db.commit()
+        logger.error(f"[BG] Resume FAILED thread='{thread_id}': {e}", exc_info=True)
+        await _update_blog(db, thread_id, status=BlogStatus.FAILED)
 
 
 # ──────────────────────────────────────────────────────────────
@@ -350,26 +336,8 @@ async def approve_blog(
     background_tasks: BackgroundTasks,
     db:               AsyncSession = Depends(get_db),
 ):
-    thread_id = request.thread_id
-    config    = {"configurable": {"thread_id": thread_id}}
-
-    result = await db.execute(select(BlogPost).where(BlogPost.thread_id == thread_id))
-    blog   = result.scalar_one_or_none()
-    if blog is None:
-        raise HTTPException(status_code=404, detail=f"Blog with thread_id='{thread_id}' not found.")
-    if blog.status not in (BlogStatus.PENDING,):
-        raise HTTPException(
-            status_code=400,
-            detail=f"Blog is not in PENDING state (current: {blog.status.value})."
-        )
-
-    state      = await workflow.aget_state(config)
-    next_nodes = list(state.next) if state.next else []
-    if "human_approval" not in next_nodes:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Workflow is not paused at human_approval. next={next_nodes}"
-        )
+    thread_id     = request.thread_id
+    _, config     = await _validate_pending_blog(thread_id, db)
 
     logger.info(f"[API] /blogs/approve — thread_id='{thread_id}'")
 
@@ -378,14 +346,7 @@ async def approve_blog(
         {"approval_status": "approved", "rejection_reason": None},
         as_node="human_approval",
     )
-
-    await db.execute(
-        update(BlogPost)
-        .where(BlogPost.thread_id == thread_id)
-        .values(status=BlogStatus.APPROVED, updated_at=datetime.now(timezone.utc))
-    )
-    await db.commit()
-
+    await _update_blog(db, thread_id, status=BlogStatus.APPROVED)
     background_tasks.add_task(_resume_workflow, thread_id, db)
 
     return {
@@ -401,27 +362,9 @@ async def reject_blog(
     background_tasks: BackgroundTasks,
     db:               AsyncSession = Depends(get_db),
 ):
-    thread_id = request.thread_id
-    reason    = request.rejection_reason or "No reason provided."
-    config    = {"configurable": {"thread_id": thread_id}}
-
-    result = await db.execute(select(BlogPost).where(BlogPost.thread_id == thread_id))
-    blog   = result.scalar_one_or_none()
-    if blog is None:
-        raise HTTPException(status_code=404, detail=f"Blog with thread_id='{thread_id}' not found.")
-    if blog.status not in (BlogStatus.PENDING,):
-        raise HTTPException(
-            status_code=400,
-            detail=f"Blog is not in PENDING state (current: {blog.status.value})."
-        )
-
-    state      = await workflow.aget_state(config)
-    next_nodes = list(state.next) if state.next else []
-    if "human_approval" not in next_nodes:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Workflow is not paused at human_approval. next={next_nodes}"
-        )
+    thread_id     = request.thread_id
+    reason        = request.rejection_reason or "No reason provided."
+    _, config     = await _validate_pending_blog(thread_id, db)
 
     logger.info(f"[API] /blogs/reject — thread_id='{thread_id}' reason='{reason}'")
 
@@ -430,19 +373,11 @@ async def reject_blog(
         {"approval_status": "rejected", "rejection_reason": reason},
         as_node="human_approval",
     )
-
-    await db.execute(
-        update(BlogPost)
-        .where(BlogPost.thread_id == thread_id)
-        .values(
-            status           = BlogStatus.REJECTED,
-            rejection_reason = reason,
-            rejected_at      = datetime.now(timezone.utc),
-            updated_at       = datetime.now(timezone.utc),
-        )
+    await _update_blog(db, thread_id,
+        status           = BlogStatus.REJECTED,
+        rejection_reason = reason,
+        rejected_at      = datetime.now(timezone.utc),
     )
-    await db.commit()
-
     background_tasks.add_task(_resume_workflow, thread_id, db)
 
     return {
@@ -464,22 +399,13 @@ async def update_blog(
     if blog is None:
         raise HTTPException(status_code=404, detail=f"Blog '{thread_id}' not found.")
 
-    update_values = {
-        "content": request.content,
-        "updated_at": datetime.now(timezone.utc)
-    }
+    update_values = {"content": request.content}
     if request.blog_title:
         update_values["blog_title"] = request.blog_title
 
-    await db.execute(
-        update(BlogPost)
-        .where(BlogPost.thread_id == thread_id)
-        .values(**update_values)
-    )
-    await db.commit()
+    await _update_blog(db, thread_id, **update_values)
 
-    # Return updated blog
-    result = await db.execute(select(BlogPost).where(BlogPost.thread_id == thread_id))
+    result       = await db.execute(select(BlogPost).where(BlogPost.thread_id == thread_id))
     updated_blog = result.scalar_one_or_none()
 
     logger.info(f"[API] Blog updated manually — thread_id='{thread_id}'")
@@ -528,3 +454,4 @@ async def list_blogs(
 @app.get("/health")
 async def health():
     return {"status": "ok", "timestamp": datetime.now(timezone.utc).isoformat()}
+

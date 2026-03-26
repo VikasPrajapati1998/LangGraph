@@ -27,6 +27,10 @@ from langchain_tavily import TavilySearch
 from google import genai
 import google.genai.types as types
 
+# Gemini client — created once at module level to avoid per-call init overhead
+_GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "")
+_gemini_client  = genai.Client(api_key=_GOOGLE_API_KEY) if _GOOGLE_API_KEY else None
+
 load_dotenv(find_dotenv())
 
 # ──────────────────────────────────────────────────────────────
@@ -418,13 +422,11 @@ def _inject_placeholders(merged_md: str, images: list) -> str:
 
 
 def _gemini_generate_image_bytes(prompt: str) -> bytes:
-    IMAGE_MODEL  = "gemini-2.5-flash-image"
-    GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-    if not GOOGLE_API_KEY:
+    IMAGE_MODEL = "gemini-2.5-flash-image"
+    if _gemini_client is None:
         raise RuntimeError("GOOGLE_API_KEY is not set.")
 
-    client = genai.Client(api_key=GOOGLE_API_KEY)
-    response = client.models.generate_content(
+    response = _gemini_client.models.generate_content(
         model=IMAGE_MODEL,
         contents=[prompt],
         config=types.GenerateContentConfig(
@@ -543,13 +545,16 @@ def orchestrator_node(state: State) -> dict:
     evidence = state.get("evidence", [])
     mode     = state.get("mode", "closed_book")
 
+    # Build once — avoids repeated serialisation on every retry attempt
+    evidence_dump = [e.model_dump() for e in evidence][:16]
+
     messages = [
         SystemMessage(content=ORCH_SYSTEM),
         HumanMessage(content=(
             f"Topic: {state['topic']}\n"
             f"Mode: {mode}\n\n"
             f"Evidence (ONLY use for fresh claims; may be empty):\n"
-            f"{[e.model_dump() for e in evidence][:16]}"
+            f"{evidence_dump}"
         )),
     ]
 
@@ -575,7 +580,7 @@ def orchestrator_node(state: State) -> dict:
                 f"Topic: {state['topic']}\nMode: {mode}\n\n"
                 "IMPORTANT: You returned an empty tasks list. This is invalid.\n"
                 "You MUST include at least 5 task objects in the tasks array.\n\n"
-                f"Evidence:\n{[e.model_dump() for e in evidence][:16]}"
+                f"Evidence:\n{evidence_dump}"
             )),
         ]
 
