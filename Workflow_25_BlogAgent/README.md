@@ -1,2 +1,5 @@
-pip install fastapi uvicorn asyncpg sqlalchemy langgraph langchain-ollama langchain-tavily google-genai python-dotenv
-uvicorn main:app --reload
+- Use `python 3.11.9`
+- Create `venv`
+- Install: `pip install fastapi uvicorn asyncpg sqlalchemy langgraph langchain-ollama langchain-tavily google-genai python-dotenv`
+- Run: `uvicorn main:app --reload`
+- Swagger: `http://127.0.0.1:8000/docs/` 
