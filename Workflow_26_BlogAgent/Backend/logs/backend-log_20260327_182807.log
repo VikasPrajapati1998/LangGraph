@@ -1,0 +1,30 @@
+2026-03-27 18:28:07 | INFO     | BlogApp | [Logger] Bootstrapped. Log file: logs\backend-log_20260327_182807.log
+2026-03-27 18:28:09 | DEBUG    | BlogApp.Agent | [SETUP] Initialising LLM...
+2026-03-27 18:28:10 | DEBUG    | BlogApp.Agent | [SETUP] LLM ready: model='llama3.2:3b'
+2026-03-27 18:28:10 | INFO     | BlogApp.FastAPI | [STARTUP] Static site mounted: D:\Study\LangGraph\Workflow_26_BlogAgent\Backend\Blogs → /site
+2026-03-27 18:28:10 | INFO     | BlogApp.FastAPI | [STARTUP] PostgreSQL tables ready.
+2026-03-27 18:28:10 | INFO     | BlogApp.FastAPI | [STARTUP] LangGraph workflow compiled. Checkpointer DB: 'blog_hitl.db'
+2026-03-27 18:28:13 | INFO     | BlogApp.FastAPI | [API] /blogs/generate — topic='Update in Mobile Processors' thread_id='a322c6d1-9e11-4936-9926-d2e06f6e0a66'
+2026-03-27 18:28:13 | INFO     | BlogApp.FastAPI | [BG] Starting workflow thread='a322c6d1-9e11-4936-9926-d2e06f6e0a66' topic='Update in Mobile Processors'
+2026-03-27 18:28:13 | INFO     | BlogApp.Agent | [ROUTER] ── Entering router node ──────────────────────────
+2026-03-27 18:28:33 | INFO     | BlogApp.Agent | [ROUTER]   mode='hybrid' | needs_research=True
+2026-03-27 18:28:33 | INFO     | BlogApp.Agent | [ROUTER] ── Router node complete ────────────────────────────
+2026-03-27 18:28:33 | INFO     | BlogApp.Agent | [ROUTER] Routing → 'research'
+2026-03-27 18:28:33 | INFO     | BlogApp.Agent | [RESEARCH] ── Entering research node (9 queries) ──
+2026-03-27 18:28:33 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='What are the latest advancements in mobile processor architecture?'
+2026-03-27 18:28:33 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='How do recent changes in CPU design impact mobile device performance?'
+2026-03-27 18:28:33 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='What is the current state of ARM vs. x86 in mobile processors?'
+2026-03-27 18:28:33 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Are there any new technologies being adopted by major chipmakers for future mobile devices?'
+2026-03-27 18:28:33 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='How do 5G networks affect mobile processor design and optimization?'
+2026-03-27 18:28:33 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='What role do AI and machine learning play in modern mobile processor development?'
+2026-03-27 18:28:33 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Can you compare the performance of different mobile processors from Apple, Samsung, and Qualcomm?'
+2026-03-27 18:28:33 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Are there any emerging trends or technologies that will shape the future of mobile processing?'
+2026-03-27 18:28:33 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='How do mobile processors balance power efficiency with performance for battery life?'
+2026-03-27 18:28:35 | INFO     | BlogApp.Agent | [RESEARCH] Total raw results: 54 (2.59s)
+2026-03-27 18:29:16 | INFO     | BlogApp.FastAPI | [API] /blogs/approve — thread_id='b2b7df1c-13c3-44ca-ad63-cd38811512bd'
+2026-03-27 18:29:16 | INFO     | BlogApp.Agent | [HITL] Routing after approval — status='approved'
+2026-03-27 18:29:16 | INFO     | BlogApp.FastAPI | [BG] Resuming workflow thread='b2b7df1c-13c3-44ca-ad63-cd38811512bd'
+2026-03-27 18:29:16 | INFO     | BlogApp.Agent | [HITL] ── finalize_approved ─────────────────────────────────
+2026-03-27 18:29:16 | INFO     | BlogApp.Agent | [BLOGS] index.html updated with 'Update in Mobile Processors'
+2026-03-27 18:29:16 | INFO     | BlogApp.Agent | [HITL] Blog 'Update in Mobile Processors' published to index.html
+2026-03-27 18:29:16 | INFO     | BlogApp.FastAPI | [BG] Workflow finalized (approved) thread='b2b7df1c-13c3-44ca-ad63-cd38811512bd'

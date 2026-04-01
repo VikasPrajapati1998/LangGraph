@@ -1,0 +1,87 @@
+2026-03-26 12:52:45 | INFO     | BlogWriter | Logger initialised. Log file: logs\log_20260326_125245.log
+2026-03-26 12:52:45 | DEBUG    | BlogWriter | [SETUP] Initialising LLMs...
+2026-03-26 12:52:46 | DEBUG    | BlogWriter | [SETUP] LLMs ready.
+2026-03-26 12:52:46 | INFO     | BlogWriter | [STARTUP] PostgreSQL tables ready.
+2026-03-26 12:52:46 | INFO     | BlogWriter | [STARTUP] LangGraph workflow compiled. Checkpointer DB: 'blog_hitl.db'
+2026-03-26 12:53:13 | INFO     | BlogWriter | [API] /blogs/generate — topic='Global Warming' thread_id='8de127ef-0cc7-4b4f-895e-9c22f3d36a4c'
+2026-03-26 12:53:13 | INFO     | BlogWriter | [BG] Starting workflow for thread_id='8de127ef-0cc7-4b4f-895e-9c22f3d36a4c' topic='Global Warming'
+2026-03-26 12:53:13 | INFO     | BlogWriter | [ROUTER] ── Entering router node ──────────────────────────
+2026-03-26 12:53:13 | DEBUG    | BlogWriter | [ROUTER]   Topic: 'Global Warming'
+2026-03-26 12:53:31 | INFO     | BlogWriter | [ROUTER]   Decision: mode='open_book' | needs_research=True
+2026-03-26 12:53:31 | DEBUG    | BlogWriter | [ROUTER]   Queries (9): ['What is the current global temperature anomaly compared to the 20-year average?', 'List top 5 countries by greenhouse gas emissions per capita.', 'How do renewable energy sources contribute to reducing carbon footprint in Europe?', 'What are the consequences of ocean acidification on marine ecosystems?', 'Can you provide a list of countries with net-zero carbon targets by 2050?', 'How does climate change affect global food production and security?', 'What is the current state of the Paris Agreement on global warming mitigation?', 'List top 10 most polluting industries in the world.', 'How effective are electric vehicles in reducing greenhouse gas emissions from transportation?']
+2026-03-26 12:53:31 | INFO     | BlogWriter | [ROUTER] ── Router node complete ────────────────────────────
+2026-03-26 12:53:31 | INFO     | BlogWriter | [ROUTER] Routing → 'research'
+2026-03-26 12:53:31 | INFO     | BlogWriter | [RESEARCH] ── Entering research node (9 queries) ──
+2026-03-26 12:53:31 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='What is the current global temperature anomaly compared to the 20-year average?'
+2026-03-26 12:53:31 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='List top 5 countries by greenhouse gas emissions per capita.'
+2026-03-26 12:53:31 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='How do renewable energy sources contribute to reducing carbon footprint in Europe?'
+2026-03-26 12:53:31 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='What are the consequences of ocean acidification on marine ecosystems?'
+2026-03-26 12:53:31 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='Can you provide a list of countries with net-zero carbon targets by 2050?'
+2026-03-26 12:53:31 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='How does climate change affect global food production and security?'
+2026-03-26 12:53:31 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='What is the current state of the Paris Agreement on global warming mitigation?'
+2026-03-26 12:53:31 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='List top 10 most polluting industries in the world.'
+2026-03-26 12:53:31 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='How effective are electric vehicles in reducing greenhouse gas emissions from transportation?'
+2026-03-26 12:53:34 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'How does climate change affect global food production and security?' → 6 results | cumulative: 6
+2026-03-26 12:53:34 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'Can you provide a list of countries with net-zero carbon targets by 2050?' → 6 results | cumulative: 12
+2026-03-26 12:53:34 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'List top 10 most polluting industries in the world.' → 6 results | cumulative: 18
+2026-03-26 12:53:34 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'What is the current global temperature anomaly compared to the 20-year average?' → 6 results | cumulative: 24
+2026-03-26 12:53:34 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'How effective are electric vehicles in reducing greenhouse gas emissions from transportation?' → 6 results | cumulative: 30
+2026-03-26 12:53:34 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'How do renewable energy sources contribute to reducing carbon footprint in Europe?' → 6 results | cumulative: 36
+2026-03-26 12:53:34 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'What are the consequences of ocean acidification on marine ecosystems?' → 6 results | cumulative: 42
+2026-03-26 12:53:34 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'List top 5 countries by greenhouse gas emissions per capita.' → 6 results | cumulative: 48
+2026-03-26 12:53:34 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'What is the current state of the Paris Agreement on global warming mitigation?' → 6 results | cumulative: 54
+2026-03-26 12:53:34 | INFO     | BlogWriter | [RESEARCH] Total raw results: 54 (2.76s)
+2026-03-26 12:56:33 | INFO     | BlogWriter | [RESEARCH] Evidence after deduplication: 0 items
+2026-03-26 12:56:33 | WARNING  | BlogWriter | [RESEARCH] All 54 raw results discarded. Closed-book fallback.
+2026-03-26 12:56:33 | INFO     | BlogWriter | [RESEARCH] ── Research node complete ───────────────────────────
+2026-03-26 12:56:33 | INFO     | BlogWriter | [ORCH] ── Entering orchestrator node ──────────────────────
+2026-03-26 12:56:33 | INFO     | BlogWriter | [ORCH] Planning attempt 1/3...
+2026-03-26 12:57:59 | INFO     | BlogWriter | [ORCH] Plan accepted — 5 tasks | title: 'Understanding Global Warming'
+2026-03-26 12:57:59 | INFO     | BlogWriter | [ORCH] ── Orchestrator node complete ─────────────────────────
+2026-03-26 12:57:59 | INFO     | BlogWriter | [DISPATCHER] Dispatching workers...
+2026-03-26 12:57:59 | INFO     | BlogWriter | [WORKER] ── Task 1: 'What is Global Warming?'
+2026-03-26 12:57:59 | INFO     | BlogWriter | [WORKER] ── Task 2: 'Evidence for Global Warming'
+2026-03-26 12:57:59 | INFO     | BlogWriter | [WORKER] ── Task 3: 'Consequences of Global Warming'
+2026-03-26 12:57:59 | INFO     | BlogWriter | [WORKER] ── Task 4: 'Solutions and Mitigation Strategies'
+2026-03-26 12:57:59 | INFO     | BlogWriter | [WORKER] ── Task 5: 'Edge Cases and Failure Modes'
+2026-03-26 12:58:27 | INFO     | BlogWriter | [WORKER] Task 1 done — ~249w (dev=0.4%, 28.51s)
+2026-03-26 12:58:45 | INFO     | BlogWriter | [WORKER] Task 2 done — ~179w (dev=10.5%, 46.14s)
+2026-03-26 12:59:04 | INFO     | BlogWriter | [WORKER] Task 3 done — ~183w (dev=39.0%, 64.93s)
+2026-03-26 12:59:04 | WARNING  | BlogWriter | [WORKER] Task 3 word count deviation > 20%: got 183, target 300
+2026-03-26 12:59:20 | INFO     | BlogWriter | [WORKER] Task 4 done — ~176w (dev=29.6%, 81.47s)
+2026-03-26 12:59:20 | WARNING  | BlogWriter | [WORKER] Task 4 word count deviation > 20%: got 176, target 250
+2026-03-26 12:59:45 | INFO     | BlogWriter | [WORKER] Task 5 done — ~242w (dev=21.0%, 105.63s)
+2026-03-26 12:59:45 | WARNING  | BlogWriter | [WORKER] Task 5 word count deviation > 20%: got 242, target 200
+2026-03-26 12:59:45 | INFO     | BlogWriter | [MERGE] ── Entering merge_content node ──────────────────────
+2026-03-26 12:59:45 | INFO     | BlogWriter | [MERGE] Blog title: 'Understanding Global Warming' | ~1033 words
+2026-03-26 12:59:45 | INFO     | BlogWriter | [MERGE] ── merge_content node complete ───────────────────────
+2026-03-26 12:59:45 | INFO     | BlogWriter | [IMAGES] ── Entering decide_images node ──────────────────────
+2026-03-26 12:59:45 | DEBUG    | BlogWriter | [IMAGES] Sections found: 5
+2026-03-26 13:00:19 | INFO     | BlogWriter | [IMAGES] Images planned: 3
+2026-03-26 13:00:19 | DEBUG    | BlogWriter | [IMAGES] Injected '[[IMAGE_1]]' after heading 'Evidence for Global Warming'
+2026-03-26 13:00:19 | DEBUG    | BlogWriter | [IMAGES] Injected '[[IMAGE_2]]' after heading 'Consequences of Global Warming'
+2026-03-26 13:00:19 | DEBUG    | BlogWriter | [IMAGES] Injected '[[IMAGE_3]]' after heading 'Solutions and Mitigation Strategies'
+2026-03-26 13:00:19 | INFO     | BlogWriter | [IMAGES] ── decide_images node complete ────────────────────────
+2026-03-26 13:00:19 | INFO     | BlogWriter | [IMGPLACE] ── Entering generate_and_place_images node ──────────
+2026-03-26 13:00:19 | INFO     | BlogWriter | [IMGPLACE] Processing image 1: placeholder='[[IMAGE_1]]' | file='arcticIceCap_shrinkage.png'
+2026-03-26 13:00:19 | INFO     | BlogWriter | [IMGPLACE] Processing image 2: placeholder='[[IMAGE_2]]' | file='sea_level_rise_map.png'
+2026-03-26 13:00:19 | INFO     | BlogWriter | [IMGPLACE] Processing image 3: placeholder='[[IMAGE_3]]' | file='renewable_energy_grid.png'
+2026-03-26 13:00:30 | INFO     | BlogWriter | [IMGPLACE] Image 2 saved: 'output\images\sea_level_rise_map.png' (1363787b, 11.00s, attempt 1)
+2026-03-26 13:00:35 | INFO     | BlogWriter | [IMGPLACE] Image 1 saved: 'output\images\arcticIceCap_shrinkage.png' (1139438b, 15.78s, attempt 1)
+2026-03-26 13:00:38 | INFO     | BlogWriter | [IMGPLACE] Image 3 saved: 'output\images\renewable_energy_grid.png' (1516319b, 19.33s, attempt 1)
+2026-03-26 13:00:38 | INFO     | BlogWriter | [IMGPLACE] All futures done in 19.33s
+2026-03-26 13:00:38 | INFO     | BlogWriter | [IMGPLACE] Summary — success=3 | failed=0 | cached=0
+2026-03-26 13:00:38 | INFO     | BlogWriter | [IMGPLACE] Written: 'output\Understanding Global Warming.md' (~1086 words)
+2026-03-26 13:00:38 | INFO     | BlogWriter | [IMGPLACE] ── generate_and_place_images complete ───────────────
+2026-03-26 13:00:38 | INFO     | BlogWriter | [HITL] ── Workflow pausing for human approval ──────────────
+2026-03-26 13:00:38 | INFO     | BlogWriter | [HITL]   Blog title : 'Understanding Global Warming'
+2026-03-26 13:00:38 | INFO     | BlogWriter | [HITL]   Content length: 7429 chars
+2026-03-26 13:00:38 | INFO     | BlogWriter | [BG] Workflow paused. next=('human_approval',) thread='8de127ef-0cc7-4b4f-895e-9c22f3d36a4c'
+2026-03-26 13:00:38 | INFO     | BlogWriter | [BG] Postgres updated → PENDING for thread='8de127ef-0cc7-4b4f-895e-9c22f3d36a4c'
+2026-03-26 13:31:23 | INFO     | BlogWriter | [API] /blogs/approve — thread_id='8de127ef-0cc7-4b4f-895e-9c22f3d36a4c'
+2026-03-26 13:31:23 | INFO     | BlogWriter | [HITL] Routing after approval — status='approved'
+2026-03-26 13:31:23 | INFO     | BlogWriter | [BG] Resuming workflow for thread='8de127ef-0cc7-4b4f-895e-9c22f3d36a4c'
+2026-03-26 13:31:23 | INFO     | BlogWriter | [HITL] ── finalize_approved — blog approved by human ────────
+2026-03-26 13:31:23 | INFO     | BlogWriter | [HITL]   Blog 'Understanding Global Warming' approved and finalised.
+2026-03-26 13:31:23 | INFO     | BlogWriter | [BG] Workflow COMPLETED (approved) for thread='8de127ef-0cc7-4b4f-895e-9c22f3d36a4c'
+2026-03-26 13:48:58 | INFO     | BlogWriter | [SHUTDOWN] Application shutting down.

@@ -1,5 +1,0 @@
-2026-03-26 13:49:03 | INFO     | BlogWriter | Logger initialised. Log file: logs\log_20260326_134903.log
-2026-03-26 13:49:03 | DEBUG    | BlogWriter | [SETUP] Initialising LLMs...
-2026-03-26 13:49:03 | DEBUG    | BlogWriter | [SETUP] LLMs ready.
-2026-03-26 13:49:03 | INFO     | BlogWriter | [STARTUP] PostgreSQL tables ready.
-2026-03-26 13:49:03 | INFO     | BlogWriter | [STARTUP] LangGraph workflow compiled. Checkpointer DB: 'blog_hitl.db'

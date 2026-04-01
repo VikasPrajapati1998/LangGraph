@@ -1,0 +1,7 @@
+2026-03-30 16:15:00 | INFO     | BlogApp | [Logger] Bootstrapped. Log file: logs\backend-log_20260330_161500.log
+2026-03-30 16:15:03 | DEBUG    | BlogApp.Agent | [SETUP] Initialising LLM...
+2026-03-30 16:15:03 | DEBUG    | BlogApp.Agent | [SETUP] LLM ready: model='llama3.2:3b'
+2026-03-30 16:15:04 | INFO     | BlogApp.FastAPI | [STARTUP] Static site mounted: D:\Study\LangGraph\Workflow_27_BlogWriter\Backend\Blogs → /site
+2026-03-30 16:15:04 | INFO     | BlogApp.FastAPI | [STARTUP] PostgreSQL tables ready.
+2026-03-30 16:15:04 | INFO     | BlogApp.FastAPI | [STARTUP] LangGraph workflow compiled. Checkpointer DB: 'blog_hitl.db'
+2026-03-30 16:15:33 | INFO     | BlogApp.FastAPI | [SHUTDOWN] Application shutting down.

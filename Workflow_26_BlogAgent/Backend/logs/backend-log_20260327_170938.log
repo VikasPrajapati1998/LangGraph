@@ -1,0 +1,73 @@
+2026-03-27 17:09:38 | INFO     | BlogApp | [Logger] Bootstrapped. Log file: logs\backend-log_20260327_170938.log
+2026-03-27 17:09:41 | DEBUG    | BlogApp.Agent | [SETUP] Initialising LLM...
+2026-03-27 17:09:41 | DEBUG    | BlogApp.Agent | [SETUP] LLM ready: model='llama3.2:3b'
+2026-03-27 17:09:41 | INFO     | BlogApp.FastAPI | [STARTUP] Static site mounted: D:\Study\LangGraph\Workflow_26_BlogAgent\Backend\Blogs → /site
+2026-03-27 17:09:41 | INFO     | BlogApp.FastAPI | [STARTUP] PostgreSQL tables ready.
+2026-03-27 17:09:41 | INFO     | BlogApp.FastAPI | [STARTUP] LangGraph workflow compiled. Checkpointer DB: 'blog_hitl.db'
+2026-03-27 17:10:56 | INFO     | BlogApp.FastAPI | [API] /blogs/generate — topic='Update in Mobile Processors' thread_id='b2b7df1c-13c3-44ca-ad63-cd38811512bd'
+2026-03-27 17:10:56 | INFO     | BlogApp.FastAPI | [BG] Starting workflow thread='b2b7df1c-13c3-44ca-ad63-cd38811512bd' topic='Update in Mobile Processors'
+2026-03-27 17:10:56 | INFO     | BlogApp.Agent | [ROUTER] ── Entering router node ──────────────────────────
+2026-03-27 17:11:13 | INFO     | BlogApp.Agent | [ROUTER]   mode='hybrid' | needs_research=True
+2026-03-27 17:11:13 | INFO     | BlogApp.Agent | [ROUTER] ── Router node complete ────────────────────────────
+2026-03-27 17:11:13 | INFO     | BlogApp.Agent | [ROUTER] Routing → 'research'
+2026-03-27 17:11:13 | INFO     | BlogApp.Agent | [RESEARCH] ── Entering research node (9 queries) ──
+2026-03-27 17:11:13 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='What's the latest update on mobile processor architecture?'
+2026-03-27 17:11:13 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='How do recent advancements in CPU design impact mobile devices?'
+2026-03-27 17:11:13 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='What are the key features of the new Qualcomm Snapdragon 8 series processors?'
+2026-03-27 17:11:13 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='How do newer mobile processors improve power efficiency and performance?'
+2026-03-27 17:11:13 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='What role will AI-enhanced processing play in future mobile chipsets?'
+2026-03-27 17:11:13 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Is there a shift towards more powerful and efficient mobile processors?'
+2026-03-27 17:11:13 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='What's the current state of 5G-enabled mobile processor development?'
+2026-03-27 17:11:13 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Can we expect significant updates to mobile GPU capabilities?'
+2026-03-27 17:11:13 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='How do advancements in mobile processor cooling technology impact device performance?'
+2026-03-27 17:11:16 | INFO     | BlogApp.Agent | [RESEARCH] Total raw results: 54 (2.66s)
+2026-03-27 17:14:15 | INFO     | BlogApp.Agent | [RESEARCH] Evidence after deduplication: 0 items
+2026-03-27 17:14:15 | INFO     | BlogApp.Agent | [RESEARCH] ── Research node complete ───────────────────────────
+2026-03-27 17:14:15 | INFO     | BlogApp.Agent | [ORCH] ── Entering orchestrator node ──────────────────────
+2026-03-27 17:14:15 | INFO     | BlogApp.Agent | [ORCH] Planning attempt 1/3...
+2026-03-27 17:16:20 | INFO     | BlogApp.Agent | [ORCH] Plan accepted — 8 tasks | 'Update in Mobile Processors'
+2026-03-27 17:16:20 | INFO     | BlogApp.Agent | [ORCH] ── Orchestrator node complete ─────────────────────────
+2026-03-27 17:16:21 | INFO     | BlogApp.Agent | [DISPATCHER] Dispatching workers...
+2026-03-27 17:16:21 | INFO     | BlogApp.Agent | [WORKER] ── Task 1: 'Understanding the Need for Update in Mobile Processors'
+2026-03-27 17:16:21 | INFO     | BlogApp.Agent | [WORKER] ── Task 2: 'New Technologies and Architectures'
+2026-03-27 17:16:21 | INFO     | BlogApp.Agent | [WORKER] ── Task 3: 'Comparison of Old and New Processors'
+2026-03-27 17:16:21 | INFO     | BlogApp.Agent | [WORKER] ── Task 4: 'Edge Cases and Failure Modes'
+2026-03-27 17:16:21 | INFO     | BlogApp.Agent | [WORKER] ── Task 5: 'Debugging and Observability Tips'
+2026-03-27 17:16:21 | INFO     | BlogApp.Agent | [WORKER] ── Task 6: 'Performance and Cost Considerations'
+2026-03-27 17:16:21 | INFO     | BlogApp.Agent | [WORKER] ── Task 7: 'Security and Privacy Considerations'
+2026-03-27 17:16:21 | INFO     | BlogApp.Agent | [WORKER] ── Task 8: 'Future Directions and Outlook'
+2026-03-27 17:16:54 | INFO     | BlogApp.Agent | [WORKER] Task 1 done — ~324w (dev=29.6%, 33.26s)
+2026-03-27 17:16:54 | WARNING  | BlogApp.Agent | [WORKER] Task 1 word count deviation > 20%: got 324, target 250
+2026-03-27 17:17:19 | INFO     | BlogApp.Agent | [WORKER] Task 3 done — ~256w (dev=14.7%, 58.62s)
+2026-03-27 17:17:35 | INFO     | BlogApp.Agent | [WORKER] Task 2 done — ~174w (dev=13.0%, 74.93s)
+2026-03-27 17:18:01 | INFO     | BlogApp.Agent | [WORKER] Task 4 done — ~241w (dev=20.5%, 100.14s)
+2026-03-27 17:18:01 | WARNING  | BlogApp.Agent | [WORKER] Task 4 word count deviation > 20%: got 241, target 200
+2026-03-27 17:18:21 | INFO     | BlogApp.Agent | [WORKER] Task 8 done — ~232w (dev=7.2%, 120.66s)
+2026-03-27 17:18:59 | INFO     | BlogApp.Agent | [WORKER] Task 6 done — ~321w (dev=28.4%, 158.77s)
+2026-03-27 17:18:59 | WARNING  | BlogApp.Agent | [WORKER] Task 6 word count deviation > 20%: got 321, target 250
+2026-03-27 17:19:24 | INFO     | BlogApp.Agent | [WORKER] Task 5 done — ~220w (dev=12.0%, 183.53s)
+2026-03-27 17:19:48 | INFO     | BlogApp.Agent | [WORKER] Task 7 done — ~251w (dev=25.5%, 207.09s)
+2026-03-27 17:19:48 | WARNING  | BlogApp.Agent | [WORKER] Task 7 word count deviation > 20%: got 251, target 200
+2026-03-27 17:19:48 | INFO     | BlogApp.Agent | [MERGE] ── Entering merge_content node ──────────────────────
+2026-03-27 17:19:48 | INFO     | BlogApp.Agent | [MERGE] Title: 'Update in Mobile Processors' | ~2024 words
+2026-03-27 17:19:48 | INFO     | BlogApp.Agent | [MERGE] ── merge_content node complete ───────────────────────
+2026-03-27 17:19:48 | INFO     | BlogApp.Agent | [IMAGES] ── Entering decide_images node ──────────────────────
+2026-03-27 17:20:19 | INFO     | BlogApp.Agent | [IMAGES] Images planned: 3
+2026-03-27 17:20:19 | DEBUG    | BlogApp.Agent | [IMAGES] Injected '[[IMAGE_1]]' after heading 'New Technologies and Architectures'
+2026-03-27 17:20:19 | DEBUG    | BlogApp.Agent | [IMAGES] Injected '[[IMAGE_2]]' after heading 'Comparison of Old and New Processors'
+2026-03-27 17:20:19 | DEBUG    | BlogApp.Agent | [IMAGES] Injected '[[IMAGE_3]]' after heading 'Performance and Cost Considerations'
+2026-03-27 17:20:19 | INFO     | BlogApp.Agent | [IMGPLACE] ── Entering generate_and_place_images node ──────────
+2026-03-27 17:20:19 | INFO     | BlogApp.Agent | [BLOGS] Created Blogs\index.html
+2026-03-27 17:20:19 | INFO     | BlogApp.Agent | [BLOGS] Created Blogs\style.css
+2026-03-27 17:20:19 | INFO     | BlogApp.Agent | [BLOGS] Created Blogs\script.js
+2026-03-27 17:20:28 | INFO     | BlogApp.Agent | [IMGPLACE] Image 3 saved: 'Blogs\contents\images\Update_in_Mobile_Processors\performance_cost_tradeoff_diagram.png' (1285937b, attempt 1)
+2026-03-27 17:20:29 | INFO     | BlogApp.Agent | [IMGPLACE] Image 1 saved: 'Blogs\contents\images\Update_in_Mobile_Processors\mobile_processor_architecture.png' (1640697b, attempt 1)
+2026-03-27 17:20:29 | INFO     | BlogApp.Agent | [IMGPLACE] Image 2 saved: 'Blogs\contents\images\Update_in_Mobile_Processors\processor_comparison_flowchart.png' (1132829b, attempt 1)
+2026-03-27 17:20:29 | INFO     | BlogApp.Agent | [IMGPLACE] Summary — success=3 | failed=0 | cached=0
+2026-03-27 17:20:29 | INFO     | BlogApp.Agent | [BLOGS] Saved blog files: Blogs\contents\html\Update_in_Mobile_Processors.html
+2026-03-27 17:20:29 | INFO     | BlogApp.Agent | [IMGPLACE] ── generate_and_place_images complete ───────────────
+2026-03-27 17:20:29 | INFO     | BlogApp.Agent | [HITL] ── Workflow pausing for human approval ──────────────
+2026-03-27 17:20:29 | INFO     | BlogApp.Agent | [HITL]   Title: 'Update in Mobile Processors'
+2026-03-27 17:20:29 | INFO     | BlogApp.FastAPI | [BG] Workflow paused. next=('human_approval',) thread='b2b7df1c-13c3-44ca-ad63-cd38811512bd'
+2026-03-27 17:20:29 | INFO     | BlogApp.FastAPI | [BG] Postgres → PENDING  thread='b2b7df1c-13c3-44ca-ad63-cd38811512bd'
+2026-03-27 18:27:56 | INFO     | BlogApp.FastAPI | [SHUTDOWN] Application shutting down.

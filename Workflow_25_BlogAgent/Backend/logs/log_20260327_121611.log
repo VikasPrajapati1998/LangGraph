@@ -1,0 +1,207 @@
+2026-03-27 12:16:11 | INFO     | BlogWriter | Logger initialised. Log file: logs\log_20260327_121611.log
+2026-03-27 12:16:11 | DEBUG    | BlogWriter | [SETUP] Initialising LLMs...
+2026-03-27 12:16:12 | DEBUG    | BlogWriter | [SETUP] LLMs ready.
+2026-03-27 12:16:12 | INFO     | BlogWriter | [STARTUP] PostgreSQL tables ready.
+2026-03-27 12:16:12 | INFO     | BlogWriter | [STARTUP] LangGraph workflow compiled. Checkpointer DB: 'blog_hitl.db'
+2026-03-27 12:32:27 | INFO     | BlogWriter | [API] /blogs/generate — topic='Pollution in Delhi, India' thread_id='8133a45d-c5e9-4fb0-9b0d-2547df455379'
+2026-03-27 12:32:27 | INFO     | BlogWriter | [BG] Starting workflow thread='8133a45d-c5e9-4fb0-9b0d-2547df455379' topic='Pollution in Delhi, India'
+2026-03-27 12:32:27 | INFO     | BlogWriter | [ROUTER] ── Entering router node ──────────────────────────
+2026-03-27 12:32:27 | DEBUG    | BlogWriter | [ROUTER]   Topic: 'Pollution in Delhi, India'
+2026-03-27 12:32:29 | ERROR    | BlogWriter | [ROUTER] LLM invocation failed: [WinError 10061] No connection could be made because the target machine actively refused it
+Traceback (most recent call last):
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpx\_transports\default.py", line 250, in handle_request
+    resp = self._pool.handle_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpcore\_sync\connection_pool.py", line 256, in handle_request
+    raise exc from None
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpcore\_sync\connection_pool.py", line 236, in handle_request
+    response = connection.handle_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpcore\_sync\connection.py", line 101, in handle_request
+    raise exc
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpcore\_sync\connection.py", line 78, in handle_request
+    stream = self._connect(request)
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpcore\_sync\connection.py", line 124, in _connect
+    stream = self._network_backend.connect_tcp(**kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpcore\_backends\sync.py", line 207, in connect_tcp
+    with map_exceptions(exc_map):
+  File "C:\Program Files\Python311\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError: [WinError 10061] No connection could be made because the target machine actively refused it
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Study\LangGraph\Workflow_25_BlogAgent\Backend\blog_agent.py", line 472, in router_node
+    decision = decider.invoke([
+               ^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_core\runnables\base.py", line 3149, in invoke
+    input_ = context.run(step.invoke, input_, config, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_core\runnables\base.py", line 5557, in invoke
+    return self.bound.invoke(
+           ^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 402, in invoke
+    self.generate_prompt(
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1121, in generate_prompt
+    return self.generate(prompt_messages, stop=stop, callbacks=callbacks, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 931, in generate
+    self._generate_with_cache(
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1225, in _generate_with_cache
+    result = self._generate(
+             ^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_ollama\chat_models.py", line 1030, in _generate
+    final_chunk = self._chat_stream_with_aggregation(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_ollama\chat_models.py", line 965, in _chat_stream_with_aggregation
+    for chunk in self._iterate_over_stream(messages, stop, **kwargs):
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_ollama\chat_models.py", line 1054, in _iterate_over_stream
+    for stream_resp in self._create_chat_stream(messages, stop, **kwargs):
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_ollama\chat_models.py", line 952, in _create_chat_stream
+    yield from self._client.chat(**chat_params)
+  File "D:\Study\LangGraph\venv\Lib\site-packages\ollama\_client.py", line 174, in inner
+    with self._client.stream(*args, **kwargs) as r:
+  File "C:\Program Files\Python311\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpx\_client.py", line 868, in stream
+    response = self.send(
+               ^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpx\_client.py", line 914, in send
+    response = self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpx\_client.py", line 942, in _send_handling_auth
+    response = self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpx\_client.py", line 979, in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpx\_client.py", line 1014, in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpx\_transports\default.py", line 249, in handle_request
+    with map_httpcore_exceptions():
+  File "C:\Program Files\Python311\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-03-27 12:32:29 | ERROR    | BlogWriter | [BG] Workflow FAILED thread='8133a45d-c5e9-4fb0-9b0d-2547df455379': [WinError 10061] No connection could be made because the target machine actively refused it
+Traceback (most recent call last):
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpx\_transports\default.py", line 250, in handle_request
+    resp = self._pool.handle_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpcore\_sync\connection_pool.py", line 256, in handle_request
+    raise exc from None
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpcore\_sync\connection_pool.py", line 236, in handle_request
+    response = connection.handle_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpcore\_sync\connection.py", line 101, in handle_request
+    raise exc
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpcore\_sync\connection.py", line 78, in handle_request
+    stream = self._connect(request)
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpcore\_sync\connection.py", line 124, in _connect
+    stream = self._network_backend.connect_tcp(**kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpcore\_backends\sync.py", line 207, in connect_tcp
+    with map_exceptions(exc_map):
+  File "C:\Program Files\Python311\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError: [WinError 10061] No connection could be made because the target machine actively refused it
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Study\LangGraph\Workflow_25_BlogAgent\Backend\main.py", line 182, in _run_workflow
+    async for event in workflow.astream(
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langgraph\pregel\main.py", line 2974, in astream
+    async for _ in runner.atick(
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langgraph\pregel\_runner.py", line 304, in atick
+    await arun_with_retry(
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langgraph\pregel\_retry.py", line 138, in arun_with_retry
+    return await task.proc.ainvoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langgraph\_internal\_runnable.py", line 705, in ainvoke
+    input = await asyncio.create_task(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langgraph\_internal\_runnable.py", line 473, in ainvoke
+    ret = await self.afunc(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_core\runnables\config.py", line 610, in run_in_executor
+    return await asyncio.get_running_loop().run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python311\Lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_core\runnables\config.py", line 601, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\Workflow_25_BlogAgent\Backend\blog_agent.py", line 472, in router_node
+    decision = decider.invoke([
+               ^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_core\runnables\base.py", line 3149, in invoke
+    input_ = context.run(step.invoke, input_, config, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_core\runnables\base.py", line 5557, in invoke
+    return self.bound.invoke(
+           ^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 402, in invoke
+    self.generate_prompt(
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1121, in generate_prompt
+    return self.generate(prompt_messages, stop=stop, callbacks=callbacks, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 931, in generate
+    self._generate_with_cache(
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1225, in _generate_with_cache
+    result = self._generate(
+             ^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_ollama\chat_models.py", line 1030, in _generate
+    final_chunk = self._chat_stream_with_aggregation(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_ollama\chat_models.py", line 965, in _chat_stream_with_aggregation
+    for chunk in self._iterate_over_stream(messages, stop, **kwargs):
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_ollama\chat_models.py", line 1054, in _iterate_over_stream
+    for stream_resp in self._create_chat_stream(messages, stop, **kwargs):
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_ollama\chat_models.py", line 952, in _create_chat_stream
+    yield from self._client.chat(**chat_params)
+  File "D:\Study\LangGraph\venv\Lib\site-packages\ollama\_client.py", line 174, in inner
+    with self._client.stream(*args, **kwargs) as r:
+  File "C:\Program Files\Python311\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpx\_client.py", line 868, in stream
+    response = self.send(
+               ^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpx\_client.py", line 914, in send
+    response = self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpx\_client.py", line 942, in _send_handling_auth
+    response = self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpx\_client.py", line 979, in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpx\_client.py", line 1014, in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpx\_transports\default.py", line 249, in handle_request
+    with map_httpcore_exceptions():
+  File "C:\Program Files\Python311\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "D:\Study\LangGraph\venv\Lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError: [WinError 10061] No connection could be made because the target machine actively refused it
+During task with name 'router' and id 'b5e781a6-1eb3-857e-170a-b03e1285c995'
+2026-03-27 12:32:51 | INFO     | BlogWriter | [SHUTDOWN] Application shutting down.

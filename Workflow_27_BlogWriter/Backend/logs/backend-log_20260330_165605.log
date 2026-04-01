@@ -1,0 +1,72 @@
+2026-03-30 16:56:05 | INFO     | BlogApp | [Logger] Bootstrapped. Log file: logs\backend-log_20260330_165605.log
+2026-03-30 16:56:07 | DEBUG    | BlogApp.Agent | [SETUP] Initialising LLM...
+2026-03-30 16:56:08 | DEBUG    | BlogApp.Agent | [SETUP] LLM ready: model='llama3.2:3b'
+2026-03-30 16:56:08 | INFO     | BlogApp.FastAPI | [STARTUP] Static site mounted: D:\Study\LangGraph\Workflow_27_BlogWriter\Backend\Blogs → /site
+2026-03-30 16:56:08 | INFO     | BlogApp.FastAPI | [STARTUP] PostgreSQL tables ready.
+2026-03-30 16:56:08 | INFO     | BlogApp.FastAPI | [STARTUP] LangGraph workflow compiled. Checkpointer DB: 'blog_hitl.db'
+2026-03-30 16:57:02 | INFO     | BlogApp.FastAPI | [API] /blogs/generate — topic='Renewable Energy Resources' thread_id='366fb20c-829e-4100-84ac-f007d3395233'
+2026-03-30 16:57:02 | INFO     | BlogApp.FastAPI | [BG] Starting workflow thread='366fb20c-829e-4100-84ac-f007d3395233' topic='Renewable Energy Resources'
+2026-03-30 16:57:02 | INFO     | BlogApp.Agent | [ROUTER] ── Entering router node ──────────────────────────
+2026-03-30 16:57:05 | INFO     | BlogApp.Agent | [ROUTER] Current date (IST): 2026-03-30 | Time: 16:57:05 | Year: 2026
+2026-03-30 16:57:38 | INFO     | BlogApp.Agent | [ROUTER]   mode='hybrid' | needs_research=True | queries=5
+2026-03-30 16:57:38 | INFO     | BlogApp.Agent | [ROUTER] ── Router node complete ────────────────────────────
+2026-03-30 16:57:38 | INFO     | BlogApp.Agent | [ROUTER] Routing → 'research'
+2026-03-30 16:57:38 | INFO     | BlogApp.Agent | [RESEARCH] ── Entering research node (5 queries) ──
+2026-03-30 16:57:38 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Renewable energy sources in 2026'
+2026-03-30 16:57:38 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Current state of solar panel efficiency'
+2026-03-30 16:57:38 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Advantages and disadvantages of wind power in 2026'
+2026-03-30 16:57:38 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Trends in hydrogen fuel cell technology for renewable energy'
+2026-03-30 16:57:38 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Comparison of biomass and conventional fossil fuels in 2026'
+2026-03-30 16:57:43 | INFO     | BlogApp.Agent | [RESEARCH] Total raw results: 30 (5.17s)
+2026-03-30 17:04:52 | INFO     | BlogApp.Agent | [RESEARCH] Evidence after deduplication: 5 items
+2026-03-30 17:04:52 | INFO     | BlogApp.Agent | [RESEARCH] ── Research node complete ───────────────────────────
+2026-03-30 17:04:52 | INFO     | BlogApp.Agent | [ORCH] ── Entering orchestrator node ──────────────────────
+2026-03-30 17:04:55 | INFO     | BlogApp.Agent | [ORCH] Current date (IST): 2026-03-30 | Time: 17:04:55 | Year: 2026
+2026-03-30 17:04:55 | INFO     | BlogApp.Agent | [ORCH] Planning attempt 1/3...
+2026-03-30 17:07:34 | INFO     | BlogApp.Agent | [ORCH] Plan accepted — 5 tasks | 'Renewable Energy Resources: Trends and Insights'
+2026-03-30 17:07:34 | INFO     | BlogApp.Agent | [ORCH] ── Orchestrator node complete ─────────────────────────
+2026-03-30 17:07:34 | INFO     | BlogApp.Agent | [DISPATCHER] Dispatching workers...
+2026-03-30 17:07:34 | INFO     | BlogApp.Agent | [WORKER] ── Task 1: 'Overview of Renewable Energy Sources'
+2026-03-30 17:07:34 | INFO     | BlogApp.Agent | [WORKER] ── Task 2: 'US to Overwhelmingly Build Clean Power in 2026'
+2026-03-30 17:07:34 | INFO     | BlogApp.Agent | [WORKER] ── Task 3: 'Biomass Fuel Market Analysis'
+2026-03-30 17:07:34 | INFO     | BlogApp.Agent | [WORKER] ── Task 4: 'Advantages of Biomass Energy'
+2026-03-30 17:07:34 | INFO     | BlogApp.Agent | [WORKER] ── Task 5: 'Future of Industrial Fuel'
+2026-03-30 17:07:34 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 17:07:34 | Year: 2026
+2026-03-30 17:07:34 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 17:07:34 | Year: 2026
+2026-03-30 17:07:34 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 17:07:34 | Year: 2026
+2026-03-30 17:07:37 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 17:07:37 | Year: 2026
+2026-03-30 17:07:37 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 17:07:37 | Year: 2026
+2026-03-30 17:08:22 | INFO     | BlogApp.Agent | [WORKER] Task 2 done — ~166w (dev=33.6%, 48.19s)
+2026-03-30 17:08:22 | WARNING  | BlogApp.Agent | [WORKER] Task 2 word count deviation > 20%: got 166, target 250
+2026-03-30 17:09:05 | INFO     | BlogApp.Agent | [WORKER] Task 4 done — ~200w (dev=9.1%, 91.30s)
+2026-03-30 17:10:18 | INFO     | BlogApp.Agent | [WORKER] Task 5 done — ~290w (dev=16.0%, 163.79s)
+2026-03-30 17:11:20 | INFO     | BlogApp.Agent | [WORKER] Task 1 done — ~264w (dev=12.0%, 223.09s)
+2026-03-30 17:13:02 | INFO     | BlogApp.Agent | [WORKER] Task 3 done — ~426w (dev=52.1%, 324.90s)
+2026-03-30 17:13:02 | WARNING  | BlogApp.Agent | [WORKER] Task 3 word count deviation > 20%: got 426, target 280
+2026-03-30 17:13:02 | INFO     | BlogApp.Agent | [MERGE] ── Entering merge_content node ──────────────────────
+2026-03-30 17:13:02 | INFO     | BlogApp.Agent | [MERGE] Title: 'Renewable Energy Resources: Trends and Insights' | ~1353 words
+2026-03-30 17:13:02 | INFO     | BlogApp.Agent | [MERGE] ── merge_content node complete ───────────────────────
+2026-03-30 17:13:02 | INFO     | BlogApp.Agent | [IMAGES] ── Entering decide_images node ──────────────────────
+2026-03-30 17:14:03 | INFO     | BlogApp.Agent | [IMAGES] Images planned: 3
+2026-03-30 17:14:03 | DEBUG    | BlogApp.Agent | [IMAGES] Injected '[[IMAGE_1]]' after heading 'Overview of Renewable Energy Sources'
+2026-03-30 17:14:03 | DEBUG    | BlogApp.Agent | [IMAGES] Injected '[[IMAGE_2]]' after heading 'Biomass Fuel Market Analysis'
+2026-03-30 17:14:03 | DEBUG    | BlogApp.Agent | [IMAGES] Injected '[[IMAGE_3]]' after heading 'Future of Industrial Fuel: Transitioning to Biomass Energy'
+2026-03-30 17:14:03 | INFO     | BlogApp.Agent | [IMGPLACE] ── Entering generate_and_place_images node ──────────
+2026-03-30 17:14:10 | INFO     | BlogApp.Agent | [IMGPLACE] Image 1 saved: 'Blogs\contents\images\Renewable_Energy_Resources-_Trends_and_Insights\renewable_energy_resources_diagram.png' (1708883b, attempt 1)
+2026-03-30 17:14:11 | INFO     | BlogApp.Agent | [IMGPLACE] Image 2 saved: 'Blogs\contents\images\Renewable_Energy_Resources-_Trends_and_Insights\biomass_fuel_market_graph.png' (1121630b, attempt 1)
+2026-03-30 17:14:14 | INFO     | BlogApp.Agent | [IMGPLACE] Image 3 saved: 'Blogs\contents\images\Renewable_Energy_Resources-_Trends_and_Insights\biomass_energy_transition_diagram.png' (1171612b, attempt 1)
+2026-03-30 17:14:14 | INFO     | BlogApp.Agent | [IMGPLACE] Summary — success=3 | failed=0 | cached=0
+2026-03-30 17:14:14 | INFO     | BlogApp.Agent | [BLOGS] Saved blog files: Blogs\contents\html\Renewable_Energy_Resources-_Trends_and_Insights.html
+2026-03-30 17:14:14 | INFO     | BlogApp.Agent | [IMGPLACE] ── generate_and_place_images complete ───────────────
+2026-03-30 17:14:14 | INFO     | BlogApp.Agent | [HITL] ── Workflow pausing for human approval ──────────────
+2026-03-30 17:14:14 | INFO     | BlogApp.Agent | [HITL]   Title: 'Renewable Energy Resources: Trends and Insights'
+2026-03-30 17:14:14 | INFO     | BlogApp.FastAPI | [BG] Workflow paused. next=('human_approval',) thread='366fb20c-829e-4100-84ac-f007d3395233'
+2026-03-30 17:14:14 | INFO     | BlogApp.FastAPI | [BG] Postgres → PENDING  thread='366fb20c-829e-4100-84ac-f007d3395233'
+2026-03-30 17:14:25 | INFO     | BlogApp.FastAPI | [API] /blogs/approve — thread_id='366fb20c-829e-4100-84ac-f007d3395233'
+2026-03-30 17:14:25 | INFO     | BlogApp.Agent | [HITL] Routing after approval — status='approved'
+2026-03-30 17:14:25 | INFO     | BlogApp.FastAPI | [BG] Resuming workflow thread='366fb20c-829e-4100-84ac-f007d3395233'
+2026-03-30 17:14:25 | INFO     | BlogApp.Agent | [HITL] ── finalize_approved ─────────────────────────────────
+2026-03-30 17:14:25 | INFO     | BlogApp.Agent | [BLOGS] index.html updated with 'Renewable Energy Resources: Trends and Insights'
+2026-03-30 17:14:25 | INFO     | BlogApp.Agent | [HITL] Blog 'Renewable Energy Resources: Trends and Insights' published to index.html
+2026-03-30 17:14:25 | INFO     | BlogApp.FastAPI | [BG] Workflow finalized (approved) thread='366fb20c-829e-4100-84ac-f007d3395233'
+2026-03-30 17:21:42 | INFO     | BlogApp.FastAPI | [SHUTDOWN] Application shutting down.

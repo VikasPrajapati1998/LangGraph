@@ -1,0 +1,157 @@
+2026-03-30 14:14:06 | INFO     | BlogApp | [Logger] Bootstrapped. Log file: logs\backend-log_20260330_141406.log
+2026-03-30 14:14:12 | DEBUG    | BlogApp.Agent | [SETUP] Initialising LLM...
+2026-03-30 14:14:12 | DEBUG    | BlogApp.Agent | [SETUP] LLM ready: model='llama3.2:3b'
+2026-03-30 14:14:12 | INFO     | BlogApp.FastAPI | [STARTUP] Static site mounted: D:\Study\LangGraph\Workflow_26_BlogAgent\Backend\Blogs → /site
+2026-03-30 14:14:13 | INFO     | BlogApp.FastAPI | [STARTUP] PostgreSQL tables ready.
+2026-03-30 14:14:13 | INFO     | BlogApp.FastAPI | [STARTUP] LangGraph workflow compiled. Checkpointer DB: 'blog_hitl.db'
+2026-03-30 14:14:43 | INFO     | BlogApp.FastAPI | [API] /blogs/generate — topic='Existence of all kind of Operating System over the world' thread_id='6b23c989-f7b9-4b0a-8971-3f2fe3a75602'
+2026-03-30 14:14:43 | INFO     | BlogApp.FastAPI | [BG] Starting workflow thread='6b23c989-f7b9-4b0a-8971-3f2fe3a75602' topic='Existence of all kind of Operating System over the world'
+2026-03-30 14:14:43 | INFO     | BlogApp.Agent | [ROUTER] ── Entering router node ──────────────────────────
+2026-03-30 14:14:47 | INFO     | BlogApp.Agent | [ROUTER] Current date (IST): 2026-03-30 | Time: 14:14:46 | Year: 2026
+2026-03-30 14:15:11 | INFO     | BlogApp.Agent | [ROUTER]   mode='open_book' | needs_research=True | queries=6
+2026-03-30 14:15:11 | INFO     | BlogApp.Agent | [ROUTER] ── Router node complete ────────────────────────────
+2026-03-30 14:15:11 | INFO     | BlogApp.Agent | [ROUTER] Routing → 'research'
+2026-03-30 14:15:11 | INFO     | BlogApp.Agent | [RESEARCH] ── Entering research node (6 queries) ──
+2026-03-30 14:15:11 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Existence of various operating systems worldwide in 2026'
+2026-03-30 14:15:11 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Global distribution of different types of operating systems this year'
+2026-03-30 14:15:11 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Current state of OS adoption across countries and regions in 2026'
+2026-03-30 14:15:11 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Latest news on operating system usage patterns globally as of March 2026'
+2026-03-30 14:15:11 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Trends in operating system development and deployment around the world in 2026'
+2026-03-30 14:15:11 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='2026: How many different types of operating systems are being used worldwide?'
+2026-03-30 14:15:14 | INFO     | BlogApp.Agent | [RESEARCH] Total raw results: 36 (2.69s)
+2026-03-30 14:18:57 | INFO     | BlogApp.Agent | [RESEARCH] Evidence after deduplication: 1 items
+2026-03-30 14:18:57 | INFO     | BlogApp.Agent | [RESEARCH] ── Research node complete ───────────────────────────
+2026-03-30 14:18:57 | INFO     | BlogApp.Agent | [ORCH] ── Entering orchestrator node ──────────────────────
+2026-03-30 14:18:57 | INFO     | BlogApp.Agent | [ORCH] Current date (IST): 2026-03-30 | Time: 14:18:57 | Year: 2026
+2026-03-30 14:18:57 | INFO     | BlogApp.Agent | [ORCH] Planning attempt 1/3...
+2026-03-30 14:20:59 | INFO     | BlogApp.Agent | [ORCH] Plan accepted — 8 tasks | 'Operating System Landscape Around the World'
+2026-03-30 14:20:59 | INFO     | BlogApp.Agent | [ORCH] ── Orchestrator node complete ─────────────────────────
+2026-03-30 14:20:59 | INFO     | BlogApp.Agent | [DISPATCHER] Dispatching workers...
+2026-03-30 14:20:59 | INFO     | BlogApp.Agent | [WORKER] ── Task 1: 'Overview of Major Operating Systems'
+2026-03-30 14:20:59 | INFO     | BlogApp.Agent | [WORKER] ── Task 2: 'Emerging OS Trends'
+2026-03-30 14:20:59 | INFO     | BlogApp.Agent | [WORKER] ── Task 3: 'Regional OS Preferences'
+2026-03-30 14:20:59 | INFO     | BlogApp.Agent | [WORKER] ── Task 4: 'Security and Compliance Considerations'
+2026-03-30 14:20:59 | INFO     | BlogApp.Agent | [WORKER] ── Task 5: 'Open-Source vs. Proprietary OS'
+2026-03-30 14:20:59 | INFO     | BlogApp.Agent | [WORKER] ── Task 6: 'Future Outlook for Operating Systems'
+2026-03-30 14:20:59 | INFO     | BlogApp.Agent | [WORKER] ── Task 7: 'Edge Cases and Failure Modes'
+2026-03-30 14:20:59 | INFO     | BlogApp.Agent | [WORKER] ── Task 8: 'Debugging and Observability'
+2026-03-30 14:21:02 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 14:21:02 | Year: 2026
+2026-03-30 14:21:02 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 14:21:02 | Year: 2026
+2026-03-30 14:21:02 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 14:21:02 | Year: 2026
+2026-03-30 14:21:02 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 14:21:02 | Year: 2026
+2026-03-30 14:21:02 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 14:21:02 | Year: 2026
+2026-03-30 14:21:02 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 14:21:02 | Year: 2026
+2026-03-30 14:21:02 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 14:21:02 | Year: 2026
+2026-03-30 14:21:02 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 14:21:02 | Year: 2026
+2026-03-30 14:21:28 | INFO     | BlogApp.Agent | [WORKER] Task 7 done — ~181w (dev=9.5%, 26.32s)
+2026-03-30 14:21:47 | INFO     | BlogApp.Agent | [WORKER] Task 3 done — ~181w (dev=9.5%, 45.54s)
+2026-03-30 14:22:14 | INFO     | BlogApp.Agent | [WORKER] Task 4 done — ~267w (dev=6.8%, 71.72s)
+2026-03-30 14:22:38 | INFO     | BlogApp.Agent | [WORKER] Task 5 done — ~229w (dev=8.4%, 96.13s)
+2026-03-30 14:22:59 | INFO     | BlogApp.Agent | [WORKER] Task 1 done — ~197w (dev=21.2%, 116.74s)
+2026-03-30 14:22:59 | WARNING  | BlogApp.Agent | [WORKER] Task 1 word count deviation > 20%: got 197, target 250
+2026-03-30 14:23:24 | INFO     | BlogApp.Agent | [WORKER] Task 2 done — ~242w (dev=21.0%, 142.04s)
+2026-03-30 14:23:24 | WARNING  | BlogApp.Agent | [WORKER] Task 2 word count deviation > 20%: got 242, target 200
+2026-03-30 14:23:46 | INFO     | BlogApp.Agent | [WORKER] Task 6 done — ~227w (dev=9.2%, 163.76s)
+2026-03-30 14:24:07 | INFO     | BlogApp.Agent | [WORKER] Task 8 done — ~215w (dev=7.5%, 185.52s)
+2026-03-30 14:24:07 | INFO     | BlogApp.Agent | [MERGE] ── Entering merge_content node ──────────────────────
+2026-03-30 14:24:07 | INFO     | BlogApp.Agent | [MERGE] Title: 'Operating System Landscape Around the World' | ~1746 words
+2026-03-30 14:24:07 | INFO     | BlogApp.Agent | [MERGE] ── merge_content node complete ───────────────────────
+2026-03-30 14:24:07 | INFO     | BlogApp.Agent | [IMAGES] ── Entering decide_images node ──────────────────────
+2026-03-30 14:24:41 | INFO     | BlogApp.Agent | [IMAGES] Images planned: 3
+2026-03-30 14:24:41 | DEBUG    | BlogApp.Agent | [IMAGES] Injected '[[IMAGE_1]]' after heading 'Overview of Major Operating Systems'
+2026-03-30 14:24:41 | DEBUG    | BlogApp.Agent | [IMAGES] Injected '[[IMAGE_2]]' after heading 'Emerging OS Trends'
+2026-03-30 14:24:41 | DEBUG    | BlogApp.Agent | [IMAGES] Injected '[[IMAGE_3]]' after heading 'Regional OS Preferences'
+2026-03-30 14:24:41 | INFO     | BlogApp.Agent | [IMGPLACE] ── Entering generate_and_place_images node ──────────
+2026-03-30 14:24:51 | INFO     | BlogApp.Agent | [IMGPLACE] Image 1 saved: 'Blogs\contents\images\Operating_System_Landscape_Around_the_World\os_overview_diagram.png' (1295339b, attempt 1)
+2026-03-30 14:24:51 | INFO     | BlogApp.Agent | [IMGPLACE] Image 3 saved: 'Blogs\contents\images\Operating_System_Landscape_Around_the_World\regional_os_preferences_map.png' (1485604b, attempt 1)
+2026-03-30 14:24:54 | INFO     | BlogApp.Agent | [IMGPLACE] Image 2 saved: 'Blogs\contents\images\Operating_System_Landscape_Around_the_World\emerging_os_trends_graph.png' (1189710b, attempt 1)
+2026-03-30 14:24:54 | INFO     | BlogApp.Agent | [IMGPLACE] Summary — success=3 | failed=0 | cached=0
+2026-03-30 14:24:54 | INFO     | BlogApp.Agent | [BLOGS] Saved blog files: Blogs\contents\html\Operating_System_Landscape_Around_the_World.html
+2026-03-30 14:24:54 | INFO     | BlogApp.Agent | [IMGPLACE] ── generate_and_place_images complete ───────────────
+2026-03-30 14:24:54 | INFO     | BlogApp.Agent | [HITL] ── Workflow pausing for human approval ──────────────
+2026-03-30 14:24:54 | INFO     | BlogApp.Agent | [HITL]   Title: 'Operating System Landscape Around the World'
+2026-03-30 14:24:54 | INFO     | BlogApp.FastAPI | [BG] Workflow paused. next=('human_approval',) thread='6b23c989-f7b9-4b0a-8971-3f2fe3a75602'
+2026-03-30 14:24:54 | INFO     | BlogApp.FastAPI | [BG] Postgres → PENDING  thread='6b23c989-f7b9-4b0a-8971-3f2fe3a75602'
+2026-03-30 14:25:31 | INFO     | BlogApp.FastAPI | [API] /blogs/approve — thread_id='6b23c989-f7b9-4b0a-8971-3f2fe3a75602'
+2026-03-30 14:25:31 | INFO     | BlogApp.Agent | [HITL] Routing after approval — status='approved'
+2026-03-30 14:25:31 | INFO     | BlogApp.FastAPI | [BG] Resuming workflow thread='6b23c989-f7b9-4b0a-8971-3f2fe3a75602'
+2026-03-30 14:25:31 | INFO     | BlogApp.Agent | [HITL] ── finalize_approved ─────────────────────────────────
+2026-03-30 14:25:31 | INFO     | BlogApp.Agent | [BLOGS] index.html updated with 'Operating System Landscape Around the World'
+2026-03-30 14:25:31 | INFO     | BlogApp.Agent | [HITL] Blog 'Operating System Landscape Around the World' published to index.html
+2026-03-30 14:25:31 | INFO     | BlogApp.FastAPI | [BG] Workflow finalized (approved) thread='6b23c989-f7b9-4b0a-8971-3f2fe3a75602'
+2026-03-30 14:26:41 | INFO     | BlogApp.FastAPI | [API] /blogs/approve — thread_id='b7b27ca9-e348-4a8c-a3b7-caa2c95805a0'
+2026-03-30 14:26:41 | INFO     | BlogApp.Agent | [HITL] Routing after approval — status='approved'
+2026-03-30 14:26:41 | INFO     | BlogApp.FastAPI | [BG] Resuming workflow thread='b7b27ca9-e348-4a8c-a3b7-caa2c95805a0'
+2026-03-30 14:26:41 | INFO     | BlogApp.Agent | [HITL] ── finalize_approved ─────────────────────────────────
+2026-03-30 14:26:41 | INFO     | BlogApp.Agent | [BLOGS] index.html updated with 'All Available Processors of Laptops'
+2026-03-30 14:26:41 | INFO     | BlogApp.Agent | [HITL] Blog 'All Available Processors of Laptops' published to index.html
+2026-03-30 14:26:41 | INFO     | BlogApp.FastAPI | [BG] Workflow finalized (approved) thread='b7b27ca9-e348-4a8c-a3b7-caa2c95805a0'
+2026-03-30 14:31:34 | INFO     | BlogApp.FastAPI | [API] /blogs/generate — topic='Game in GPU in Processing Area' thread_id='75442358-8e71-4df6-b1be-6039670866d9'
+2026-03-30 14:31:34 | INFO     | BlogApp.FastAPI | [BG] Starting workflow thread='75442358-8e71-4df6-b1be-6039670866d9' topic='Game in GPU in Processing Area'
+2026-03-30 14:31:34 | INFO     | BlogApp.Agent | [ROUTER] ── Entering router node ──────────────────────────
+2026-03-30 14:31:34 | INFO     | BlogApp.Agent | [ROUTER] Current date (IST): 2026-03-30 | Time: 14:31:34 | Year: 2026
+2026-03-30 14:32:01 | INFO     | BlogApp.Agent | [ROUTER]   mode='hybrid' | needs_research=True | queries=6
+2026-03-30 14:32:01 | INFO     | BlogApp.Agent | [ROUTER] ── Router node complete ────────────────────────────
+2026-03-30 14:32:01 | INFO     | BlogApp.Agent | [ROUTER] Routing → 'research'
+2026-03-30 14:32:01 | INFO     | BlogApp.Agent | [RESEARCH] ── Entering research node (6 queries) ──
+2026-03-30 14:32:01 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Processing GPU game development tutorials for beginners 2026'
+2026-03-30 14:32:01 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='GPU-based game development in Processing examples and libraries 2026'
+2026-03-30 14:32:01 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Real-time rendering in Processing using GPUs'
+2026-03-30 14:32:01 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Optimizing GPU-accelerated games in Processing for better performance 2026'
+2026-03-30 14:32:01 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Processing GPU graphics tutorials with real-world examples 2026'
+2026-03-30 14:32:01 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Case studies of successful GPU-accelerated game projects in Processing'
+2026-03-30 14:32:06 | INFO     | BlogApp.Agent | [RESEARCH] Total raw results: 36 (5.52s)
+2026-03-30 14:36:13 | INFO     | BlogApp.Agent | [RESEARCH] Evidence after deduplication: 1 items
+2026-03-30 14:36:13 | INFO     | BlogApp.Agent | [RESEARCH] ── Research node complete ───────────────────────────
+2026-03-30 14:36:13 | INFO     | BlogApp.Agent | [ORCH] ── Entering orchestrator node ──────────────────────
+2026-03-30 14:36:16 | INFO     | BlogApp.Agent | [ORCH] Current date (IST): 2026-03-30 | Time: 14:36:16 | Year: 2026
+2026-03-30 14:36:16 | INFO     | BlogApp.Agent | [ORCH] Planning attempt 1/3...
+2026-03-30 14:38:26 | INFO     | BlogApp.Agent | [ORCH] Plan accepted — 6 tasks | 'Game Development in GPU Using Processing'
+2026-03-30 14:38:26 | INFO     | BlogApp.Agent | [ORCH] ── Orchestrator node complete ─────────────────────────
+2026-03-30 14:38:26 | INFO     | BlogApp.Agent | [DISPATCHER] Dispatching workers...
+2026-03-30 14:38:26 | INFO     | BlogApp.Agent | [WORKER] ── Task 1: 'What is Processing and its Benefits for Game Development'
+2026-03-30 14:38:26 | INFO     | BlogApp.Agent | [WORKER] ── Task 2: 'Setting up Processing for Game Development'
+2026-03-30 14:38:26 | INFO     | BlogApp.Agent | [WORKER] ── Task 3: 'Creating a Simple Game with Processing'
+2026-03-30 14:38:26 | INFO     | BlogApp.Agent | [WORKER] ── Task 4: 'Optimizing Game Performance with GPU Acceleration'
+2026-03-30 14:38:26 | INFO     | BlogApp.Agent | [WORKER] ── Task 5: 'Edge Cases and Failure Modes in GPU-Based Game Development'
+2026-03-30 14:38:26 | INFO     | BlogApp.Agent | [WORKER] ── Task 6: 'Security and Privacy Considerations in GPU-Based Game Development'
+2026-03-30 14:38:26 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 14:38:26 | Year: 2026
+2026-03-30 14:38:26 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 14:38:26 | Year: 2026
+2026-03-30 14:38:26 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 14:38:26 | Year: 2026
+2026-03-30 14:38:26 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 14:38:26 | Year: 2026
+2026-03-30 14:38:26 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 14:38:26 | Year: 2026
+2026-03-30 14:38:26 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 14:38:26 | Year: 2026
+2026-03-30 14:39:24 | INFO     | BlogApp.Agent | [WORKER] Task 6 done — ~341w (dev=13.7%, 57.77s)
+2026-03-30 14:40:27 | INFO     | BlogApp.Agent | [WORKER] Task 3 done — ~377w (dev=50.8%, 120.67s)
+2026-03-30 14:40:27 | WARNING  | BlogApp.Agent | [WORKER] Task 3 word count deviation > 20%: got 377, target 250
+2026-03-30 14:41:10 | INFO     | BlogApp.Agent | [WORKER] Task 4 done — ~339w (dev=3.1%, 164.23s)
+2026-03-30 14:41:49 | INFO     | BlogApp.Agent | [WORKER] Task 2 done — ~280w (dev=6.7%, 203.19s)
+2026-03-30 14:42:23 | INFO     | BlogApp.Agent | [WORKER] Task 5 done — ~271w (dev=8.4%, 236.71s)
+2026-03-30 14:42:44 | INFO     | BlogApp.Agent | [WORKER] Task 1 done — ~209w (dev=16.4%, 258.52s)
+2026-03-30 14:42:44 | INFO     | BlogApp.Agent | [MERGE] ── Entering merge_content node ──────────────────────
+2026-03-30 14:42:44 | INFO     | BlogApp.Agent | [MERGE] Title: 'Game Development in GPU Using Processing' | ~1824 words
+2026-03-30 14:42:44 | INFO     | BlogApp.Agent | [MERGE] ── merge_content node complete ───────────────────────
+2026-03-30 14:42:44 | INFO     | BlogApp.Agent | [IMAGES] ── Entering decide_images node ──────────────────────
+2026-03-30 14:43:23 | INFO     | BlogApp.Agent | [IMAGES] Images planned: 3
+2026-03-30 14:43:23 | DEBUG    | BlogApp.Agent | [IMAGES] Injected '[[IMAGE_1]]' after heading 'What is Processing and its Benefits for Game Development'
+2026-03-30 14:43:23 | DEBUG    | BlogApp.Agent | [IMAGES] Injected '[[IMAGE_2]]' after heading 'Setting up Processing for Game Development'
+2026-03-30 14:43:23 | DEBUG    | BlogApp.Agent | [IMAGES] Injected '[[IMAGE_3]]' after heading 'Optimizing Game Performance with GPU Acceleration'
+2026-03-30 14:43:23 | INFO     | BlogApp.Agent | [IMGPLACE] ── Entering generate_and_place_images node ──────────
+2026-03-30 14:43:34 | INFO     | BlogApp.Agent | [IMGPLACE] Image 1 saved: 'Blogs\contents\images\Game_Development_in_GPU_Using_Processing\processing_benefits_diagram.png' (1144515b, attempt 1)
+2026-03-30 14:43:35 | INFO     | BlogApp.Agent | [IMGPLACE] Image 2 saved: 'Blogs\contents\images\Game_Development_in_GPU_Using_Processing\setting_up_processing_flow.png' (1026968b, attempt 1)
+2026-03-30 14:43:36 | INFO     | BlogApp.Agent | [IMGPLACE] Image 3 saved: 'Blogs\contents\images\Game_Development_in_GPU_Using_Processing\gpu_acceleration_architecture.png' (1121349b, attempt 1)
+2026-03-30 14:43:36 | INFO     | BlogApp.Agent | [IMGPLACE] Summary — success=3 | failed=0 | cached=0
+2026-03-30 14:43:36 | INFO     | BlogApp.Agent | [BLOGS] Saved blog files: Blogs\contents\html\Game_Development_in_GPU_Using_Processing.html
+2026-03-30 14:43:36 | INFO     | BlogApp.Agent | [IMGPLACE] ── generate_and_place_images complete ───────────────
+2026-03-30 14:43:36 | INFO     | BlogApp.Agent | [HITL] ── Workflow pausing for human approval ──────────────
+2026-03-30 14:43:36 | INFO     | BlogApp.Agent | [HITL]   Title: 'Game Development in GPU Using Processing'
+2026-03-30 14:43:36 | INFO     | BlogApp.FastAPI | [BG] Workflow paused. next=('human_approval',) thread='75442358-8e71-4df6-b1be-6039670866d9'
+2026-03-30 14:43:36 | INFO     | BlogApp.FastAPI | [BG] Postgres → PENDING  thread='75442358-8e71-4df6-b1be-6039670866d9'
+2026-03-30 14:48:43 | INFO     | BlogApp.FastAPI | [API] /blogs/approve — thread_id='75442358-8e71-4df6-b1be-6039670866d9'
+2026-03-30 14:48:43 | INFO     | BlogApp.Agent | [HITL] Routing after approval — status='approved'
+2026-03-30 14:48:43 | INFO     | BlogApp.FastAPI | [BG] Resuming workflow thread='75442358-8e71-4df6-b1be-6039670866d9'
+2026-03-30 14:48:43 | INFO     | BlogApp.Agent | [HITL] ── finalize_approved ─────────────────────────────────
+2026-03-30 14:48:43 | INFO     | BlogApp.Agent | [BLOGS] index.html updated with 'Game Development in GPU Using Processing'
+2026-03-30 14:48:43 | INFO     | BlogApp.Agent | [HITL] Blog 'Game Development in GPU Using Processing' published to index.html
+2026-03-30 14:48:43 | INFO     | BlogApp.FastAPI | [BG] Workflow finalized (approved) thread='75442358-8e71-4df6-b1be-6039670866d9'
+2026-03-30 14:50:54 | INFO     | BlogApp.FastAPI | [SHUTDOWN] Application shutting down.

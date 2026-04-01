@@ -1,0 +1,57 @@
+2026-03-30 18:30:25 | INFO     | BlogApp | [Logger] Bootstrapped. Log file: logs\backend-log_20260330_183025.log
+2026-03-30 18:30:28 | DEBUG    | BlogApp.Agent | [SETUP] Initialising LLM...
+2026-03-30 18:30:29 | DEBUG    | BlogApp.Agent | [SETUP] LLM ready: model='llama3.2:3b'
+2026-03-30 18:30:29 | INFO     | BlogApp.FastAPI | [STARTUP] Static site mounted: D:\Study\LangGraph\Workflow_27_BlogWriter\Backend\Blogs → /site
+2026-03-30 18:30:29 | INFO     | BlogApp.Checklist | [CHECKLIST] ── Starting sync check ──────────────────────────────
+2026-03-30 18:30:29 | DEBUG    | BlogApp.Checklist | [CHECKLIST] Filesystem slugs (11): ['A_Comprehensive_Guide_to_Modern_GPUs_in_2026', 'All_Available_Processors_for_Mobiles', 'All_Available_Processors_of_Laptops', 'Game_Development_in_GPU_Using_Processing', 'Nuclear_Energy-_A_Long-Term_Power_Source', 'Operating_System_Landscape_Around_the_World', 'Performance_of_Snapdragon_Processors_for_Mobile_Phones', 'Renewable_Energy_Resources-_Trends_and_Insights', 'The_Evolution_of_Snapdragon_Processors', 'The_Evolution_of_Snapdragon_Processors_for_Mobile-_Why_They_Reign_Supreme', 'Update_in_Mobile_Processors']
+2026-03-30 18:30:29 | DEBUG    | BlogApp.Checklist | [CHECKLIST] Slugs already in index (1): {'Nuclear_Energy-_A_Long-Term_Power_Source'}
+2026-03-30 18:30:29 | INFO     | BlogApp.Checklist | [CHECKLIST] ⚠  10 blog(s) missing from index.html: ['A_Comprehensive_Guide_to_Modern_GPUs_in_2026', 'All_Available_Processors_for_Mobiles', 'All_Available_Processors_of_Laptops', 'Game_Development_in_GPU_Using_Processing', 'Operating_System_Landscape_Around_the_World', 'Performance_of_Snapdragon_Processors_for_Mobile_Phones', 'Renewable_Energy_Resources-_Trends_and_Insights', 'The_Evolution_of_Snapdragon_Processors', 'The_Evolution_of_Snapdragon_Processors_for_Mobile-_Why_They_Reign_Supreme', 'Update_in_Mobile_Processors']
+2026-03-30 18:30:29 | INFO     | BlogApp.Checklist | [CHECKLIST] ✅ Injected card for slug='A_Comprehensive_Guide_to_Modern_GPUs_in_2026'
+2026-03-30 18:30:29 | INFO     | BlogApp.Checklist | [CHECKLIST] ✅ Injected card for slug='All_Available_Processors_for_Mobiles'
+2026-03-30 18:30:29 | INFO     | BlogApp.Checklist | [CHECKLIST] ✅ Injected card for slug='All_Available_Processors_of_Laptops'
+2026-03-30 18:30:29 | INFO     | BlogApp.Checklist | [CHECKLIST] ✅ Injected card for slug='Game_Development_in_GPU_Using_Processing'
+2026-03-30 18:30:29 | INFO     | BlogApp.Checklist | [CHECKLIST] ✅ Injected card for slug='Operating_System_Landscape_Around_the_World'
+2026-03-30 18:30:29 | INFO     | BlogApp.Checklist | [CHECKLIST] ✅ Injected card for slug='Performance_of_Snapdragon_Processors_for_Mobile_Phones'
+2026-03-30 18:30:29 | INFO     | BlogApp.Checklist | [CHECKLIST] ✅ Injected card for slug='Renewable_Energy_Resources-_Trends_and_Insights'
+2026-03-30 18:30:29 | INFO     | BlogApp.Checklist | [CHECKLIST] ✅ Injected card for slug='The_Evolution_of_Snapdragon_Processors'
+2026-03-30 18:30:29 | INFO     | BlogApp.Checklist | [CHECKLIST] ✅ Injected card for slug='The_Evolution_of_Snapdragon_Processors_for_Mobile-_Why_They_Reign_Supreme'
+2026-03-30 18:30:29 | INFO     | BlogApp.Checklist | [CHECKLIST] ✅ Injected card for slug='Update_in_Mobile_Processors'
+2026-03-30 18:30:29 | INFO     | BlogApp.Checklist | [CHECKLIST] index.html updated — 10 card(s) added.
+2026-03-30 18:30:29 | INFO     | BlogApp.Checklist | [CHECKLIST] Pushing 10 new card(s) to GitHub …
+2026-03-30 18:30:29 | INFO     | BlogApp.GitHub | Starting Git automation
+2026-03-30 18:30:29 | INFO     | BlogApp.GitHub | Commit message: Blog 30-03-2026-18-30-29
+2026-03-30 18:30:29 | DEBUG    | BlogApp.GitHub | Running command: git add .
+2026-03-30 18:30:29 | DEBUG    | BlogApp.GitHub | Command succeeded: git add .
+2026-03-30 18:30:29 | DEBUG    | BlogApp.GitHub | Running command: git commit -m "Blog 30-03-2026-18-30-29"
+2026-03-30 18:30:30 | INFO     | BlogApp.GitHub | [main efb693a] Blog 30-03-2026-18-30-29
+ 5 files changed, 237 insertions(+), 109 deletions(-)
+ create mode 100644 contents/images/Renewable_Energy_Resources-_Trends_and_Insights/beccs_flowchart.png
+ create mode 100644 contents/images/Renewable_Energy_Resources-_Trends_and_Insights/renewable_energy_sources_diagram.png
+2026-03-30 18:30:30 | DEBUG    | BlogApp.GitHub | Command succeeded: git commit -m "Blog 30-03-2026-18-30-29"
+2026-03-30 18:30:30 | DEBUG    | BlogApp.GitHub | Running command: git push origin main
+2026-03-30 18:30:34 | DEBUG    | BlogApp.GitHub | Command succeeded: git push origin main
+2026-03-30 18:30:34 | INFO     | BlogApp.GitHub | Git automation completed successfully
+2026-03-30 18:30:34 | INFO     | BlogApp.Checklist | [CHECKLIST] ✅ GitHub push successful.
+2026-03-30 18:30:34 | INFO     | BlogApp.Checklist | [CHECKLIST] ── Sync check complete ─────────────────────────────
+2026-03-30 18:30:34 | INFO     | BlogApp.Checklist | [CHECKLIST] Loop started — runs=5 | interval=300s
+2026-03-30 18:30:34 | INFO     | BlogApp.Checklist | [CHECKLIST] ────── Run 1/5 ──────
+2026-03-30 18:30:34 | INFO     | BlogApp.Checklist | [CHECKLIST] ── Starting sync check ──────────────────────────────
+2026-03-30 18:30:34 | DEBUG    | BlogApp.Checklist | [CHECKLIST] Filesystem slugs (11): ['A_Comprehensive_Guide_to_Modern_GPUs_in_2026', 'All_Available_Processors_for_Mobiles', 'All_Available_Processors_of_Laptops', 'Game_Development_in_GPU_Using_Processing', 'Nuclear_Energy-_A_Long-Term_Power_Source', 'Operating_System_Landscape_Around_the_World', 'Performance_of_Snapdragon_Processors_for_Mobile_Phones', 'Renewable_Energy_Resources-_Trends_and_Insights', 'The_Evolution_of_Snapdragon_Processors', 'The_Evolution_of_Snapdragon_Processors_for_Mobile-_Why_They_Reign_Supreme', 'Update_in_Mobile_Processors']
+2026-03-30 18:30:34 | DEBUG    | BlogApp.Checklist | [CHECKLIST] Slugs already in index (11): {'Game_Development_in_GPU_Using_Processing', 'The_Evolution_of_Snapdragon_Processors', 'Update_in_Mobile_Processors', 'Renewable_Energy_Resources-_Trends_and_Insights', 'Performance_of_Snapdragon_Processors_for_Mobile_Phones', 'All_Available_Processors_for_Mobiles', 'All_Available_Processors_of_Laptops', 'Operating_System_Landscape_Around_the_World', 'The_Evolution_of_Snapdragon_Processors_for_Mobile-_Why_They_Reign_Supreme', 'Nuclear_Energy-_A_Long-Term_Power_Source', 'A_Comprehensive_Guide_to_Modern_GPUs_in_2026'}
+2026-03-30 18:30:34 | INFO     | BlogApp.Checklist | [CHECKLIST] ✔  All blogs are listed in index.html — nothing to do.
+2026-03-30 18:30:34 | INFO     | BlogApp.Checklist | [CHECKLIST] ── Sync check complete ─────────────────────────────
+2026-03-30 18:30:34 | INFO     | BlogApp.Checklist | [CHECKLIST] Sleeping 300s before next run …
+2026-03-30 18:35:34 | INFO     | BlogApp.Checklist | [CHECKLIST] ────── Run 2/5 ──────
+2026-03-30 18:35:34 | INFO     | BlogApp.Checklist | [CHECKLIST] ── Starting sync check ──────────────────────────────
+2026-03-30 18:35:34 | DEBUG    | BlogApp.Checklist | [CHECKLIST] Filesystem slugs (11): ['A_Comprehensive_Guide_to_Modern_GPUs_in_2026', 'All_Available_Processors_for_Mobiles', 'All_Available_Processors_of_Laptops', 'Game_Development_in_GPU_Using_Processing', 'Nuclear_Energy-_A_Long-Term_Power_Source', 'Operating_System_Landscape_Around_the_World', 'Performance_of_Snapdragon_Processors_for_Mobile_Phones', 'Renewable_Energy_Resources-_Trends_and_Insights', 'The_Evolution_of_Snapdragon_Processors', 'The_Evolution_of_Snapdragon_Processors_for_Mobile-_Why_They_Reign_Supreme', 'Update_in_Mobile_Processors']
+2026-03-30 18:35:34 | DEBUG    | BlogApp.Checklist | [CHECKLIST] Slugs already in index (11): {'Game_Development_in_GPU_Using_Processing', 'The_Evolution_of_Snapdragon_Processors', 'Update_in_Mobile_Processors', 'Renewable_Energy_Resources-_Trends_and_Insights', 'Performance_of_Snapdragon_Processors_for_Mobile_Phones', 'All_Available_Processors_for_Mobiles', 'All_Available_Processors_of_Laptops', 'Operating_System_Landscape_Around_the_World', 'The_Evolution_of_Snapdragon_Processors_for_Mobile-_Why_They_Reign_Supreme', 'Nuclear_Energy-_A_Long-Term_Power_Source', 'A_Comprehensive_Guide_to_Modern_GPUs_in_2026'}
+2026-03-30 18:35:34 | INFO     | BlogApp.Checklist | [CHECKLIST] ✔  All blogs are listed in index.html — nothing to do.
+2026-03-30 18:35:34 | INFO     | BlogApp.Checklist | [CHECKLIST] ── Sync check complete ─────────────────────────────
+2026-03-30 18:35:34 | INFO     | BlogApp.Checklist | [CHECKLIST] Sleeping 300s before next run …
+2026-03-30 18:40:34 | INFO     | BlogApp.Checklist | [CHECKLIST] ────── Run 3/5 ──────
+2026-03-30 18:40:34 | INFO     | BlogApp.Checklist | [CHECKLIST] ── Starting sync check ──────────────────────────────
+2026-03-30 18:40:34 | DEBUG    | BlogApp.Checklist | [CHECKLIST] Filesystem slugs (11): ['A_Comprehensive_Guide_to_Modern_GPUs_in_2026', 'All_Available_Processors_for_Mobiles', 'All_Available_Processors_of_Laptops', 'Game_Development_in_GPU_Using_Processing', 'Nuclear_Energy-_A_Long-Term_Power_Source', 'Operating_System_Landscape_Around_the_World', 'Performance_of_Snapdragon_Processors_for_Mobile_Phones', 'Renewable_Energy_Resources-_Trends_and_Insights', 'The_Evolution_of_Snapdragon_Processors', 'The_Evolution_of_Snapdragon_Processors_for_Mobile-_Why_They_Reign_Supreme', 'Update_in_Mobile_Processors']
+2026-03-30 18:40:34 | DEBUG    | BlogApp.Checklist | [CHECKLIST] Slugs already in index (11): {'Game_Development_in_GPU_Using_Processing', 'The_Evolution_of_Snapdragon_Processors', 'Update_in_Mobile_Processors', 'Renewable_Energy_Resources-_Trends_and_Insights', 'Performance_of_Snapdragon_Processors_for_Mobile_Phones', 'All_Available_Processors_for_Mobiles', 'All_Available_Processors_of_Laptops', 'Operating_System_Landscape_Around_the_World', 'The_Evolution_of_Snapdragon_Processors_for_Mobile-_Why_They_Reign_Supreme', 'Nuclear_Energy-_A_Long-Term_Power_Source', 'A_Comprehensive_Guide_to_Modern_GPUs_in_2026'}
+2026-03-30 18:40:34 | INFO     | BlogApp.Checklist | [CHECKLIST] ✔  All blogs are listed in index.html — nothing to do.
+2026-03-30 18:40:34 | INFO     | BlogApp.Checklist | [CHECKLIST] ── Sync check complete ─────────────────────────────
+2026-03-30 18:40:34 | INFO     | BlogApp.Checklist | [CHECKLIST] Sleeping 300s before next run …

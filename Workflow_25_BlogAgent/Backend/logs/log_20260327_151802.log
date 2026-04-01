@@ -1,0 +1,95 @@
+2026-03-27 15:18:02 | INFO     | BlogWriter | Logger initialised. Log file: logs\log_20260327_151802.log
+2026-03-27 15:18:02 | DEBUG    | BlogWriter | [SETUP] Initialising LLMs...
+2026-03-27 15:18:03 | DEBUG    | BlogWriter | [SETUP] LLMs ready.
+2026-03-27 15:18:03 | INFO     | BlogWriter | [STARTUP] PostgreSQL tables ready.
+2026-03-27 15:18:03 | INFO     | BlogWriter | [STARTUP] LangGraph workflow compiled. Checkpointer DB: 'blog_hitl.db'
+2026-03-27 15:19:44 | INFO     | BlogWriter | [API] /blogs/generate — topic='Importance of India for World' thread_id='64c05650-1a01-44ab-884b-57bf1bce9ebe'
+2026-03-27 15:19:44 | INFO     | BlogWriter | [BG] Starting workflow thread='64c05650-1a01-44ab-884b-57bf1bce9ebe' topic='Importance of India for World'
+2026-03-27 15:19:44 | INFO     | BlogWriter | [ROUTER] ── Entering router node ──────────────────────────
+2026-03-27 15:19:44 | DEBUG    | BlogWriter | [ROUTER]   Topic: 'Importance of India for World'
+2026-03-27 15:20:07 | INFO     | BlogWriter | [ROUTER]   Decision: mode='hybrid' | needs_research=True
+2026-03-27 15:20:07 | DEBUG    | BlogWriter | [ROUTER]   Queries (9): ["India's impact on global trade and commerce.", "India's role in shaping global economic trends.", 'The significance of India in international relations and diplomacy.', 'How India is contributing to sustainable development and climate change mitigation.', "India's influence on global innovation and entrepreneurship.", "The importance of India's diverse culture and heritage for world unity.", "India's position in the global energy landscape and its impact on sustainability.", "The significance of India's growing middle class for global economic growth.", 'How India is addressing global health challenges, such as COVID-19.']
+2026-03-27 15:20:07 | INFO     | BlogWriter | [ROUTER] ── Router node complete ────────────────────────────
+2026-03-27 15:20:07 | INFO     | BlogWriter | [ROUTER] Routing → 'research'
+2026-03-27 15:20:07 | INFO     | BlogWriter | [RESEARCH] ── Entering research node (9 queries) ──
+2026-03-27 15:20:07 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='India's impact on global trade and commerce.'
+2026-03-27 15:20:07 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='India's role in shaping global economic trends.'
+2026-03-27 15:20:07 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='The significance of India in international relations and diplomacy.'
+2026-03-27 15:20:07 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='How India is contributing to sustainable development and climate change mitigation.'
+2026-03-27 15:20:07 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='India's influence on global innovation and entrepreneurship.'
+2026-03-27 15:20:07 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='The importance of India's diverse culture and heritage for world unity.'
+2026-03-27 15:20:07 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='India's position in the global energy landscape and its impact on sustainability.'
+2026-03-27 15:20:07 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='The significance of India's growing middle class for global economic growth.'
+2026-03-27 15:20:07 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='How India is addressing global health challenges, such as COVID-19.'
+2026-03-27 15:20:10 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'The importance of India's diverse culture and heritage for world unity.' → 6 results | cumulative: 6
+2026-03-27 15:20:10 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'India's role in shaping global economic trends.' → 6 results | cumulative: 12
+2026-03-27 15:20:10 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'How India is contributing to sustainable development and climate change mitigation.' → 6 results | cumulative: 18
+2026-03-27 15:20:10 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'India's impact on global trade and commerce.' → 6 results | cumulative: 24
+2026-03-27 15:20:10 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'The significance of India's growing middle class for global economic growth.' → 6 results | cumulative: 30
+2026-03-27 15:20:10 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'The significance of India in international relations and diplomacy.' → 6 results | cumulative: 36
+2026-03-27 15:20:10 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'How India is addressing global health challenges, such as COVID-19.' → 6 results | cumulative: 42
+2026-03-27 15:20:10 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'India's position in the global energy landscape and its impact on sustainability.' → 6 results | cumulative: 48
+2026-03-27 15:20:10 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'India's influence on global innovation and entrepreneurship.' → 6 results | cumulative: 54
+2026-03-27 15:20:10 | INFO     | BlogWriter | [RESEARCH] Total raw results: 54 (2.77s)
+2026-03-27 15:24:50 | INFO     | BlogWriter | [RESEARCH] Evidence after deduplication: 6 items
+2026-03-27 15:24:50 | INFO     | BlogWriter | [RESEARCH] ── Research node complete ───────────────────────────
+2026-03-27 15:24:50 | INFO     | BlogWriter | [ORCH] ── Entering orchestrator node ──────────────────────
+2026-03-27 15:24:50 | INFO     | BlogWriter | [ORCH] Planning attempt 1/3...
+2026-03-27 15:28:59 | INFO     | BlogWriter | [ORCH] Plan accepted — 8 tasks | title: 'The Importance of India for the World'
+2026-03-27 15:28:59 | INFO     | BlogWriter | [ORCH] ── Orchestrator node complete ─────────────────────────
+2026-03-27 15:28:59 | INFO     | BlogWriter | [DISPATCHER] Dispatching workers...
+2026-03-27 15:28:59 | INFO     | BlogWriter | [WORKER] ── Task 1: 'Introduction to India's significance in the global context'
+2026-03-27 15:28:59 | INFO     | BlogWriter | [WORKER] ── Task 2: 'India's role in shaping the future of technology'
+2026-03-27 15:28:59 | INFO     | BlogWriter | [WORKER] ── Task 3: 'The impact of Indian innovations on global business'
+2026-03-27 15:28:59 | INFO     | BlogWriter | [WORKER] ── Task 4: 'Edge cases and failure modes: Challenges facing India's growth'
+2026-03-27 15:28:59 | INFO     | BlogWriter | [WORKER] ── Task 5: 'Performance and cost considerations: Measuring India's growth'
+2026-03-27 15:28:59 | INFO     | BlogWriter | [WORKER] ── Task 6: 'Security and privacy considerations: Protecting India's data'
+2026-03-27 15:28:59 | INFO     | BlogWriter | [WORKER] ── Task 7: 'Debugging and observability: Understanding India's growth challenges'
+2026-03-27 15:28:59 | INFO     | BlogWriter | [WORKER] ── Task 8: 'Conclusion: India's significance in the global context'
+2026-03-27 15:29:48 | INFO     | BlogWriter | [WORKER] Task 8 done — ~252w (dev=26.0%, 48.94s)
+2026-03-27 15:29:48 | WARNING  | BlogWriter | [WORKER] Task 8 word count deviation > 20%: got 252, target 200
+2026-03-27 15:30:24 | INFO     | BlogWriter | [WORKER] Task 3 done — ~272w (dev=9.3%, 84.86s)
+2026-03-27 15:31:10 | INFO     | BlogWriter | [WORKER] Task 1 done — ~242w (dev=3.2%, 131.18s)
+2026-03-27 15:31:50 | INFO     | BlogWriter | [WORKER] Task 4 done — ~209w (dev=16.4%, 170.83s)
+2026-03-27 15:32:29 | INFO     | BlogWriter | [WORKER] Task 5 done — ~187w (dev=37.7%, 210.25s)
+2026-03-27 15:32:29 | WARNING  | BlogWriter | [WORKER] Task 5 word count deviation > 20%: got 187, target 300
+2026-03-27 15:33:09 | INFO     | BlogWriter | [WORKER] Task 2 done — ~207w (dev=31.0%, 249.65s)
+2026-03-27 15:33:09 | WARNING  | BlogWriter | [WORKER] Task 2 word count deviation > 20%: got 207, target 300
+2026-03-27 15:33:38 | INFO     | BlogWriter | [WORKER] Task 7 done — ~149w (dev=40.4%, 279.12s)
+2026-03-27 15:33:38 | WARNING  | BlogWriter | [WORKER] Task 7 word count deviation > 20%: got 149, target 250
+2026-03-27 15:34:14 | INFO     | BlogWriter | [WORKER] Task 6 done — ~180w (dev=28.0%, 314.47s)
+2026-03-27 15:34:14 | WARNING  | BlogWriter | [WORKER] Task 6 word count deviation > 20%: got 180, target 250
+2026-03-27 15:34:14 | INFO     | BlogWriter | [MERGE] ── Entering merge_content node ──────────────────────
+2026-03-27 15:34:14 | INFO     | BlogWriter | [MERGE] Blog title: 'The Importance of India for the World' | ~1706 words
+2026-03-27 15:34:14 | INFO     | BlogWriter | [MERGE] ── merge_content node complete ───────────────────────
+2026-03-27 15:34:14 | INFO     | BlogWriter | [IMAGES] ── Entering decide_images node ──────────────────────
+2026-03-27 15:34:14 | DEBUG    | BlogWriter | [IMAGES] Sections found: 8
+2026-03-27 15:34:51 | INFO     | BlogWriter | [IMAGES] Images planned: 3
+2026-03-27 15:34:51 | DEBUG    | BlogWriter | [IMAGES] Injected '[[IMAGE_1]]' after heading 'The Impact of Indian Innovations on Global Business'
+2026-03-27 15:34:51 | DEBUG    | BlogWriter | [IMAGES] Injected '[[IMAGE_2]]' after heading 'Performance and Cost Considerations: Measuring India's Growth'
+2026-03-27 15:34:51 | DEBUG    | BlogWriter | [IMAGES] Injected '[[IMAGE_3]]' after heading 'Debugging and Observability: Understanding India's Growth Challenges'
+2026-03-27 15:34:51 | INFO     | BlogWriter | [IMAGES] ── decide_images node complete ────────────────────────
+2026-03-27 15:34:51 | INFO     | BlogWriter | [IMGPLACE] ── Entering generate_and_place_images node ──────────
+2026-03-27 15:34:51 | INFO     | BlogWriter | [IMGPLACE] Processing image 1: placeholder='[[IMAGE_1]]' | file='qkv_attention_flow.png'
+2026-03-27 15:34:51 | INFO     | BlogWriter | [IMGPLACE] Processing image 2: placeholder='[[IMAGE_2]]' | file='qkv_cost_benefit_analysis.png'
+2026-03-27 15:34:51 | INFO     | BlogWriter | [IMGPLACE] Processing image 3: placeholder='[[IMAGE_3]]' | file='qkv_log_file_analysis.png'
+2026-03-27 15:35:00 | INFO     | BlogWriter | [IMGPLACE] Image 1 saved: 'output\images\qkv_attention_flow.png' (1769357b, 8.84s, attempt 1)
+2026-03-27 15:35:03 | INFO     | BlogWriter | [IMGPLACE] Image 2 saved: 'output\images\qkv_cost_benefit_analysis.png' (1298771b, 11.56s, attempt 1)
+2026-03-27 15:35:04 | INFO     | BlogWriter | [IMGPLACE] Image 3 saved: 'output\images\qkv_log_file_analysis.png' (1678458b, 13.43s, attempt 1)
+2026-03-27 15:35:04 | INFO     | BlogWriter | [IMGPLACE] All futures done in 13.44s
+2026-03-27 15:35:04 | INFO     | BlogWriter | [IMGPLACE] Summary — success=3 | failed=0 | cached=0
+2026-03-27 15:35:04 | INFO     | BlogWriter | [IMGPLACE] Written: 'output\The Importance of India for the World.md' (~1751 words)
+2026-03-27 15:35:04 | INFO     | BlogWriter | [IMGPLACE] ── generate_and_place_images complete ───────────────
+2026-03-27 15:35:04 | INFO     | BlogWriter | [HITL] ── Workflow pausing for human approval ──────────────
+2026-03-27 15:35:04 | INFO     | BlogWriter | [HITL]   Blog title : 'The Importance of India for the World'
+2026-03-27 15:35:04 | INFO     | BlogWriter | [HITL]   Content length (with images): 14554 chars
+2026-03-27 15:35:04 | INFO     | BlogWriter | [HITL]   Images already generated and embedded before approval
+2026-03-27 15:35:04 | INFO     | BlogWriter | [BG] Workflow paused. next=('human_approval',) thread='64c05650-1a01-44ab-884b-57bf1bce9ebe'
+2026-03-27 15:35:04 | INFO     | BlogWriter | [BG] Postgres → PENDING thread='64c05650-1a01-44ab-884b-57bf1bce9ebe'
+2026-03-27 15:41:11 | INFO     | BlogWriter | [API] /blogs/reject — thread_id='64c05650-1a01-44ab-884b-57bf1bce9ebe' reason='The blog is biased.'
+2026-03-27 15:41:11 | INFO     | BlogWriter | [HITL] Routing after approval — status='rejected'
+2026-03-27 15:41:11 | INFO     | BlogWriter | [BG] Resuming workflow thread='64c05650-1a01-44ab-884b-57bf1bce9ebe'
+2026-03-27 15:41:11 | INFO     | BlogWriter | [HITL] ── handle_rejection ─────────────────────────────────
+2026-03-27 15:41:11 | INFO     | BlogWriter | [HITL]   Blog rejected. Reason: The blog is biased.
+2026-03-27 15:41:11 | INFO     | BlogWriter | [BG] Workflow COMPLETED (rejected) thread='64c05650-1a01-44ab-884b-57bf1bce9ebe'
+2026-03-27 15:41:58 | INFO     | BlogWriter | [SHUTDOWN] Application shutting down.

@@ -1,0 +1,86 @@
+2026-03-27 14:20:55 | INFO     | BlogWriter | Logger initialised. Log file: logs\log_20260327_142055.log
+2026-03-27 14:20:55 | DEBUG    | BlogWriter | [SETUP] Initialising LLMs...
+2026-03-27 14:20:55 | DEBUG    | BlogWriter | [SETUP] LLMs ready.
+2026-03-27 14:20:55 | INFO     | BlogWriter | [STARTUP] PostgreSQL tables ready.
+2026-03-27 14:20:55 | INFO     | BlogWriter | [STARTUP] LangGraph workflow compiled. Checkpointer DB: 'blog_hitl.db'
+2026-03-27 14:21:55 | INFO     | BlogWriter | [API] /blogs/approve — thread_id='c98f7ed9-442d-4884-86b7-5ee58539ecc7'
+2026-03-27 14:21:55 | INFO     | BlogWriter | [HITL] Routing after approval — status='approved'
+2026-03-27 14:21:55 | INFO     | BlogWriter | [BG] Resuming workflow thread='c98f7ed9-442d-4884-86b7-5ee58539ecc7'
+2026-03-27 14:21:55 | INFO     | BlogWriter | [HITL] ── finalize_approved — blog approved by human ────────
+2026-03-27 14:21:55 | INFO     | BlogWriter | [HITL]   Blog 'Delhi's Pollution Problem' approved and finalised.
+2026-03-27 14:21:55 | INFO     | BlogWriter | [BG] Workflow COMPLETED (approved) thread='c98f7ed9-442d-4884-86b7-5ee58539ecc7'
+2026-03-27 14:23:47 | INFO     | BlogWriter | [API] /blogs/generate — topic='Difference between Azure and GCP' thread_id='419ea318-33f5-4357-afb0-607ac4776525'
+2026-03-27 14:23:47 | INFO     | BlogWriter | [BG] Starting workflow thread='419ea318-33f5-4357-afb0-607ac4776525' topic='Difference between Azure and GCP'
+2026-03-27 14:23:47 | INFO     | BlogWriter | [ROUTER] ── Entering router node ──────────────────────────
+2026-03-27 14:23:47 | DEBUG    | BlogWriter | [ROUTER]   Topic: 'Difference between Azure and GCP'
+2026-03-27 14:24:07 | INFO     | BlogWriter | [ROUTER]   Decision: mode='hybrid' | needs_research=True
+2026-03-27 14:24:07 | DEBUG    | BlogWriter | [ROUTER]   Queries (5): ['Azure vs GCP: Which cloud provider is right for your business?', 'GCP vs Azure: A comparison of their services and pricing.', "What's the difference between Azure, AWS and GCP?", 'How does Azure compare to GCP in terms of scalability and performance?', 'GCP vs Azure: A detailed comparison of their infrastructure and features.']
+2026-03-27 14:24:07 | INFO     | BlogWriter | [ROUTER] ── Router node complete ────────────────────────────
+2026-03-27 14:24:07 | INFO     | BlogWriter | [ROUTER] Routing → 'research'
+2026-03-27 14:24:07 | INFO     | BlogWriter | [RESEARCH] ── Entering research node (5 queries) ──
+2026-03-27 14:24:07 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='Azure vs GCP: Which cloud provider is right for your business?'
+2026-03-27 14:24:07 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='GCP vs Azure: A comparison of their services and pricing.'
+2026-03-27 14:24:07 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='What's the difference between Azure, AWS and GCP?'
+2026-03-27 14:24:07 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='How does Azure compare to GCP in terms of scalability and performance?'
+2026-03-27 14:24:07 | DEBUG    | BlogWriter | [RESEARCH] Tavily search — query='GCP vs Azure: A detailed comparison of their infrastructure and features.'
+2026-03-27 14:24:09 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'Azure vs GCP: Which cloud provider is right for your business?' → 6 results | cumulative: 6
+2026-03-27 14:24:09 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'GCP vs Azure: A detailed comparison of their infrastructure and features.' → 6 results | cumulative: 12
+2026-03-27 14:24:09 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'What's the difference between Azure, AWS and GCP?' → 6 results | cumulative: 18
+2026-03-27 14:24:09 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'GCP vs Azure: A comparison of their services and pricing.' → 6 results | cumulative: 24
+2026-03-27 14:24:09 | DEBUG    | BlogWriter | [RESEARCH] Query done: 'How does Azure compare to GCP in terms of scalability and performance?' → 6 results | cumulative: 30
+2026-03-27 14:24:09 | INFO     | BlogWriter | [RESEARCH] Total raw results: 30 (2.40s)
+2026-03-27 14:28:26 | INFO     | BlogWriter | [RESEARCH] Evidence after deduplication: 6 items
+2026-03-27 14:28:26 | INFO     | BlogWriter | [RESEARCH] ── Research node complete ───────────────────────────
+2026-03-27 14:28:26 | INFO     | BlogWriter | [ORCH] ── Entering orchestrator node ──────────────────────
+2026-03-27 14:28:26 | INFO     | BlogWriter | [ORCH] Planning attempt 1/3...
+2026-03-27 14:30:22 | INFO     | BlogWriter | [ORCH] Plan accepted — 6 tasks | title: 'Understanding the Differences between Azure and GCP'
+2026-03-27 14:30:22 | INFO     | BlogWriter | [ORCH] ── Orchestrator node complete ─────────────────────────
+2026-03-27 14:30:22 | INFO     | BlogWriter | [DISPATCHER] Dispatching workers...
+2026-03-27 14:30:22 | INFO     | BlogWriter | [WORKER] ── Task 1: 'What are the Strategic Focuses of Azure and GCP?'
+2026-03-27 14:30:22 | INFO     | BlogWriter | [WORKER] ── Task 2: 'Comparison of Pricing Models'
+2026-03-27 14:30:22 | INFO     | BlogWriter | [WORKER] ── Task 3: 'Key Features and Integrations'
+2026-03-27 14:30:22 | INFO     | BlogWriter | [WORKER] ── Task 4: 'Edge Cases and Failure Modes'
+2026-03-27 14:30:22 | INFO     | BlogWriter | [WORKER] ── Task 5: 'Security and Compliance Considerations'
+2026-03-27 14:30:22 | INFO     | BlogWriter | [WORKER] ── Task 6: 'Debugging and Observability Tips'
+2026-03-27 14:31:03 | INFO     | BlogWriter | [WORKER] Task 5 done — ~242w (dev=3.2%, 41.11s)
+2026-03-27 14:31:30 | INFO     | BlogWriter | [WORKER] Task 1 done — ~230w (dev=15.0%, 68.04s)
+2026-03-27 14:31:59 | INFO     | BlogWriter | [WORKER] Task 3 done — ~249w (dev=0.4%, 97.29s)
+2026-03-27 14:32:30 | INFO     | BlogWriter | [WORKER] Task 4 done — ~213w (dev=14.8%, 127.94s)
+2026-03-27 14:33:00 | INFO     | BlogWriter | [WORKER] Task 2 done — ~207w (dev=31.0%, 157.73s)
+2026-03-27 14:33:00 | WARNING  | BlogWriter | [WORKER] Task 2 word count deviation > 20%: got 207, target 300
+2026-03-27 14:33:26 | INFO     | BlogWriter | [WORKER] Task 6 done — ~201w (dev=0.5%, 184.56s)
+2026-03-27 14:33:27 | INFO     | BlogWriter | [MERGE] ── Entering merge_content node ──────────────────────
+2026-03-27 14:33:27 | INFO     | BlogWriter | [MERGE] Blog title: 'Understanding the Differences between Azure and GCP' | ~1350 words
+2026-03-27 14:33:27 | INFO     | BlogWriter | [MERGE] ── merge_content node complete ───────────────────────
+2026-03-27 14:33:27 | INFO     | BlogWriter | [IMAGES] ── Entering decide_images node ──────────────────────
+2026-03-27 14:33:27 | DEBUG    | BlogWriter | [IMAGES] Sections found: 6
+2026-03-27 14:34:03 | INFO     | BlogWriter | [IMAGES] Images planned: 3
+2026-03-27 14:34:03 | DEBUG    | BlogWriter | [IMAGES] Injected 'comparison_of_pricing_models' after heading 'Comparison of Pricing Models'
+2026-03-27 14:34:03 | DEBUG    | BlogWriter | [IMAGES] Injected 'key_features_and_integrations' after heading 'Key Features and Integrations'
+2026-03-27 14:34:03 | WARNING  | BlogWriter | [IMAGES] Could not find heading 'Azure vs GCP Architecture'. Appending at end.
+2026-03-27 14:34:03 | INFO     | BlogWriter | [IMAGES] ── decide_images node complete ────────────────────────
+2026-03-27 14:34:03 | INFO     | BlogWriter | [IMGPLACE] ── Entering generate_and_place_images node ──────────
+2026-03-27 14:34:03 | INFO     | BlogWriter | [IMGPLACE] Processing image 1: placeholder='comparison_of_pricing_models' | file='pricing_comparison.png'
+2026-03-27 14:34:03 | INFO     | BlogWriter | [IMGPLACE] Processing image 2: placeholder='key_features_and_integrations' | file='feature_comparison.png'
+2026-03-27 14:34:03 | INFO     | BlogWriter | [IMGPLACE] Processing image 3: placeholder='azure_and_gcp_architecture' | file='architecture_diagram.png'
+2026-03-27 14:34:04 | WARNING  | BlogWriter | [IMGPLACE] Image 1 attempt 1/3 FAILED: No image content returned (safety/quota/SDK change).
+2026-03-27 14:34:04 | WARNING  | BlogWriter | [IMGPLACE] Image 1 retry 2/3 — waiting 2s...
+2026-03-27 14:34:14 | INFO     | BlogWriter | [IMGPLACE] Image 2 saved: 'output\images\feature_comparison.png' (1407929b, 11.29s, attempt 1)
+2026-03-27 14:34:16 | INFO     | BlogWriter | [IMGPLACE] Image 3 saved: 'output\images\architecture_diagram.png' (1174028b, 13.35s, attempt 1)
+2026-03-27 14:34:18 | INFO     | BlogWriter | [IMGPLACE] Image 1 saved: 'output\images\pricing_comparison.png' (1188296b, 11.47s, attempt 2)
+2026-03-27 14:34:18 | INFO     | BlogWriter | [IMGPLACE] All futures done in 14.82s
+2026-03-27 14:34:18 | INFO     | BlogWriter | [IMGPLACE] Summary — success=3 | failed=0 | cached=0
+2026-03-27 14:34:18 | INFO     | BlogWriter | [IMGPLACE] Written: 'output\Understanding the Differences between Azure and GCP.md' (~1405 words)
+2026-03-27 14:34:18 | INFO     | BlogWriter | [IMGPLACE] ── generate_and_place_images complete ───────────────
+2026-03-27 14:34:18 | INFO     | BlogWriter | [HITL] ── Workflow pausing for human approval ──────────────
+2026-03-27 14:34:18 | INFO     | BlogWriter | [HITL]   Blog title : 'Understanding the Differences between Azure and GCP'
+2026-03-27 14:34:18 | INFO     | BlogWriter | [HITL]   Content length: 10416 chars
+2026-03-27 14:34:18 | INFO     | BlogWriter | [BG] Workflow paused. next=('human_approval',) thread='419ea318-33f5-4357-afb0-607ac4776525'
+2026-03-27 14:34:18 | INFO     | BlogWriter | [BG] Postgres → PENDING thread='419ea318-33f5-4357-afb0-607ac4776525'
+2026-03-27 14:48:51 | INFO     | BlogWriter | [API] /blogs/approve — thread_id='419ea318-33f5-4357-afb0-607ac4776525'
+2026-03-27 14:48:51 | INFO     | BlogWriter | [HITL] Routing after approval — status='approved'
+2026-03-27 14:48:51 | INFO     | BlogWriter | [BG] Resuming workflow thread='419ea318-33f5-4357-afb0-607ac4776525'
+2026-03-27 14:48:51 | INFO     | BlogWriter | [HITL] ── finalize_approved — blog approved by human ────────
+2026-03-27 14:48:51 | INFO     | BlogWriter | [HITL]   Blog 'Understanding the Differences between Azure and GCP' approved and finalised.
+2026-03-27 14:48:51 | INFO     | BlogWriter | [BG] Workflow COMPLETED (approved) thread='419ea318-33f5-4357-afb0-607ac4776525'
+2026-03-27 15:17:13 | INFO     | BlogWriter | [SHUTDOWN] Application shutting down.

@@ -1,0 +1,26 @@
+2026-03-30 18:43:43 | INFO     | BlogApp | [Logger] Bootstrapped. Log file: logs\backend-log_20260330_184343.log
+2026-03-30 18:43:46 | DEBUG    | BlogApp.Agent | [SETUP] Initialising LLM...
+2026-03-30 18:43:46 | DEBUG    | BlogApp.Agent | [SETUP] LLM ready: model='llama3.2:3b'
+2026-03-30 18:43:47 | INFO     | BlogApp.FastAPI | [STARTUP] Static site mounted: D:\Study\LangGraph\Workflow_27_BlogWriter\Backend\Blogs → /site
+2026-03-30 18:43:47 | INFO     | BlogApp.FastAPI | [STARTUP] PostgreSQL tables ready.
+2026-03-30 18:43:47 | INFO     | BlogApp.FastAPI | [STARTUP] LangGraph workflow compiled. Checkpointer DB: 'blog_hitl.db'
+2026-03-30 18:44:04 | INFO     | BlogApp.FastAPI | [API] /blogs/approve — thread_id='4891e86f-8909-4adc-b9ab-999277f2cbd9'
+2026-03-30 18:44:04 | INFO     | BlogApp.Agent | [HITL] Routing after approval — status='approved'
+2026-03-30 18:44:04 | INFO     | BlogApp.FastAPI | [BG] Resuming workflow thread='4891e86f-8909-4adc-b9ab-999277f2cbd9'
+2026-03-30 18:44:04 | INFO     | BlogApp.Agent | [HITL] ── finalize_approved ─────────────────────────────────
+2026-03-30 18:44:04 | INFO     | BlogApp.Agent | [BLOGS] index.html updated with 'Renewable Energy Resources: Trends and Insights'
+2026-03-30 18:44:04 | INFO     | BlogApp.Agent | [HITL] Blog 'Renewable Energy Resources: Trends and Insights' published to index.html
+2026-03-30 18:44:04 | INFO     | BlogApp.FastAPI | [BG] Workflow finalized (approved) thread='4891e86f-8909-4adc-b9ab-999277f2cbd9'
+2026-03-30 18:44:04 | INFO     | BlogApp.GitHub | Starting Git automation
+2026-03-30 18:44:04 | INFO     | BlogApp.GitHub | Commit message: Blog 30-03-2026-18-44-04
+2026-03-30 18:44:04 | DEBUG    | BlogApp.GitHub | Running command: git add .
+2026-03-30 18:44:04 | DEBUG    | BlogApp.GitHub | Command succeeded: git add .
+2026-03-30 18:44:04 | DEBUG    | BlogApp.GitHub | Running command: git commit -m "Blog 30-03-2026-18-44-04"
+2026-03-30 18:44:04 | INFO     | BlogApp.GitHub | [main 01810ec] Blog 30-03-2026-18-44-04
+ 1 file changed, 13 insertions(+)
+2026-03-30 18:44:04 | DEBUG    | BlogApp.GitHub | Command succeeded: git commit -m "Blog 30-03-2026-18-44-04"
+2026-03-30 18:44:04 | DEBUG    | BlogApp.GitHub | Running command: git push origin main
+2026-03-30 18:44:07 | DEBUG    | BlogApp.GitHub | Command succeeded: git push origin main
+2026-03-30 18:44:07 | INFO     | BlogApp.GitHub | Git automation completed successfully
+2026-03-30 18:44:07 | INFO     | BlogApp.FastAPI | [BG] GitHub push completed thread='4891e86f-8909-4adc-b9ab-999277f2cbd9'
+2026-03-30 18:50:45 | INFO     | BlogApp.FastAPI | [SHUTDOWN] Application shutting down.

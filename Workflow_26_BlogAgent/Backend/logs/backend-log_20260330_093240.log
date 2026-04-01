@@ -1,0 +1,84 @@
+2026-03-30 09:32:40 | INFO     | BlogApp | [Logger] Bootstrapped. Log file: logs\backend-log_20260330_093240.log
+2026-03-30 09:32:43 | DEBUG    | BlogApp.Agent | [SETUP] Initialising LLM...
+2026-03-30 09:32:44 | DEBUG    | BlogApp.Agent | [SETUP] LLM ready: model='llama3.2:3b'
+2026-03-30 09:32:44 | INFO     | BlogApp.FastAPI | [STARTUP] Static site mounted: D:\Study\LangGraph\Workflow_26_BlogAgent\Backend\Blogs → /site
+2026-03-30 09:32:44 | INFO     | BlogApp.FastAPI | [STARTUP] PostgreSQL tables ready.
+2026-03-30 09:32:44 | INFO     | BlogApp.FastAPI | [STARTUP] LangGraph workflow compiled. Checkpointer DB: 'blog_hitl.db'
+2026-03-30 09:37:53 | INFO     | BlogApp.FastAPI | [API] /blogs/reject — thread_id='5ede13a7-a30f-492e-9092-ada2c0a84c54' reason='Image generation failed.'
+2026-03-30 09:37:53 | INFO     | BlogApp.Agent | [HITL] Routing after approval — status='rejected'
+2026-03-30 09:37:53 | INFO     | BlogApp.FastAPI | [BG] Resuming workflow thread='5ede13a7-a30f-492e-9092-ada2c0a84c54'
+2026-03-30 09:37:53 | INFO     | BlogApp.Agent | [HITL] ── handle_rejection — Reason: Image generation failed.
+2026-03-30 09:37:53 | INFO     | BlogApp.FastAPI | [BG] Workflow finalized (rejected) thread='5ede13a7-a30f-492e-9092-ada2c0a84c54'
+2026-03-30 09:39:19 | INFO     | BlogApp.FastAPI | [API] /blogs/generate — topic='Evolution of Snapdragon Processors for Mobile. Today how they better than others.' thread_id='bc2bc0bf-12f3-478b-8e86-e65c6e1fcc14'
+2026-03-30 09:39:19 | INFO     | BlogApp.FastAPI | [BG] Starting workflow thread='bc2bc0bf-12f3-478b-8e86-e65c6e1fcc14' topic='Evolution of Snapdragon Processors for Mobile. Today how they better than others.'
+2026-03-30 09:39:19 | INFO     | BlogApp.Agent | [ROUTER] ── Entering router node ──────────────────────────
+2026-03-30 09:39:45 | INFO     | BlogApp.Agent | [ROUTER]   mode='hybrid' | needs_research=True
+2026-03-30 09:39:45 | INFO     | BlogApp.Agent | [ROUTER] ── Router node complete ────────────────────────────
+2026-03-30 09:39:45 | INFO     | BlogApp.Agent | [ROUTER] Routing → 'research'
+2026-03-30 09:39:45 | INFO     | BlogApp.Agent | [RESEARCH] ── Entering research node (10 queries) ──
+2026-03-30 09:39:45 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Evolution of Snapdragon processors for mobile: what's new and improved?'
+2026-03-30 09:39:45 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Comparison of Snapdragon vs other mobile processor brands: performance, power consumption, and features.'
+2026-03-30 09:39:45 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Snapdragon processor generations: a brief overview of each and their key advancements.'
+2026-03-30 09:39:45 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Is the latest Snapdragon processor better than previous ones? A comparison with Apple A14 and Samsung Exynos.'
+2026-03-30 09:39:45 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='How has the Snapdragon processor evolved over time? Key innovations and milestones.'
+2026-03-30 09:39:45 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Snapdragon vs Qualcomm's competitors: a detailed analysis of performance, power consumption, and features.'
+2026-03-30 09:39:45 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='The benefits of using a Snapdragon processor in mobile devices: improved performance, battery life, and camera capabilities.'
+2026-03-30 09:39:45 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='What makes the latest Snapdragon processor stand out from its predecessors?'
+2026-03-30 09:39:45 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='A comparison of the latest Snapdragon processors with other popular mobile processor brands like Apple and Samsung.'
+2026-03-30 09:39:45 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Snapdragon processor architecture: how it works and what sets it apart from other processors.'
+2026-03-30 09:39:49 | INFO     | BlogApp.Agent | [RESEARCH] Total raw results: 60 (3.45s)
+2026-03-30 09:44:00 | INFO     | BlogApp.Agent | [RESEARCH] Evidence after deduplication: 6 items
+2026-03-30 09:44:00 | INFO     | BlogApp.Agent | [RESEARCH] ── Research node complete ───────────────────────────
+2026-03-30 09:44:00 | INFO     | BlogApp.Agent | [ORCH] ── Entering orchestrator node ──────────────────────
+2026-03-30 09:44:00 | INFO     | BlogApp.Agent | [ORCH] Planning attempt 1/3...
+2026-03-30 09:46:46 | INFO     | BlogApp.Agent | [ORCH] Plan accepted — 8 tasks | 'The Evolution of Snapdragon Processors for Mobile: Why They Reign Supreme'
+2026-03-30 09:46:46 | INFO     | BlogApp.Agent | [ORCH] ── Orchestrator node complete ─────────────────────────
+2026-03-30 09:46:46 | INFO     | BlogApp.Agent | [DISPATCHER] Dispatching workers...
+2026-03-30 09:46:46 | INFO     | BlogApp.Agent | [WORKER] ── Task 1: 'What is Snapdragon and its History'
+2026-03-30 09:46:46 | INFO     | BlogApp.Agent | [WORKER] ── Task 2: 'Advantages of Snapdragon Processors'
+2026-03-30 09:46:46 | INFO     | BlogApp.Agent | [WORKER] ── Task 3: 'Edge Cases: Snapdragon Processor Vulnerabilities'
+2026-03-30 09:46:46 | INFO     | BlogApp.Agent | [WORKER] ── Task 4: 'Comparison with Exynos Processors'
+2026-03-30 09:46:46 | INFO     | BlogApp.Agent | [WORKER] ── Task 5: 'Performance and Power Efficiency'
+2026-03-30 09:46:46 | INFO     | BlogApp.Agent | [WORKER] ── Task 6: 'Security and Privacy Considerations'
+2026-03-30 09:46:46 | INFO     | BlogApp.Agent | [WORKER] ── Task 7: 'Debugging and Observability Tips'
+2026-03-30 09:46:46 | INFO     | BlogApp.Agent | [WORKER] ── Task 8: 'Future Developments and Trends'
+2026-03-30 09:47:25 | INFO     | BlogApp.Agent | [WORKER] Task 1 done — ~208w (dev=16.8%, 38.78s)
+2026-03-30 09:48:11 | INFO     | BlogApp.Agent | [WORKER] Task 2 done — ~251w (dev=16.3%, 84.73s)
+2026-03-30 09:48:58 | INFO     | BlogApp.Agent | [WORKER] Task 3 done — ~261w (dev=30.5%, 131.60s)
+2026-03-30 09:48:58 | WARNING  | BlogApp.Agent | [WORKER] Task 3 word count deviation > 20%: got 261, target 200
+2026-03-30 09:49:21 | INFO     | BlogApp.Agent | [WORKER] Task 6 done — ~160w (dev=36.0%, 155.26s)
+2026-03-30 09:49:22 | WARNING  | BlogApp.Agent | [WORKER] Task 6 word count deviation > 20%: got 160, target 250
+2026-03-30 09:50:05 | INFO     | BlogApp.Agent | [WORKER] Task 7 done — ~341w (dev=70.5%, 198.79s)
+2026-03-30 09:50:05 | WARNING  | BlogApp.Agent | [WORKER] Task 7 word count deviation > 20%: got 341, target 200
+2026-03-30 09:50:51 | INFO     | BlogApp.Agent | [WORKER] Task 4 done — ~223w (dev=25.7%, 244.76s)
+2026-03-30 09:50:51 | WARNING  | BlogApp.Agent | [WORKER] Task 4 word count deviation > 20%: got 223, target 300
+2026-03-30 09:51:22 | INFO     | BlogApp.Agent | [WORKER] Task 5 done — ~193w (dev=22.8%, 275.61s)
+2026-03-30 09:51:22 | WARNING  | BlogApp.Agent | [WORKER] Task 5 word count deviation > 20%: got 193, target 250
+2026-03-30 09:52:00 | INFO     | BlogApp.Agent | [WORKER] Task 8 done — ~247w (dev=17.7%, 313.86s)
+2026-03-30 09:52:00 | INFO     | BlogApp.Agent | [MERGE] ── Entering merge_content node ──────────────────────
+2026-03-30 09:52:00 | INFO     | BlogApp.Agent | [MERGE] Title: 'The Evolution of Snapdragon Processors for Mobile: Why They Reign Supreme' | ~1896 words
+2026-03-30 09:52:00 | INFO     | BlogApp.Agent | [MERGE] ── merge_content node complete ───────────────────────
+2026-03-30 09:52:00 | INFO     | BlogApp.Agent | [IMAGES] ── Entering decide_images node ──────────────────────
+2026-03-30 09:52:36 | INFO     | BlogApp.Agent | [IMAGES] Images planned: 3
+2026-03-30 09:52:36 | DEBUG    | BlogApp.Agent | [IMAGES] Injected '[[IMAGE_1]]' after heading 'What is Snapdragon and its History'
+2026-03-30 09:52:36 | DEBUG    | BlogApp.Agent | [IMAGES] Injected '[[IMAGE_2]]' after heading 'Performance and Power Efficiency'
+2026-03-30 09:52:36 | DEBUG    | BlogApp.Agent | [IMAGES] Injected '[[IMAGE_3]]' after heading 'Comparison with Exynos Processors'
+2026-03-30 09:52:36 | INFO     | BlogApp.Agent | [IMGPLACE] ── Entering generate_and_place_images node ──────────
+2026-03-30 09:52:44 | INFO     | BlogApp.Agent | [IMGPLACE] Image 2 saved: 'Blogs\contents\images\The_Evolution_of_Snapdragon_Processors_for_Mobile-_Why_They_Reign_Supreme\snapdragon_performance.png' (1170660b, attempt 1)
+2026-03-30 09:52:46 | INFO     | BlogApp.Agent | [IMGPLACE] Image 1 saved: 'Blogs\contents\images\The_Evolution_of_Snapdragon_Processors_for_Mobile-_Why_They_Reign_Supreme\snapdragon_history.png' (865073b, attempt 1)
+2026-03-30 09:52:52 | INFO     | BlogApp.Agent | [IMGPLACE] Image 3 saved: 'Blogs\contents\images\The_Evolution_of_Snapdragon_Processors_for_Mobile-_Why_They_Reign_Supreme\exynos_vs_snapdragon.png' (1230671b, attempt 1)
+2026-03-30 09:52:52 | INFO     | BlogApp.Agent | [IMGPLACE] Summary — success=3 | failed=0 | cached=0
+2026-03-30 09:52:52 | INFO     | BlogApp.Agent | [BLOGS] Saved blog files: Blogs\contents\html\The_Evolution_of_Snapdragon_Processors_for_Mobile-_Why_They_Reign_Supreme.html
+2026-03-30 09:52:52 | INFO     | BlogApp.Agent | [IMGPLACE] ── generate_and_place_images complete ───────────────
+2026-03-30 09:52:52 | INFO     | BlogApp.Agent | [HITL] ── Workflow pausing for human approval ──────────────
+2026-03-30 09:52:52 | INFO     | BlogApp.Agent | [HITL]   Title: 'The Evolution of Snapdragon Processors for Mobile: Why They Reign Supreme'
+2026-03-30 09:52:52 | INFO     | BlogApp.FastAPI | [BG] Workflow paused. next=('human_approval',) thread='bc2bc0bf-12f3-478b-8e86-e65c6e1fcc14'
+2026-03-30 09:52:52 | INFO     | BlogApp.FastAPI | [BG] Postgres → PENDING  thread='bc2bc0bf-12f3-478b-8e86-e65c6e1fcc14'
+2026-03-30 10:02:32 | INFO     | BlogApp.FastAPI | [API] /blogs/approve — thread_id='bc2bc0bf-12f3-478b-8e86-e65c6e1fcc14'
+2026-03-30 10:02:32 | INFO     | BlogApp.Agent | [HITL] Routing after approval — status='approved'
+2026-03-30 10:02:32 | INFO     | BlogApp.FastAPI | [BG] Resuming workflow thread='bc2bc0bf-12f3-478b-8e86-e65c6e1fcc14'
+2026-03-30 10:02:32 | INFO     | BlogApp.Agent | [HITL] ── finalize_approved ─────────────────────────────────
+2026-03-30 10:02:32 | INFO     | BlogApp.Agent | [BLOGS] index.html updated with 'The Evolution of Snapdragon Processors for Mobile: Why They Reign Supreme'
+2026-03-30 10:02:32 | INFO     | BlogApp.Agent | [HITL] Blog 'The Evolution of Snapdragon Processors for Mobile: Why They Reign Supreme' published to index.html
+2026-03-30 10:02:32 | INFO     | BlogApp.FastAPI | [BG] Workflow finalized (approved) thread='bc2bc0bf-12f3-478b-8e86-e65c6e1fcc14'
+2026-03-30 10:19:40 | INFO     | BlogApp.FastAPI | [SHUTDOWN] Application shutting down.

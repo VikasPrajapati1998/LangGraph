@@ -1,0 +1,152 @@
+2026-03-30 17:57:04 | INFO     | BlogApp | [Logger] Bootstrapped. Log file: logs\backend-log_20260330_175704.log
+2026-03-30 17:57:07 | DEBUG    | BlogApp.Agent | [SETUP] Initialising LLM...
+2026-03-30 17:57:08 | DEBUG    | BlogApp.Agent | [SETUP] LLM ready: model='llama3.2:3b'
+2026-03-30 17:57:08 | INFO     | BlogApp.FastAPI | [STARTUP] Static site mounted: D:\Study\LangGraph\Workflow_27_BlogWriter\Backend\Blogs → /site
+2026-03-30 17:57:08 | INFO     | BlogApp.FastAPI | [STARTUP] PostgreSQL tables ready.
+2026-03-30 17:57:08 | INFO     | BlogApp.FastAPI | [STARTUP] LangGraph workflow compiled. Checkpointer DB: 'blog_hitl.db'
+2026-03-30 17:58:26 | INFO     | BlogApp.FastAPI | [API] /blogs/generate — topic='Nuclear Energy For Long Time Power Source' thread_id='718b20b8-8050-4967-b054-2bcaa34176fd'
+2026-03-30 17:58:26 | INFO     | BlogApp.FastAPI | [BG] Starting workflow thread='718b20b8-8050-4967-b054-2bcaa34176fd' topic='Nuclear Energy For Long Time Power Source'
+2026-03-30 17:58:26 | INFO     | BlogApp.Agent | [ROUTER] ── Entering router node ──────────────────────────
+2026-03-30 17:58:26 | INFO     | BlogApp.Agent | [ROUTER] Current date (IST): 2026-03-30 | Time: 17:58:26 | Year: 2026
+2026-03-30 17:59:29 | INFO     | BlogApp.Agent | [ROUTER]   mode='closed_book' | needs_research=True | queries=5
+2026-03-30 17:59:29 | INFO     | BlogApp.Agent | [ROUTER] ── Router node complete ────────────────────────────
+2026-03-30 17:59:29 | INFO     | BlogApp.Agent | [ROUTER] Routing → 'research'
+2026-03-30 17:59:29 | INFO     | BlogApp.Agent | [RESEARCH] ── Entering research node (5 queries) ──
+2026-03-30 17:59:29 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='What is the current state of nuclear energy as a long-term power source?'
+2026-03-30 17:59:29 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='How does nuclear fusion compare to traditional nuclear fission for long-term energy storage?'
+2026-03-30 17:59:29 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='What are the benefits and drawbacks of using nuclear energy for extended periods of time?'
+2026-03-30 17:59:29 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Can nuclear energy provide a reliable source of power for centuries to come?'
+2026-03-30 17:59:29 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='How has nuclear energy evolved over the years as a viable alternative to fossil fuels?'
+2026-03-30 17:59:31 | INFO     | BlogApp.Agent | [RESEARCH] Total raw results: 30 (2.47s)
+2026-03-30 18:04:10 | INFO     | BlogApp.Agent | [RESEARCH] Evidence after deduplication: 6 items
+2026-03-30 18:04:10 | INFO     | BlogApp.Agent | [RESEARCH] ── Research node complete ───────────────────────────
+2026-03-30 18:04:10 | INFO     | BlogApp.Agent | [ORCH] ── Entering orchestrator node ──────────────────────
+2026-03-30 18:04:13 | INFO     | BlogApp.Agent | [ORCH] Current date (IST): 2026-03-30 | Time: 18:04:13 | Year: 2026
+2026-03-30 18:04:13 | INFO     | BlogApp.Agent | [ORCH] Planning attempt 1/3...
+2026-03-30 18:06:15 | INFO     | BlogApp.Agent | [ORCH] Plan accepted — 5 tasks | 'Nuclear Energy: A Long-Term Power Source'
+2026-03-30 18:06:15 | INFO     | BlogApp.Agent | [ORCH] ── Orchestrator node complete ─────────────────────────
+2026-03-30 18:06:15 | INFO     | BlogApp.Agent | [DISPATCHER] Dispatching workers...
+2026-03-30 18:06:15 | INFO     | BlogApp.Agent | [WORKER] ── Task 1: 'What is Nuclear Energy?'
+2026-03-30 18:06:15 | INFO     | BlogApp.Agent | [WORKER] ── Task 2: 'Nuclear Power: A Low-Carbon Solution'
+2026-03-30 18:06:15 | INFO     | BlogApp.Agent | [WORKER] ── Task 3: 'Nuclear Reactor Types and Applications'
+2026-03-30 18:06:15 | INFO     | BlogApp.Agent | [WORKER] ── Task 4: 'Nuclear Energy and Safety'
+2026-03-30 18:06:15 | INFO     | BlogApp.Agent | [WORKER] ── Task 5: 'Nuclear Energy for Long-Term Power'
+2026-03-30 18:06:18 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 18:06:18 | Year: 2026
+2026-03-30 18:06:18 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 18:06:18 | Year: 2026
+2026-03-30 18:06:18 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 18:06:18 | Year: 2026
+2026-03-30 18:06:18 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 18:06:18 | Year: 2026
+2026-03-30 18:06:18 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 18:06:18 | Year: 2026
+2026-03-30 18:06:58 | INFO     | BlogApp.Agent | [WORKER] Task 2 done — ~165w (dev=17.5%, 39.67s)
+2026-03-30 18:08:03 | INFO     | BlogApp.Agent | [WORKER] Task 3 done — ~421w (dev=68.4%, 105.09s)
+2026-03-30 18:08:03 | WARNING  | BlogApp.Agent | [WORKER] Task 3 word count deviation > 20%: got 421, target 250
+2026-03-30 18:08:50 | INFO     | BlogApp.Agent | [WORKER] Task 5 done — ~364w (dev=45.6%, 151.54s)
+2026-03-30 18:08:50 | WARNING  | BlogApp.Agent | [WORKER] Task 5 word count deviation > 20%: got 364, target 250
+2026-03-30 18:09:31 | INFO     | BlogApp.Agent | [WORKER] Task 4 done — ~337w (dev=68.5%, 193.08s)
+2026-03-30 18:09:31 | WARNING  | BlogApp.Agent | [WORKER] Task 4 word count deviation > 20%: got 337, target 200
+2026-03-30 18:10:04 | INFO     | BlogApp.Agent | [WORKER] Task 1 done — ~209w (dev=16.4%, 225.74s)
+2026-03-30 18:10:04 | INFO     | BlogApp.Agent | [MERGE] ── Entering merge_content node ──────────────────────
+2026-03-30 18:10:04 | INFO     | BlogApp.Agent | [MERGE] Title: 'Nuclear Energy: A Long-Term Power Source' | ~1503 words
+2026-03-30 18:10:04 | INFO     | BlogApp.Agent | [MERGE] ── merge_content node complete ───────────────────────
+2026-03-30 18:10:04 | INFO     | BlogApp.Agent | [IMAGES] ── Entering decide_images node ──────────────────────
+2026-03-30 18:10:40 | INFO     | BlogApp.Agent | [IMAGES] Images planned: 3
+2026-03-30 18:10:40 | DEBUG    | BlogApp.Agent | [IMAGES] Injected '[[IMAGE_1]]' after heading 'What is Nuclear Energy?'
+2026-03-30 18:10:40 | DEBUG    | BlogApp.Agent | [IMAGES] Injected '[[IMAGE_2]]' after heading 'Nuclear Power: A Low-Carbon Solution'
+2026-03-30 18:10:40 | DEBUG    | BlogApp.Agent | [IMAGES] Injected '[[IMAGE_3]]' after heading 'Nuclear Energy for Long-Term Power'
+2026-03-30 18:10:40 | INFO     | BlogApp.Agent | [IMGPLACE] ── Entering generate_and_place_images node ──────────
+2026-03-30 18:10:40 | INFO     | BlogApp.Agent | [BLOGS] Created Blogs\index.html
+2026-03-30 18:10:40 | INFO     | BlogApp.Agent | [BLOGS] Created Blogs\style.css
+2026-03-30 18:10:50 | INFO     | BlogApp.Agent | [IMGPLACE] Image 3 saved: 'Blogs\contents\images\Nuclear_Energy-_A_Long-Term_Power_Source\long-term_power_source.png' (1392072b, attempt 1)
+2026-03-30 18:10:50 | INFO     | BlogApp.Agent | [IMGPLACE] Image 1 saved: 'Blogs\contents\images\Nuclear_Energy-_A_Long-Term_Power_Source\nuclear_energy_definition.png' (1138053b, attempt 1)
+2026-03-30 18:10:52 | INFO     | BlogApp.Agent | [IMGPLACE] Image 2 saved: 'Blogs\contents\images\Nuclear_Energy-_A_Long-Term_Power_Source\carbon_footprint_reduction.png' (1106679b, attempt 1)
+2026-03-30 18:10:52 | INFO     | BlogApp.Agent | [IMGPLACE] Summary — success=3 | failed=0 | cached=0
+2026-03-30 18:10:52 | INFO     | BlogApp.Agent | [BLOGS] Saved blog files: Blogs\contents\html\Nuclear_Energy-_A_Long-Term_Power_Source.html
+2026-03-30 18:10:52 | INFO     | BlogApp.Agent | [IMGPLACE] ── generate_and_place_images complete ───────────────
+2026-03-30 18:10:52 | INFO     | BlogApp.Agent | [HITL] ── Workflow pausing for human approval ──────────────
+2026-03-30 18:10:52 | INFO     | BlogApp.Agent | [HITL]   Title: 'Nuclear Energy: A Long-Term Power Source'
+2026-03-30 18:10:52 | INFO     | BlogApp.FastAPI | [BG] Workflow paused. next=('human_approval',) thread='718b20b8-8050-4967-b054-2bcaa34176fd'
+2026-03-30 18:10:52 | INFO     | BlogApp.FastAPI | [BG] Postgres → PENDING  thread='718b20b8-8050-4967-b054-2bcaa34176fd'
+2026-03-30 18:12:33 | INFO     | BlogApp.FastAPI | [API] /blogs/approve — thread_id='718b20b8-8050-4967-b054-2bcaa34176fd'
+2026-03-30 18:12:33 | INFO     | BlogApp.Agent | [HITL] Routing after approval — status='approved'
+2026-03-30 18:12:33 | INFO     | BlogApp.FastAPI | [BG] Resuming workflow thread='718b20b8-8050-4967-b054-2bcaa34176fd'
+2026-03-30 18:12:33 | INFO     | BlogApp.Agent | [HITL] ── finalize_approved ─────────────────────────────────
+2026-03-30 18:12:33 | INFO     | BlogApp.Agent | [BLOGS] index.html updated with 'Nuclear Energy: A Long-Term Power Source'
+2026-03-30 18:12:33 | INFO     | BlogApp.Agent | [HITL] Blog 'Nuclear Energy: A Long-Term Power Source' published to index.html
+2026-03-30 18:12:33 | INFO     | BlogApp.FastAPI | [BG] Workflow finalized (approved) thread='718b20b8-8050-4967-b054-2bcaa34176fd'
+2026-03-30 18:12:33 | INFO     | BlogApp.GitHub | Starting Git automation
+2026-03-30 18:12:33 | INFO     | BlogApp.GitHub | Commit message: Blog 30-03-2026-18-12-33
+2026-03-30 18:12:33 | DEBUG    | BlogApp.GitHub | Running command: git add .
+2026-03-30 18:12:34 | DEBUG    | BlogApp.GitHub | Command succeeded: git add .
+2026-03-30 18:12:34 | DEBUG    | BlogApp.GitHub | Running command: git commit -m "Blog 30-03-2026-18-12-33"
+2026-03-30 18:12:34 | INFO     | BlogApp.GitHub | [main ad4500b] Blog 30-03-2026-18-12-33
+ 8 files changed, 512 insertions(+), 146 deletions(-)
+ create mode 100644 contents/css/Nuclear_Energy-_A_Long-Term_Power_Source.css
+ create mode 100644 contents/html/Nuclear_Energy-_A_Long-Term_Power_Source.html
+ create mode 100644 contents/images/Nuclear_Energy-_A_Long-Term_Power_Source/carbon_footprint_reduction.png
+ create mode 100644 contents/images/Nuclear_Energy-_A_Long-Term_Power_Source/long-term_power_source.png
+ create mode 100644 contents/images/Nuclear_Energy-_A_Long-Term_Power_Source/nuclear_energy_definition.png
+ create mode 100644 contents/js/Nuclear_Energy-_A_Long-Term_Power_Source.js
+2026-03-30 18:12:34 | DEBUG    | BlogApp.GitHub | Command succeeded: git commit -m "Blog 30-03-2026-18-12-33"
+2026-03-30 18:12:34 | DEBUG    | BlogApp.GitHub | Running command: git push origin main
+2026-03-30 18:12:39 | DEBUG    | BlogApp.GitHub | Command succeeded: git push origin main
+2026-03-30 18:12:39 | INFO     | BlogApp.GitHub | Git automation completed successfully
+2026-03-30 18:12:39 | INFO     | BlogApp.FastAPI | [BG] GitHub push completed thread='718b20b8-8050-4967-b054-2bcaa34176fd'
+2026-03-30 18:17:06 | INFO     | BlogApp.FastAPI | [API] /blogs/generate — topic='Renewable Energy Resources: Trends and Insights' thread_id='4891e86f-8909-4adc-b9ab-999277f2cbd9'
+2026-03-30 18:17:06 | INFO     | BlogApp.FastAPI | [BG] Starting workflow thread='4891e86f-8909-4adc-b9ab-999277f2cbd9' topic='Renewable Energy Resources: Trends and Insights'
+2026-03-30 18:17:06 | INFO     | BlogApp.Agent | [ROUTER] ── Entering router node ──────────────────────────
+2026-03-30 18:17:09 | INFO     | BlogApp.Agent | [ROUTER] Current date (IST): 2026-03-30 | Time: 18:17:09 | Year: 2026
+2026-03-30 18:17:31 | INFO     | BlogApp.Agent | [ROUTER]   mode='hybrid' | needs_research=True | queries=5
+2026-03-30 18:17:31 | INFO     | BlogApp.Agent | [ROUTER] ── Router node complete ────────────────────────────
+2026-03-30 18:17:31 | INFO     | BlogApp.Agent | [ROUTER] Routing → 'research'
+2026-03-30 18:17:31 | INFO     | BlogApp.Agent | [RESEARCH] ── Entering research node (5 queries) ──
+2026-03-30 18:17:31 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Renewable energy market trends 2026'
+2026-03-30 18:17:31 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Current state of solar panel efficiency'
+2026-03-30 18:17:31 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Impact of renewable energy on global carbon emissions 2026'
+2026-03-30 18:17:31 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='L latest advancements in wind turbine technology'
+2026-03-30 18:17:31 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='Trends in hydrogen fuel cell applications for transportation'
+2026-03-30 18:17:34 | INFO     | BlogApp.Agent | [RESEARCH] Total raw results: 30 (2.82s)
+2026-03-30 18:21:29 | INFO     | BlogApp.Agent | [RESEARCH] Evidence after deduplication: 8 items
+2026-03-30 18:21:29 | INFO     | BlogApp.Agent | [RESEARCH] ── Research node complete ───────────────────────────
+2026-03-30 18:21:29 | INFO     | BlogApp.Agent | [ORCH] ── Entering orchestrator node ──────────────────────
+2026-03-30 18:21:32 | INFO     | BlogApp.Agent | [ORCH] Current date (IST): 2026-03-30 | Time: 18:21:32 | Year: 2026
+2026-03-30 18:21:32 | INFO     | BlogApp.Agent | [ORCH] Planning attempt 1/3...
+2026-03-30 18:24:19 | INFO     | BlogApp.Agent | [ORCH] Plan accepted — 6 tasks | 'Renewable Energy Resources: Trends and Insights'
+2026-03-30 18:24:19 | INFO     | BlogApp.Agent | [ORCH] ── Orchestrator node complete ─────────────────────────
+2026-03-30 18:24:19 | INFO     | BlogApp.Agent | [DISPATCHER] Dispatching workers...
+2026-03-30 18:24:19 | INFO     | BlogApp.Agent | [WORKER] ── Task 1: 'Overview of Renewable Energy Sources'
+2026-03-30 18:24:19 | INFO     | BlogApp.Agent | [WORKER] ── Task 2: 'Hydrogen Fuel Cells: A Game-Changer for Renewable Energy'
+2026-03-30 18:24:19 | INFO     | BlogApp.Agent | [WORKER] ── Task 3: 'Solar Energy: A Bright Future for Renewable Energy'
+2026-03-30 18:24:19 | INFO     | BlogApp.Agent | [WORKER] ── Task 4: 'Wind Energy: A Leading Source of Renewable Energy'
+2026-03-30 18:24:19 | INFO     | BlogApp.Agent | [WORKER] ── Task 5: 'Geothermal Energy: A Neglected Resource for Renewable Energy'
+2026-03-30 18:24:19 | INFO     | BlogApp.Agent | [WORKER] ── Task 6: 'Bioenergy with Carbon Capture and Storage (BECCS): A Negative Emission Technology'
+2026-03-30 18:24:19 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 18:24:19 | Year: 2026
+2026-03-30 18:24:19 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 18:24:19 | Year: 2026
+2026-03-30 18:24:19 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 18:24:19 | Year: 2026
+2026-03-30 18:24:19 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 18:24:19 | Year: 2026
+2026-03-30 18:24:19 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 18:24:19 | Year: 2026
+2026-03-30 18:24:22 | INFO     | BlogApp.Agent | [WORKER] Current date (IST): 2026-03-30 | Time: 18:24:22 | Year: 2026
+2026-03-30 18:25:11 | INFO     | BlogApp.Agent | [WORKER] Task 5 done — ~294w (dev=17.6%, 51.83s)
+2026-03-30 18:26:16 | INFO     | BlogApp.Agent | [WORKER] Task 2 done — ~413w (dev=37.7%, 117.18s)
+2026-03-30 18:26:16 | WARNING  | BlogApp.Agent | [WORKER] Task 2 word count deviation > 20%: got 413, target 300
+2026-03-30 18:27:17 | INFO     | BlogApp.Agent | [WORKER] Task 6 done — ~327w (dev=9.0%, 178.21s)
+2026-03-30 18:28:04 | INFO     | BlogApp.Agent | [WORKER] Task 4 done — ~278w (dev=11.2%, 224.56s)
+2026-03-30 18:28:46 | INFO     | BlogApp.Agent | [WORKER] Task 1 done — ~307w (dev=22.8%, 266.67s)
+2026-03-30 18:28:46 | WARNING  | BlogApp.Agent | [WORKER] Task 1 word count deviation > 20%: got 307, target 250
+2026-03-30 18:29:42 | INFO     | BlogApp.Agent | [WORKER] Task 3 done — ~285w (dev=14.0%, 320.05s)
+2026-03-30 18:29:42 | INFO     | BlogApp.Agent | [MERGE] ── Entering merge_content node ──────────────────────
+2026-03-30 18:29:42 | INFO     | BlogApp.Agent | [MERGE] Title: 'Renewable Energy Resources: Trends and Insights' | ~1911 words
+2026-03-30 18:29:42 | INFO     | BlogApp.Agent | [MERGE] ── merge_content node complete ───────────────────────
+2026-03-30 18:29:42 | INFO     | BlogApp.Agent | [IMAGES] ── Entering decide_images node ──────────────────────
+2026-03-30 18:30:12 | INFO     | BlogApp.Agent | [IMAGES] Images planned: 2
+2026-03-30 18:30:12 | DEBUG    | BlogApp.Agent | [IMAGES] Injected '[[IMAGE_2]]' after heading 'Bioenergy with Carbon Capture and Storage (BECCS): A Negative Emission Technology'
+2026-03-30 18:30:12 | DEBUG    | BlogApp.Agent | [IMAGES] Injected 'no extra text' after heading 'Overview of Renewable Energy Sources'
+2026-03-30 18:30:12 | INFO     | BlogApp.Agent | [IMGPLACE] ── Entering generate_and_place_images node ──────────
+2026-03-30 18:30:18 | INFO     | BlogApp.Agent | [IMGPLACE] Image 1 saved: 'Blogs\contents\images\Renewable_Energy_Resources-_Trends_and_Insights\renewable_energy_sources_diagram.png' (478554b, attempt 1)
+2026-03-30 18:30:22 | INFO     | BlogApp.Agent | [IMGPLACE] Image 2 saved: 'Blogs\contents\images\Renewable_Energy_Resources-_Trends_and_Insights\beccs_flowchart.png' (1076200b, attempt 1)
+2026-03-30 18:30:22 | INFO     | BlogApp.Agent | [IMGPLACE] Summary — success=2 | failed=0 | cached=0
+2026-03-30 18:30:22 | INFO     | BlogApp.Agent | [BLOGS] Saved blog files: Blogs\contents\html\Renewable_Energy_Resources-_Trends_and_Insights.html
+2026-03-30 18:30:22 | INFO     | BlogApp.Agent | [IMGPLACE] ── generate_and_place_images complete ───────────────
+2026-03-30 18:30:22 | INFO     | BlogApp.Agent | [HITL] ── Workflow pausing for human approval ──────────────
+2026-03-30 18:30:22 | INFO     | BlogApp.Agent | [HITL]   Title: 'Renewable Energy Resources: Trends and Insights'
+2026-03-30 18:30:22 | INFO     | BlogApp.FastAPI | [BG] Workflow paused. next=('human_approval',) thread='4891e86f-8909-4adc-b9ab-999277f2cbd9'
+2026-03-30 18:30:22 | INFO     | BlogApp.FastAPI | [BG] Postgres → PENDING  thread='4891e86f-8909-4adc-b9ab-999277f2cbd9'
+2026-03-30 18:30:23 | INFO     | BlogApp.FastAPI | [SHUTDOWN] Application shutting down.

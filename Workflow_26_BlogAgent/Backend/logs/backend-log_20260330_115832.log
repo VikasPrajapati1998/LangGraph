@@ -1,0 +1,68 @@
+2026-03-30 11:58:32 | INFO     | BlogApp | [Logger] Bootstrapped. Log file: logs\backend-log_20260330_115832.log
+2026-03-30 11:58:35 | DEBUG    | BlogApp.Agent | [SETUP] Initialising LLM...
+2026-03-30 11:58:36 | DEBUG    | BlogApp.Agent | [SETUP] LLM ready: model='llama3.2:3b'
+2026-03-30 11:58:36 | INFO     | BlogApp.FastAPI | [STARTUP] Static site mounted: D:\Study\LangGraph\Workflow_26_BlogAgent\Backend\Blogs → /site
+2026-03-30 11:58:36 | INFO     | BlogApp.FastAPI | [STARTUP] PostgreSQL tables ready.
+2026-03-30 11:58:36 | INFO     | BlogApp.FastAPI | [STARTUP] LangGraph workflow compiled. Checkpointer DB: 'blog_hitl.db'
+2026-03-30 11:58:40 | INFO     | BlogApp.FastAPI | [API] /blogs/generate — topic='Currently All Available Processors for Mobiles' thread_id='59ade09b-c196-42ba-84e6-e27d667fbaa4'
+2026-03-30 11:58:40 | INFO     | BlogApp.FastAPI | [BG] Starting workflow thread='59ade09b-c196-42ba-84e6-e27d667fbaa4' topic='Currently All Available Processors for Mobiles'
+2026-03-30 11:58:40 | INFO     | BlogApp.Agent | [ROUTER] ── Entering router node ──────────────────────────
+2026-03-30 11:58:40 | INFO     | BlogApp.Agent | [ROUTER] Current date (IST): 2026-03-30 | Time: 11:58:40 | Year: 2026
+2026-03-30 11:58:55 | INFO     | BlogApp.Agent | [ROUTER]   mode='closed_book' | needs_research=True | queries=5
+2026-03-30 11:58:55 | INFO     | BlogApp.Agent | [ROUTER] ── Router node complete ────────────────────────────
+2026-03-30 11:58:55 | INFO     | BlogApp.Agent | [ROUTER] Routing → 'research'
+2026-03-30 11:58:55 | INFO     | BlogApp.Agent | [RESEARCH] ── Entering research node (5 queries) ──
+2026-03-30 11:58:55 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='all available processors for mobiles in 2026'
+2026-03-30 11:58:55 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='mobile processor lineup 2026'
+2026-03-30 11:58:55 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='current mobile processors and their specifications'
+2026-03-30 11:58:55 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='latest mobile processors with their features and benefits'
+2026-03-30 11:58:55 | DEBUG    | BlogApp.Agent | [RESEARCH] Tavily search — query='available mobile processors in 2026 compared to previous years'
+2026-03-30 11:58:57 | INFO     | BlogApp.Agent | [RESEARCH] Total raw results: 30 (2.38s)
+2026-03-30 12:02:52 | INFO     | BlogApp.Agent | [RESEARCH] Evidence after deduplication: 3 items
+2026-03-30 12:02:52 | INFO     | BlogApp.Agent | [RESEARCH] ── Research node complete ───────────────────────────
+2026-03-30 12:02:52 | INFO     | BlogApp.Agent | [ORCH] ── Entering orchestrator node ──────────────────────
+2026-03-30 12:02:55 | INFO     | BlogApp.Agent | [ORCH] Planning attempt 1/3...
+2026-03-30 12:05:26 | INFO     | BlogApp.Agent | [ORCH] Plan accepted — 7 tasks | 'All Available Processors for Mobiles'
+2026-03-30 12:05:26 | INFO     | BlogApp.Agent | [ORCH] ── Orchestrator node complete ─────────────────────────
+2026-03-30 12:05:26 | INFO     | BlogApp.Agent | [DISPATCHER] Dispatching workers...
+2026-03-30 12:05:26 | INFO     | BlogApp.Agent | [WORKER] ── Task 1: 'Overview of Mobile Processors'
+2026-03-30 12:05:26 | INFO     | BlogApp.Agent | [WORKER] ── Task 2: 'Processors for Android Devices'
+2026-03-30 12:05:26 | INFO     | BlogApp.Agent | [WORKER] ── Task 3: 'Apple Processors for iPhones'
+2026-03-30 12:05:26 | INFO     | BlogApp.Agent | [WORKER] ── Task 4: 'Performance Comparison'
+2026-03-30 12:05:26 | INFO     | BlogApp.Agent | [WORKER] ── Task 5: 'Security and Power Efficiency'
+2026-03-30 12:05:26 | INFO     | BlogApp.Agent | [WORKER] ── Task 6: 'Edge Cases and Failure Modes'
+2026-03-30 12:05:26 | INFO     | BlogApp.Agent | [WORKER] ── Task 7: 'Debugging and Observability'
+2026-03-30 12:05:26 | ERROR    | BlogApp.FastAPI | [BG] Workflow FAILED thread='59ade09b-c196-42ba-84e6-e27d667fbaa4': cannot access local variable 'datetime' where it is not associated with a value
+Traceback (most recent call last):
+  File "D:\Study\LangGraph\Workflow_26_BlogAgent\Backend\main.py", line 187, in _run_workflow
+    async for event in workflow.astream(
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langgraph\pregel\main.py", line 2974, in astream
+    async for _ in runner.atick(
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langgraph\pregel\_runner.py", line 410, in atick
+    _panic_or_proceed(
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langgraph\pregel\_runner.py", line 520, in _panic_or_proceed
+    raise exc
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langgraph\pregel\_retry.py", line 138, in arun_with_retry
+    return await task.proc.ainvoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langgraph\_internal\_runnable.py", line 705, in ainvoke
+    input = await asyncio.create_task(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langgraph\_internal\_runnable.py", line 473, in ainvoke
+    ret = await self.afunc(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_core\runnables\config.py", line 610, in run_in_executor
+    return await asyncio.get_running_loop().run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python311\Lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\venv\Lib\site-packages\langchain_core\runnables\config.py", line 601, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Study\LangGraph\Workflow_26_BlogAgent\Backend\agent.py", line 1367, in worker_node
+    worker_start = datetime.now()
+                   ^^^^^^^^
+UnboundLocalError: cannot access local variable 'datetime' where it is not associated with a value
+During task with name 'worker' and id 'd0a58821-311d-670e-4a05-015f2f8fc309'
+2026-03-30 12:10:05 | INFO     | BlogApp.FastAPI | [SHUTDOWN] Application shutting down.
