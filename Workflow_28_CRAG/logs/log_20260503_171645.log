@@ -1,0 +1,129 @@
+2026-05-03 17:16:45 | INFO     | App | [Logger] Bootstrapped. Log file: logs\log_20260503_171645.log
+2026-05-03 17:16:45 | INFO     | App.CRAG06 | VectorDB is up-to-date — skipping rebuild.
+2026-05-03 17:16:45 | INFO     | App.CRAG06 | Loading VectorDB from: VectorDB
+2026-05-03 17:16:45 | INFO     | App.CRAG06 | VectorDB loaded successfully.
+2026-05-03 17:16:46 | INFO     | App.CRAG06 | LLM ready: model=qwen3:1.7b, temperature=0.5
+2026-05-03 17:16:46 | INFO     | App.CRAG06 | Relevance thresholds: UPPER=0.7  LOWER=0.3
+2026-05-03 17:16:46 | INFO     | App.CRAG06 | Tavily search tool ready (max_results=5, queries=3–6)
+2026-05-03 17:16:46 | INFO     | App.CRAG06 | CRAG06 graph compiled and ready.
+2026-05-03 17:16:46 | INFO     | App.CRAG06 | Saving RAG graph flow visualization to PNG…
+2026-05-03 17:16:47 | INFO     | App.CRAG06 | Graph flow saved as 'crag06-refine.png'
+2026-05-03 17:16:47 | INFO     | App.CRAG06 | Running query: 'What is Principal Component Analysis (PCA) and how does it work?'
+2026-05-03 17:16:47 | INFO     | App.CRAG06 | ════════════════════════════════════════════════════════════
+2026-05-03 17:16:47 | INFO     | App.CRAG06 | NODE  ▶  retrieve
+2026-05-03 17:16:47 | INFO     | App.CRAG06 | ════════════════════════════════════════════════════════════
+2026-05-03 17:16:47 | INFO     | App.CRAG06 |   Question : 'What is Principal Component Analysis (PCA) and how does it work?'
+2026-05-03 17:16:47 | INFO     | App.CRAG06 |   Fetching top-8 chunks from VectorDB…
+2026-05-03 17:16:47 | INFO     | App.CRAG06 |   Chunks retrieved : 8
+2026-05-03 17:16:47 | INFO     | App.CRAG06 |   [01] source=Hands-on-ML.pdf  page=266  chars=209  preview='PCA Principal\tComponent\tAnalysis \t(PCA)\t is\tby\tfar\tthe\tmost\tpopular\tdimensionality\treduction\talgorithm. First\tit\tidentif'…
+2026-05-03 17:16:47 | INFO     | App.CRAG06 |   [02] source=Hands-on-ML.pdf  page=669  chars=637  preview='upper\tlayers ,\t Tweaking,\tDropping,\tor\tReplacing\tthe\tUpper\tLayers Pretty\tTensor ,\t Up\tand\tRunning\twith\tTensorFlow primal'…
+2026-05-03 17:16:47 | INFO     | App.CRAG06 |   [03] source=IGF-DL.pdf  page=62  chars=750  preview='2.12Example:PrincipalComponentsAnalysisOnesimplemachinelearningalgorithm,principalcomponentsanalysisorPCAcanbederivedusi'…
+2026-05-03 17:16:47 | INFO     | App.CRAG06 |   [04] source=Hands-on-ML.pdf  page=269  chars=292  preview='WARNING PCA\tassumes\tthat\tthe\tdataset\tis\tcentered\taround\tthe\torigin.\tAs\twe\twill\tsee,\tScikit-Learn’s\tPCA\tclasses\ttake\tcare'…
+2026-05-03 17:16:47 | INFO     | App.CRAG06 |   [05] source=Hands-on-ML.pdf  page=271  chars=656  preview='Using\tScikit-Learn Scikit-Learn’s\t PCA \tclass\t implements\tPCA\tusing\tSVD\tdecomposition\tjust\tlike\twe\tdid\tbefore.\tThe follo'…
+2026-05-03 17:16:47 | INFO     | App.CRAG06 |   [06] source=Hands-on-ML.pdf  page=267  chars=267  preview='likely\tlose\tless\tinformation\tthan\tthe\tother\tprojections.\tAnother\tway\tto\tjustify\tthis\tchoice\tis\tthat\tit\tis\tthe axis\tthat\t'…
+2026-05-03 17:16:47 | INFO     | App.CRAG06 |   [07] source=Hands-on-ML.pdf  page=508  chars=882  preview='Performing\tPCA\twith\tan\tUndercomplete\tLinear\tAutoencoder If\t the\tautoencoder\tuses\tonly\tlinear\tactivations\tand\tthe\tcost\tfu'…
+2026-05-03 17:16:47 | INFO     | App.CRAG06 |   [08] source=IGF-DL.pdf  page=162  chars=899  preview='Figure5.8:PCAlearnsalinearprojectionthatalignsthedirectionofgreatestvariancewiththeaxesofthenewspace.(Left)Theoriginalda'…
+2026-05-03 17:16:47 | INFO     | App.CRAG06 | ────────────────────────────────────────────────────────────
+2026-05-03 17:16:47 | INFO     | App.CRAG06 | ════════════════════════════════════════════════════════════
+2026-05-03 17:16:47 | INFO     | App.CRAG06 | NODE  ▶  eval
+2026-05-03 17:16:47 | INFO     | App.CRAG06 | ════════════════════════════════════════════════════════════
+2026-05-03 17:16:47 | INFO     | App.CRAG06 |   Evaluating 8 retrieved chunks…
+2026-05-03 17:16:47 | INFO     | App.CRAG06 |   Thresholds — UPPER: 0.7  LOWER: 0.3
+2026-05-03 17:16:47 | INFO     | App.CRAG06 | ────────────────────────────────────────────────────────────
+2026-05-03 17:17:00 | INFO     | App.CRAG06 |   Chunk [01]  score=1.000  ✅ HIGH  (> UPPER)
+           source=Hands-on-ML.pdf  page=266
+           reason=Chunk adequately explains PCA's purpose and methodology without needing additional information.
+2026-05-03 17:17:10 | INFO     | App.CRAG06 |   Chunk [02]  score=0.000  ❌ LOW   (< LOWER)
+           source=Hands-on-ML.pdf  page=669
+           reason=Chunk is completely irrelevant as it contains only list of terms without any textual content related to PCA or its workings.
+2026-05-03 17:17:28 | INFO     | App.CRAG06 |   Chunk [03]  score=1.000  ✅ HIGH  (> UPPER)
+           source=IGF-DL.pdf  page=62
+           reason=The chunk provides a clear explanation of PCA as a dimensionality reduction technique, its purpose, and the process of encoding/decoding, which fully answers the question.
+2026-05-03 17:17:47 | INFO     | App.CRAG06 |   Chunk [04]  score=0.500  🟡 MID   (> LOWER)
+           source=Hands-on-ML.pdf  page=269
+           reason=Chunk mentions centering requirement but lacks explanation of PCA's full mechanism (eigenvalues, projections, etc.).
+2026-05-03 17:18:06 | INFO     | App.CRAG06 |   Chunk [05]  score=0.000  ❌ LOW   (< LOWER)
+           source=Hands-on-ML.pdf  page=271
+           reason=Chunk provides implementation details of PCA using SVD but lacks theoretical explanation of how PCA works (e.g., mathematical basis, dimensionality reduction, variance explanation).
+2026-05-03 17:18:15 | INFO     | App.CRAG06 |   Chunk [06]  score=0.000  ❌ LOW   (< LOWER)
+           source=Hands-on-ML.pdf  page=267
+           reason=Chunk contains fragmented and unclear information about PCA. It mentions reducing information and minimizing mean squared distance but lacks a coherent explanation of PCA's principles and steps.
+2026-05-03 17:18:38 | INFO     | App.CRAG06 |   Chunk [07]  score=0.700  🟡 MID   (> LOWER)
+           source=Hands-on-ML.pdf  page=508
+           reason=The chunk mentions PCA via linear autoencoder but lacks detailed explanation of PCA's mathematical principles (e.g., eigenvalues, covariance matrix, projection steps). It focuses on implementation rather than theoretical foundations.
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   Chunk [08]  score=0.700  🟡 MID   (> LOWER)
+           source=IGF-DL.pdf  page=162
+           reason=Chunk provides a basic explanation of PCA's purpose and process but lacks detailed mathematical steps (e.g., eigenvalues, eigenvectors, variance calculation) necessary to fully answer the question.
+2026-05-03 17:18:58 | INFO     | App.CRAG06 | ────────────────────────────────────────────────────────────
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   EVAL SUMMARY
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   Total chunks evaluated  : 8
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   Chunks > UPPER (0.7)   : 2
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   Chunks > LOWER (0.3)   : 5  ← good_docs
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   Chunks < LOWER (0.3)   : 3
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   Score range             : 0.000 – 1.000
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   Score avg               : 0.488
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   Good docs collected     : 5
+2026-05-03 17:18:58 | INFO     | App.CRAG06 | ────────────────────────────────────────────────────────────
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   VERDICT ▶  CORRECT
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   Reason  ▶  At least one chunk scored > 0.7 and is sufficient to answer.
+2026-05-03 17:18:58 | INFO     | App.CRAG06 | ────────────────────────────────────────────────────────────
+2026-05-03 17:18:58 | INFO     | App.CRAG06 | ════════════════════════════════════════════════════════════
+2026-05-03 17:18:58 | INFO     | App.CRAG06 | ROUTER  ▶  route_after_eval
+2026-05-03 17:18:58 | INFO     | App.CRAG06 | ════════════════════════════════════════════════════════════
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   Verdict received : CORRECT
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   Routing to node  : refine
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   ↳ Will refine VectorDB good_docs → generate
+2026-05-03 17:18:58 | INFO     | App.CRAG06 | ────────────────────────────────────────────────────────────
+2026-05-03 17:18:58 | INFO     | App.CRAG06 | ════════════════════════════════════════════════════════════
+2026-05-03 17:18:58 | INFO     | App.CRAG06 | NODE  ▶  refine
+2026-05-03 17:18:58 | INFO     | App.CRAG06 | ════════════════════════════════════════════════════════════
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   Verdict path       : CORRECT
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   Document source    : VectorDB (good_docs)
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   Documents entering : 5
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   [01] Hands-On Machine Learning with Scikit-Learn and TensorFlow: Concepts, Tools, and Techniques to Build Intelligent Systems  page=266  chars=209
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   [02] IGF-DL.pdf  page=62  chars=750
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   [03] Hands-On Machine Learning with Scikit-Learn and TensorFlow: Concepts, Tools, and Techniques to Build Intelligent Systems  page=269  chars=292
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   [04] Hands-On Machine Learning with Scikit-Learn and TensorFlow: Concepts, Tools, and Techniques to Build Intelligent Systems  page=508  chars=882
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   [05] IGF-DL.pdf  page=162  chars=899
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   Combined context length : 3040 chars
+2026-05-03 17:18:58 | INFO     | App.CRAG06 | ────────────────────────────────────────────────────────────
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   Step 1 — Decompose: 14 sentences extracted
+2026-05-03 17:18:58 | INFO     | App.CRAG06 | ────────────────────────────────────────────────────────────
+2026-05-03 17:18:58 | INFO     | App.CRAG06 |   Step 2 — LLM Sentence Filter:
+2026-05-03 17:19:06 | INFO     | App.CRAG06 |     [001/014] DROPPED ❌ | PCA Principal Component Analysis (PCA) is by far the most popular dimensionality reduction algorithm…
+2026-05-03 17:19:17 | INFO     | App.CRAG06 |     [002/014] DROPPED ❌ | First it identifies the hyperplane that lies closest to the data, and then it projects the data onto…
+2026-05-03 17:19:32 | INFO     | App.CRAG06 |     [003/014] KEPT   ✅ | 2.12Example:PrincipalComponentsAnalysisOnesimplemachinelearningalgorithm,principalcomponentsanalysis…
+2026-05-03 17:19:39 | INFO     | App.CRAG06 |     [004/014] DROPPED ❌ | As we will see, Scikit-Learn’s PCA classes take care of centering the data for you.…
+2026-05-03 17:19:46 | INFO     | App.CRAG06 |     [005/014] DROPPED ❌ | However, if you implement PCA yourself (as in the preceding example), or if you use other libraries,…
+2026-05-03 17:19:57 | INFO     | App.CRAG06 |     [006/014] DROPPED ❌ | Performing PCA with an Undercomplete Linear Autoencoder If the autoencoder uses only linear activati…
+2026-05-03 17:20:04 | INFO     | App.CRAG06 |     [007/014] DROPPED ❌ | The following code builds a simple linear autoencoder to perform PCA on a 3D dataset, projecting it …
+2026-05-03 17:20:14 | INFO     | App.CRAG06 |     [008/014] DROPPED ❌ | float32 , shape = [ None , n_inputs ]) hidden = tf .…
+2026-05-03 17:20:23 | INFO     | App.CRAG06 |     [009/014] DROPPED ❌ | dense ( X , n_hidden ) outputs = tf .…
+2026-05-03 17:20:33 | INFO     | App.CRAG06 |     [010/014] DROPPED ❌ | dense ( hidden , n_outputs ) reconstruction_loss = tf .…
+2026-05-03 17:20:43 | INFO     | App.CRAG06 |     [011/014] DROPPED ❌ | square ( outputs - X )) # MSE optimizer = tf .…
+2026-05-03 17:20:52 | INFO     | App.CRAG06 |     [012/014] DROPPED ❌ | AdamOptimizer ( learning_rate ) training_op = optimizer .…
+2026-05-03 17:21:06 | INFO     | App.CRAG06 |     [013/014] DROPPED ❌ | minimize ( Figure5.8:PCAlearnsalinearprojectionthatalignsthedirectionofgreatestvariancewiththeaxesof…
+2026-05-03 17:21:34 | INFO     | App.CRAG06 |     [014/014] KEPT   ✅ | (Right)Thetransformeddataz=xWnowvariesmostalongtheaxisz1.Thedirectionofsecondmostvarianceisnowalong…
+2026-05-03 17:21:34 | INFO     | App.CRAG06 | ────────────────────────────────────────────────────────────
+2026-05-03 17:21:34 | INFO     | App.CRAG06 |   Step 2 Summary:
+2026-05-03 17:21:34 | INFO     | App.CRAG06 |     Sentences total   : 14
+2026-05-03 17:21:34 | INFO     | App.CRAG06 |     Sentences KEPT    : 2
+2026-05-03 17:21:34 | INFO     | App.CRAG06 |     Sentences DROPPED : 12
+2026-05-03 17:21:34 | INFO     | App.CRAG06 |     Keep rate         : 14.3%
+2026-05-03 17:21:34 | INFO     | App.CRAG06 | ────────────────────────────────────────────────────────────
+2026-05-03 17:21:34 | INFO     | App.CRAG06 |   Step 3 — Recomposed context length: 1503 chars
+2026-05-03 17:21:34 | INFO     | App.CRAG06 | ────────────────────────────────────────────────────────────
+2026-05-03 17:21:34 | INFO     | App.CRAG06 | ════════════════════════════════════════════════════════════
+2026-05-03 17:21:34 | INFO     | App.CRAG06 | NODE  ▶  generate
+2026-05-03 17:21:34 | INFO     | App.CRAG06 | ════════════════════════════════════════════════════════════
+2026-05-03 17:21:34 | INFO     | App.CRAG06 |   Context source : VectorDB refined good_docs
+2026-05-03 17:21:34 | INFO     | App.CRAG06 |   Verdict path                  : CORRECT
+2026-05-03 17:21:34 | INFO     | App.CRAG06 |   Answer source                 : VectorDB (refined)
+2026-05-03 17:21:34 | INFO     | App.CRAG06 |   Total context length          : 1503 chars
+2026-05-03 17:21:34 | INFO     | App.CRAG06 |   Refined sentence count        : 2
+2026-05-03 17:21:34 | INFO     | App.CRAG06 |   Calling LLM to generate answer…
+2026-05-03 17:22:18 | INFO     | App.CRAG06 |   Answer length  : 1846 chars
+2026-05-03 17:22:18 | INFO     | App.CRAG06 |   Answer preview : 'Principal Component Analysis (PCA) is a statistical method used to reduce the dimensionality of a dataset while preserving as much of the original information as possible. It works by transforming the'…
+2026-05-03 17:22:18 | INFO     | App.CRAG06 | ────────────────────────────────────────────────────────────
+2026-05-03 17:22:18 | INFO     | App.CRAG06 | Query complete.
+2026-05-03 17:22:18 | INFO     | App.CRAG06 | Done.
